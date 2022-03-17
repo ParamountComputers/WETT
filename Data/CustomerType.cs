@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT
+namespace WETT.Data
 {
     public partial class CustomerType
     {
@@ -10,7 +10,8 @@ namespace WETT
             Customers = new HashSet<Customer>();
         }
 
-        public long CustomerTypeId { get; set; }
+        public string CustomerTypeCode { get; set; }
+        public string Description { get; set; }
 
         public virtual ICollection<Customer> Customers { get; set; }
     }

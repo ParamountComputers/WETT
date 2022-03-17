@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace WETT.Data
 {
-    public partial class Territory
+    public partial class CustomerStatus
     {
-        public Territory()
+        public CustomerStatus()
         {
             Customers = new HashSet<Customer>();
         }
 
-        public long TerritoryId { get; set; }
-        public string Name { get; set; }
+        public string CustomerStatusCode { get; set; }
+        public string Description { get; set; }
 
         public virtual ICollection<Customer> Customers { get; set; }
     }

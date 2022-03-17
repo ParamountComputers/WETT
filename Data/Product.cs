@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT
+namespace WETT.Data
 {
     public partial class Product
     {
@@ -20,7 +20,7 @@ namespace WETT
         public string InsertUserId { get; set; }
         public DateTime InsertTimestamp { get; set; }
         public string UpdateUserId { get; set; }
-        public DateTime? UpdateTimestamp { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
 
         public virtual Supplier Supplier { get; set; }
         public virtual Inventory Inventory { get; set; }

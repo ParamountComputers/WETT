@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT
+namespace WETT.Data
 {
     public partial class Segment
     {

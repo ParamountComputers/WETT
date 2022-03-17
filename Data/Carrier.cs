@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT
+namespace WETT.Data
 {
     public partial class Carrier
     {
@@ -23,7 +23,7 @@ namespace WETT
         public string InsertUserId { get; set; }
         public DateTime InsertTimestamp { get; set; }
         public string UpdateUserId { get; set; }
-        public DateTime? UpdateTimestamp { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
 
         public virtual ICollection<CustomerOrder> CustomerOrders { get; set; }
     }

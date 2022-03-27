@@ -6,7 +6,7 @@ namespace WETT.Data
     public partial class MbllCustomer
     {
         public string CustomerType { get; set; }
-        public decimal CustomerNumber { get; set; }
+        public string CustomerNumber { get; set; }
         public string CustomerStatus { get; set; }
         public string ChangeType { get; set; }
         public string PremiseName { get; set; }

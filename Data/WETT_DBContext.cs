@@ -40,13 +40,13 @@ namespace WETT.Data
         public virtual DbSet<SupplierOrderDetail> SupplierOrderDetails { get; set; }
         public virtual DbSet<Territory> Territories { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=tcp:wett-dev-db.database.windows.net;Authentication=Active Directory Default;Database=WETT_DEV;");
-            }
-        }
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//                optionsBuilder.UseSqlServer("Server=tcp:wett-dev-db.database.windows.net;Authentication=Active Directory Default;Database=WETT_DEV;");
+//            }
+//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -443,15 +443,15 @@ namespace WETT.Data
                 entity.ToTable("Inventory");
 
                 entity.ToTable(tb => tb.IsTemporal(ttb =>
-                {
-                    ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_466100701", "dbo");
-                    ttb
-                        .HasPeriodStart("SysStartTime")
-                        .HasColumnName("SysStartTime");
-                    ttb
-                        .HasPeriodEnd("SysEndTime")
-                        .HasColumnName("SysEndTime");
-                }
+    {
+        ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_466100701", "dbo");
+        ttb
+            .HasPeriodStart("SysStartTime")
+            .HasColumnName("SysStartTime");
+        ttb
+            .HasPeriodEnd("SysEndTime")
+            .HasColumnName("SysEndTime");
+    }
 ));
 
                 entity.Property(e => e.ProductId)
@@ -578,23 +578,23 @@ namespace WETT.Data
                 entity.ToTable("MBLL Customer");
 
                 entity.Property(e => e.CustomerType)
-                    .HasMaxLength(10)
+                    .HasMaxLength(1)
                     .HasColumnName("Customer Type")
                     .IsFixedLength();
 
                 entity.Property(e => e.CustomerNumber)
-                    .HasColumnType("numeric(8, 0)")
+                    .HasMaxLength(50)
                     .HasColumnName("Customer Number");
 
                 entity.Property(e => e.ChangeType)
                     .IsRequired()
-                    .HasMaxLength(10)
+                    .HasMaxLength(1)
                     .HasColumnName("Change Type")
                     .IsFixedLength();
 
                 entity.Property(e => e.CustomerStatus)
                     .IsRequired()
-                    .HasMaxLength(10)
+                    .HasMaxLength(1)
                     .HasColumnName("Customer Status")
                     .IsFixedLength();
 
@@ -607,24 +607,22 @@ namespace WETT.Data
                     .HasColumnName("Insert UserId")
                     .HasDefaultValueSql("(user_name())");
 
-                entity.Property(e => e.Municipality).HasMaxLength(50);
+                entity.Property(e => e.Municipality).HasMaxLength(25);
 
-                entity.Property(e => e.Phone).HasMaxLength(50);
+                entity.Property(e => e.Phone).HasMaxLength(20);
 
                 entity.Property(e => e.PostalCode)
-                    .HasMaxLength(50)
+                    .HasMaxLength(12)
                     .HasColumnName("Postal Code");
 
                 entity.Property(e => e.PremiseName)
-                    .HasMaxLength(50)
+                    .HasMaxLength(40)
                     .HasColumnName("Premise Name");
 
-                entity.Property(e => e.Province)
-                    .HasMaxLength(10)
-                    .IsFixedLength();
+                entity.Property(e => e.Province).HasMaxLength(3);
 
                 entity.Property(e => e.StreetAddress)
-                    .HasMaxLength(50)
+                    .HasMaxLength(40)
                     .HasColumnName("Street Address");
             });
 
@@ -635,33 +633,37 @@ namespace WETT.Data
                 entity.ToTable("MBLL Sales Order");
 
                 entity.Property(e => e.TrxNumber)
-                    .HasMaxLength(50)
+                    .HasMaxLength(8)
                     .HasColumnName("Trx Number");
 
                 entity.Property(e => e.CreateTimestamp)
-                    .HasColumnType("numeric(6, 0)")
+                    .IsRequired()
+                    .HasMaxLength(6)
                     .HasColumnName("Create Timestamp");
 
                 entity.Property(e => e.CustomerNumber)
-                    .HasColumnType("numeric(8, 0)")
+                    .IsRequired()
+                    .HasMaxLength(8)
                     .HasColumnName("Customer Number");
 
                 entity.Property(e => e.CustomerType)
                     .IsRequired()
-                    .HasMaxLength(10)
+                    .HasMaxLength(1)
                     .HasColumnName("Customer Type")
                     .IsFixedLength();
 
                 entity.Property(e => e.DeliveryDate)
-                    .HasColumnType("numeric(6, 0)")
+                    .IsRequired()
+                    .HasMaxLength(6)
                     .HasColumnName("Delivery Date");
 
                 entity.Property(e => e.DeliveryInstructions)
-                    .HasMaxLength(50)
+                    .HasMaxLength(40)
                     .HasColumnName("Delivery Instructions");
 
                 entity.Property(e => e.DeliveryTime)
-                    .HasColumnType("numeric(6, 0)")
+                    .IsRequired()
+                    .HasMaxLength(6)
                     .HasColumnName("Delivery Time");
 
                 entity.Property(e => e.InsertTimestamp)
@@ -675,29 +677,32 @@ namespace WETT.Data
                     .HasDefaultValueSql("(user_name())");
 
                 entity.Property(e => e.ItemNumber)
-                    .HasColumnType("numeric(8, 0)")
+                    .IsRequired()
+                    .HasMaxLength(8)
                     .HasColumnName("Item Number");
 
                 entity.Property(e => e.OrderType)
                     .IsRequired()
-                    .HasMaxLength(10)
-                    .HasColumnName("Order Type")
-                    .IsFixedLength();
+                    .HasMaxLength(2)
+                    .HasColumnName("Order Type");
 
-                entity.Property(e => e.Quantity).HasColumnType("numeric(8, 0)");
+                entity.Property(e => e.Quantity)
+                    .IsRequired()
+                    .HasMaxLength(8);
 
                 entity.Property(e => e.TrxDate)
-                    .HasColumnType("numeric(6, 0)")
+                    .IsRequired()
+                    .HasMaxLength(6)
                     .HasColumnName("Trx Date");
 
                 entity.Property(e => e.TrxType)
                     .IsRequired()
-                    .HasMaxLength(50)
+                    .HasMaxLength(4)
                     .HasColumnName("Trx Type");
 
                 entity.Property(e => e.Upc)
                     .IsRequired()
-                    .HasMaxLength(50)
+                    .HasMaxLength(14)
                     .HasColumnName("UPC");
             });
 

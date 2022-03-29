@@ -6,8 +6,9 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
 	<h2>Authenticated: @Html.DisplayFor(model => model.IsAuthenticated)</h2>
-	<h2>User Source: @Html.DisplayFor(model => model.Source)</h2>
+	<h2>Authentication Type: @Html.DisplayFor(model => model.AuthType)</h2>
 	<h2>User Id:  @Html.DisplayFor(model => model.UserId)</h2>
 	<h2>User Name:  @Html.DisplayFor(model => model.Name)</h2>
+	<h2>Compiled in:  @Html.DisplayFor(model => model.CompileMode)</h2>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

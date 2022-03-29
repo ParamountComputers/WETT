@@ -24,24 +24,29 @@ namespace WETT.Controllers
 
 		public IActionResult Index()
 		{
-			HomeViewModel model = new HomeViewModel();
+			HomeViewModel model = new ();
+#if (DEBUG)
+	model.CompileMode = "Debug";
+#else
+	model.CompileMode = "Release";
+#endif
 			if(User.Identity.IsAuthenticated)
 			{
 				model.IsAuthenticated = "Y";
+				model.AuthType = User.Identity.AuthenticationType;
 				try
 				{
 					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-					model.Name=User.FindFirstValue(ClaimTypes.Name);
-					model.Source = "User.FindFirstValue(ClaimTypes.NameIdentifier)";
+					model.Name = User.Identity.Name;
 				}
 				catch { }
-
-				try
+/*				try
 				{
-					model.UserId = HttpContext.User.Identity.Name;
-					model.Source = HttpContext.User.Identity.Name;
+					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+					model.Name=User.FindFirstValue(ClaimTypes.Name);
 				}
 				catch { }
+*/
 			}
 			else
 			{

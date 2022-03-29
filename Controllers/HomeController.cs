@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WETT.Models;
 using WETT.Data;
+using System.Security.Claims;
 
 namespace WETT.Controllers
 {
@@ -24,7 +25,29 @@ namespace WETT.Controllers
 		public IActionResult Index()
 		{
 			HomeViewModel model = new HomeViewModel();
-			model.UserId = User.Identity.Name;
+			if(User.Identity.IsAuthenticated)
+			{
+				model.IsAuthenticated = "Y";
+				try
+				{
+					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+					model.Name=User.FindFirstValue(ClaimTypes.Name);
+					model.Source = "User.FindFirstValue(ClaimTypes.NameIdentifier)";
+				}
+				catch { }
+
+				try
+				{
+					model.UserId = HttpContext.User.Identity.Name;
+					model.Source = HttpContext.User.Identity.Name;
+				}
+				catch { }
+			}
+			else
+			{
+				model.IsAuthenticated = "N";
+			}
+			
 			return View(model);
 		}
 

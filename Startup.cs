@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WETT.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace WETT
 {
@@ -28,6 +29,12 @@ namespace WETT
             services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddControllersWithViews();
+			services.AddAuthenticationCore()
+				.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+					options => Configuration.Bind("JwtSettings", options));
+
+			services.AddAuthorizationCore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +55,7 @@ namespace WETT
 
             app.UseRouting();
 
+			app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

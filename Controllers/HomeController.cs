@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WETT.Models;
 using WETT.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WETT.Controllers
 {
@@ -40,13 +41,6 @@ namespace WETT.Controllers
 					model.Name = User.Identity.Name;
 				}
 				catch { }
-/*				try
-				{
-					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-					model.Name=User.FindFirstValue(ClaimTypes.Name);
-				}
-				catch { }
-*/
 			}
 			else
 			{
@@ -56,6 +50,7 @@ namespace WETT.Controllers
 			return View(model);
 		}
 
+		[Authorize(Roles = "wett_user")]
 		public IActionResult Privacy()
 		{
 			return View();

@@ -1,4 +1,5 @@
-﻿@model WETT.Models.HomeViewModel
+﻿@using System.Security.Claims
+@model WETT.Models.HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -10,10 +11,29 @@
 	<h2>User Id:  @Html.DisplayFor(model => model.UserId)</h2>
 	<h2>User Name:  @Html.DisplayFor(model => model.Name)</h2>
 	<h2>Claims:</h2>
-		@foreach(string claim in Model.Claims)
+	<table border="1">
+			<tr>
+			<td>Issuer</td>
+			<td>Subject</td>
+			<td>Type</td>
+			<td>Value</td>
+			<td>ValueType</td>
+			<td>Property Key</td>
+			<td>Property value</td>
+			</tr>
+		@foreach(Claim claim in Model.Claims)
 		{
-			<p>@claim</p>
+			<tr>
+			<td>@claim.Issuer</td>
+			<td>@claim.Subject</td>
+			<td>@claim.Type</td>
+			<td>@claim.Value</td>
+			<td>@claim.ValueType</td>
+			<td>@claim.Properties.FirstOrDefault().Key</td>
+			<td>@claim.Properties.FirstOrDefault().Value</td>
+			</tr>
 		}
+	</table>
 	<h2>Compiled in:  @Html.DisplayFor(model => model.CompileMode)</h2>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

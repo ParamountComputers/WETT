@@ -31,21 +31,22 @@ namespace WETT.Controllers
 #else
 	model.CompileMode = "Release";
 #endif
-			if(User.Identity.IsAuthenticated)
-			{
+//			if(User.Identity.IsAuthenticated)
+//			{
 				model.IsAuthenticated = "Y";
 				model.AuthType = User.Identity.AuthenticationType;
 				try
 				{
-					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-					model.Name = User.Identity.Name;
+//					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+				model.UserId = User.FindFirstValue(ClaimTypes.Name);
+				model.Name = User.Identity.Name;
 				}
 				catch { }
-			}
-			else
-			{
-				model.IsAuthenticated = "N";
-			}
+//			}
+//			else
+//			{
+//				model.IsAuthenticated = "N";
+//			}
 			
 			return View(model);
 		}

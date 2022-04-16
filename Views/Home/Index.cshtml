@@ -9,6 +9,11 @@
 	<h2>Authentication Type: @Html.DisplayFor(model => model.AuthType)</h2>
 	<h2>User Id:  @Html.DisplayFor(model => model.UserId)</h2>
 	<h2>User Name:  @Html.DisplayFor(model => model.Name)</h2>
+	<h2>Claims:</h2>
+		@foreach(string claim in Model.Claims)
+		{
+			<p>@claim</p>
+		}
 	<h2>Compiled in:  @Html.DisplayFor(model => model.CompileMode)</h2>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

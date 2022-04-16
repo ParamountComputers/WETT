@@ -9,6 +9,7 @@ using WETT.Models;
 using WETT.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 namespace WETT.Controllers
 {
@@ -37,8 +38,16 @@ namespace WETT.Controllers
 				model.AuthType = User.Identity.AuthenticationType;
 				try
 				{
-					model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+					//model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 					model.Name = User.Identity.Name;
+					foreach (Claim claim in User.Claims)
+					{
+						StringBuilder sb = new StringBuilder();
+						sb.Append(claim.Subject);
+						sb.Append("  value=");
+						sb.Append(claim.Value);
+						model.Claims.Add(sb.ToString());
+					}
 				}
 				catch { }
 			}

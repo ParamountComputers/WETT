@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WETT.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace WETT
 {
@@ -29,6 +31,8 @@ namespace WETT
             services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddControllersWithViews();
+			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+				.AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAD"));
 			services.AddAuthenticationCore()
 				.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,

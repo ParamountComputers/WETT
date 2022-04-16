@@ -38,8 +38,19 @@ namespace WETT.Controllers
 				model.AuthType = User.Identity.AuthenticationType;
 				try
 				{
-					model.Name = User.Identity.Name;
 					model.Claims = User.Claims;
+					model.UserId = User.Identity.Name;
+					if (User.Identity.AuthenticationType == "aad")
+					{
+						if (User.Claims.SingleOrDefault(c => c.Type == "name") != null)
+						{
+							model.Name = User.Claims.SingleOrDefault(c => c.Type == "name").Value;
+						}
+					}
+					else if (User.Identity.AuthenticationType == "NTLM")
+					{
+						model.Name = User.Claims.SingleOrDefault(c => c.Type == ClaimsIdentity.DefaultNameClaimType).Value;
+					}
 				}
 				catch { }
 			}

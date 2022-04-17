@@ -27,12 +27,53 @@ namespace WETT.Controllers
 		public IActionResult Index()
 		{
 			HomeViewModel model = new ();
+			if(User.Identity.IsAuthenticated)
+			{
+				try
+				{
+					if (User.Identity.AuthenticationType == "aad")
+					{
+						if (User.Claims.SingleOrDefault(c => c.Type == "name") != null)
+						{
+							model.Name = User.Claims.SingleOrDefault(c => c.Type == "name").Value;
+						}
+					}
+					else if (User.Identity.AuthenticationType == "NTLM")
+					{
+						model.Name = User.Claims.SingleOrDefault(c => c.Type == ClaimsIdentity.DefaultNameClaimType).Value;
+					}
+				}
+				catch { }
+			}
+			else
+			{
+				model.Name = "Uauthenticated user";
+			}
+			
+			return View(model);
+		}
+
+		[Authorize(Roles = "wett_user")]
+		public IActionResult Privacy()
+		{
+			return View();
+		}
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Error()
+		{
+			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+		public IActionResult AuthView()
+		{
+			AuthViewModel model = new();
 #if (DEBUG)
-	model.CompileMode = "Debug";
+			model.CompileMode = "Debug";
 #else
 	model.CompileMode = "Release";
 #endif
-			if(User.Identity.IsAuthenticated)
+			if (User.Identity.IsAuthenticated)
 			{
 				model.IsAuthenticated = "Y";
 				model.AuthType = User.Identity.AuthenticationType;
@@ -53,25 +94,14 @@ namespace WETT.Controllers
 					}
 				}
 				catch { }
+
 			}
 			else
 			{
 				model.IsAuthenticated = "N";
 			}
-			
+
 			return View(model);
-		}
-
-		[Authorize(Roles = "wett_user")]
-		public IActionResult Privacy()
-		{
-			return View();
-		}
-
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 	}
 }

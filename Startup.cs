@@ -33,11 +33,6 @@ namespace WETT
             services.AddControllersWithViews();
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 				.AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAD"));
-			services.AddAuthenticationCore()
-				.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-				.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-					options => Configuration.Bind("JwtSettings", options));
-
 			services.AddAuthorizationCore();
         }
 

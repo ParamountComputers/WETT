@@ -53,7 +53,7 @@ namespace WETT.Controllers
 			return View(model);
 		}
 
-		[Authorize(Roles = "wett_user")]
+		[Authorize(Roles = "e6b52d23-02e3-4a07-9e52-206faf0ae99d")]
 		public IActionResult Privacy()
 		{
 			return View();

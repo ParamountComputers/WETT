@@ -10,6 +10,7 @@ namespace WETT.Models
 		public string AuthType { get; set; }
 		public string UserId { get; set; }
 		public string Name { get; set; }
+		public string IsInRole { get; set; }
 
 		public IEnumerable<Claim> Claims
 		{

@@ -19,8 +19,13 @@ namespace WETT.Data
         public string Province { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
-        public string ContactName { get; set; }
-        public string ContactPhone { get; set; }
+        public string GeneralPhone { get; set; }
+        public string Contact1Name { get; set; }
+        public string Contact1Phone1 { get; set; }
+        public string Contact1Phone2 { get; set; }
+        public string Contact2Name { get; set; }
+        public string Contact2Phone1 { get; set; }
+        public string Contact2Phone2 { get; set; }
         public string InsertUserId { get; set; }
         public DateTime InsertTimestamp { get; set; }
         public string UpdateUserId { get; set; }

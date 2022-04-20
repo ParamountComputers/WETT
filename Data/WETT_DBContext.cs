@@ -40,13 +40,13 @@ namespace WETT.Data
         public virtual DbSet<SupplierOrderDetail> SupplierOrderDetails { get; set; }
         public virtual DbSet<Territory> Territories { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//                optionsBuilder.UseSqlServer("Server=tcp:wett-dev-db.database.windows.net;Authentication=Active Directory Default;Database=WETT_DEV;");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Name=ConnectionStrings:WETTDbConnection");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -712,9 +712,30 @@ namespace WETT.Data
 
                 entity.Property(e => e.ProductId).HasColumnName("Product Id");
 
+                entity.Property(e => e.CaseWeight)
+                    .HasColumnType("decimal(8, 2)")
+                    .HasColumnName("Case Weight");
+
+                entity.Property(e => e.ContainerWeight)
+                    .HasColumnType("decimal(8, 2)")
+                    .HasColumnName("Container Weight");
+
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.HlCase)
+                    .HasColumnType("decimal(8, 5)")
+                    .HasColumnName("HL Case");
+
+                entity.Property(e => e.HlContainer)
+                    .HasColumnType("decimal(8, 5)")
+                    .HasColumnName("HL Container");
+
+                entity.Property(e => e.HlSingle)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnName("HL Single");
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
@@ -726,6 +747,12 @@ namespace WETT.Data
                     .HasMaxLength(50)
                     .HasColumnName("Insert UserId")
                     .HasDefaultValueSql("(user_name())");
+
+                entity.Property(e => e.PackSize).HasColumnName("Pack Size");
+
+                entity.Property(e => e.SingleWeight)
+                    .HasColumnType("decimal(8, 2)")
+                    .HasColumnName("Single Weight");
 
                 entity.Property(e => e.Sku)
                     .IsRequired()
@@ -744,8 +771,6 @@ namespace WETT.Data
                     .HasMaxLength(50)
                     .HasColumnName("Update UserId")
                     .HasDefaultValueSql("(user_name())");
-
-                entity.Property(e => e.Weight).HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.Supplier)
                     .WithMany(p => p.Products)
@@ -781,15 +806,35 @@ namespace WETT.Data
 
                 entity.Property(e => e.City).HasMaxLength(100);
 
-                entity.Property(e => e.ContactName)
+                entity.Property(e => e.Contact1Name)
                     .HasMaxLength(100)
-                    .HasColumnName("Contact Name");
+                    .HasColumnName("Contact 1 Name");
 
-                entity.Property(e => e.ContactPhone)
+                entity.Property(e => e.Contact1Phone1)
                     .HasMaxLength(20)
-                    .HasColumnName("Contact Phone");
+                    .HasColumnName("Contact 1 Phone 1");
+
+                entity.Property(e => e.Contact1Phone2)
+                    .HasMaxLength(20)
+                    .HasColumnName("Contact 1 Phone 2");
+
+                entity.Property(e => e.Contact2Name)
+                    .HasMaxLength(100)
+                    .HasColumnName("Contact 2 Name");
+
+                entity.Property(e => e.Contact2Phone1)
+                    .HasMaxLength(20)
+                    .HasColumnName("Contact 2 Phone 1");
+
+                entity.Property(e => e.Contact2Phone2)
+                    .HasMaxLength(20)
+                    .HasColumnName("Contact 2 Phone 2");
 
                 entity.Property(e => e.Country).HasMaxLength(50);
+
+                entity.Property(e => e.GeneralPhone)
+                    .HasMaxLength(20)
+                    .HasColumnName("General Phone");
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)

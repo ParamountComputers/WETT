@@ -12,6 +12,7 @@ namespace WETT.Data
         }
 
         public long SupplierId { get; set; }
+        public string SupplierCode { get; set; }
         public string Name { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

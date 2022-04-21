@@ -796,6 +796,9 @@ namespace WETT.Data
             {
                 entity.ToTable("Supplier");
 
+                entity.HasIndex(e => e.SupplierCode, "IX_Supplier")
+                    .IsUnique();
+
                 entity.Property(e => e.SupplierId).HasColumnName("Supplier Id");
 
                 entity.Property(e => e.Address1)
@@ -856,6 +859,11 @@ namespace WETT.Data
                     .HasColumnName("Postal Code");
 
                 entity.Property(e => e.Province).HasMaxLength(50);
+
+                entity.Property(e => e.SupplierCode)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .HasColumnName("Supplier Code");
 
                 entity.Property(e => e.UpdateTimestamp)
                     .HasPrecision(0)

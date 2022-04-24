@@ -10,9 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WETT.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace WETT
 {
@@ -30,7 +31,15 @@ namespace WETT
         {
             services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddControllersWithViews();
+			//            services.AddControllersWithViews();
+			services.AddControllersWithViews(options =>
+			{
+				var policy = new AuthorizationPolicyBuilder()
+				.RequireAuthenticatedUser()
+				.Build();
+				options.Filters.Add(new AuthorizeFilter(policy));
+			});
+
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 				.AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAD"));
 			services.AddAuthorizationCore();

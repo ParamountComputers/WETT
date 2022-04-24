@@ -30,20 +30,27 @@ namespace WETT
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+      //      services.AddDatabaseDeveloperPageExceptionFilter();
+						//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+						//	.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
+
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-				.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
-
-//            services.AddControllersWithViews();
-			services.AddAuthorizationCore();
-
-			services.AddControllersWithViews(options =>
+			.AddMicrosoftIdentityWebApp(options =>
 			{
-				var policy = new AuthorizationPolicyBuilder()
-				.RequireAuthenticatedUser()
-				.Build();
-				options.Filters.Add(new AuthorizeFilter(policy));
+				Configuration.Bind("AzureAd", options);
+				options.TokenValidationParameters.RoleClaimType = "roles";
 			});
+
+			services.AddAuthorizationCore();
+			services.AddControllersWithViews();
+
+//			services.AddControllersWithViews(options =>
+//			{
+//				var policy = new AuthorizationPolicyBuilder()
+//				.RequireAuthenticatedUser()
+//				.Build();
+//				options.Filters.Add(new AuthorizeFilter(policy));
+//			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

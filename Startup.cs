@@ -31,7 +31,12 @@ namespace WETT
         {
             services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-			//            services.AddControllersWithViews();
+			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+				.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
+
+//            services.AddControllersWithViews();
+			services.AddAuthorizationCore();
+
 			services.AddControllersWithViews(options =>
 			{
 				var policy = new AuthorizationPolicyBuilder()
@@ -39,14 +44,10 @@ namespace WETT
 				.Build();
 				options.Filters.Add(new AuthorizeFilter(policy));
 			});
+		}
 
-			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-				.AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAD"));
-			services.AddAuthorizationCore();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

@@ -42,6 +42,7 @@ namespace WETT
 			});
 
 			services.AddAuthorizationCore();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 			services.AddControllersWithViews();
 
 //			services.AddControllersWithViews(options =>

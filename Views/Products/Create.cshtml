@@ -1,0 +1,77 @@
+﻿@model WETT.Data.Product
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SupplierId" class="control-label"></label>
+                <select asp-for="SupplierId" class ="form-control" asp-items="ViewBag.SupplierId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sku" class="control-label"></label>
+                <input asp-for="Sku" class="form-control" />
+                <span asp-validation-for="Sku" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SingleWeight" class="control-label"></label>
+                <input asp-for="SingleWeight" class="form-control" />
+                <span asp-validation-for="SingleWeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContainerWeight" class="control-label"></label>
+                <input asp-for="ContainerWeight" class="form-control" />
+                <span asp-validation-for="ContainerWeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CaseWeight" class="control-label"></label>
+                <input asp-for="CaseWeight" class="form-control" />
+                <span asp-validation-for="CaseWeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PackSize" class="control-label"></label>
+                <input asp-for="PackSize" class="form-control" />
+                <span asp-validation-for="PackSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HlSingle" class="control-label"></label>
+                <input asp-for="HlSingle" class="form-control" />
+                <span asp-validation-for="HlSingle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HlContainer" class="control-label"></label>
+                <input asp-for="HlContainer" class="form-control" />
+                <span asp-validation-for="HlContainer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HlCase" class="control-label"></label>
+                <input asp-for="HlCase" class="form-control" />
+                <span asp-validation-for="HlCase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

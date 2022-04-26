@@ -1,0 +1,128 @@
+﻿@model IEnumerable<WETT.Data.Product>
+
+@{
+    ViewData["Title"] = "Product";
+}
+
+<h1>Product</h1>
+
+<p> or Sku
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Description: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Supplier.Name)
+            </th>
+            <th>
+               <!-- @Html.DisplayNameFor(model => model.Sku)-->
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SkuParm"]">@Html.DisplayNameFor(model => model.Sku)</a>
+            </th>
+            <th>
+                <!-- @Html.DisplayNameFor(model => model.Description)-->
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionParm"]">@Html.DisplayNameFor(model => model.Description)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SingleWeight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContainerWeight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CaseWeight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PackSize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HlSingle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HlContainer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HlCase)
+            </th>
+         <!--   <th>
+                @Html.DisplayNameFor(model => model.InsertUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InsertTimestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdateUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdateTimestamp)
+            </th>
+            -->
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sku)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SingleWeight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContainerWeight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CaseWeight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PackSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HlSingle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HlContainer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HlCase)
+            </td>
+       <!--      <td>
+                @Html.DisplayFor(modelItem => item.InsertUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InsertTimestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateTimestamp)
+            </td>-->
+           
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

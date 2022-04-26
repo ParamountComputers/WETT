@@ -9,8 +9,12 @@ namespace WETT.Controllers
 {
     public class SupplierController : Controller
     {
+        private Supplier db = new Supplier();
+
+         
         public IActionResult Index()
         {
+
             return View();
         }
 

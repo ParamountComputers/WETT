@@ -1,0 +1,203 @@
+﻿@model IEnumerable<WETT.Data.Customer>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MbllCustomerNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LicenceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Province)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostalCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone1Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone2Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone3Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeletedFlag)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeletedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InsertUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InsertTimestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdateUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdateTimestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CallFrequency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cdos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerSource)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerStatusCodeNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerTypeCodeNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Segment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Territory)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MbllCustomerNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenceNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Province)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostalCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone1Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone2Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone3Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedFlag)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InsertUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InsertTimestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateTimestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CallFrequency.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cdos.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerSource.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerStatusCodeNavigation.CustomerStatusCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerTypeCodeNavigation.CustomerTypeCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Segment.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Territory.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CustomerId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WETT.Data.Product>
+﻿@model PaginatedList<WETT.Data.Product>
 
 @{
     ViewData["Title"] = "Product";
@@ -6,14 +6,14 @@
 
 <h1>Product</h1>
 
-<p> or Sku
+<p> 
     <a asp-action="Create">Create New</a>
 </p>
 
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by Description: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            Find by Description or Sku: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
             <input type="submit" value="Search" class="btn btn-default" /> |
             <a asp-action="Index">Back to Full List</a>
         </p>
@@ -24,50 +24,46 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Supplier.Name)
+              
+                Supplier
             </th>
             <th>
-               <!-- @Html.DisplayNameFor(model => model.Sku)-->
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["SkuParm"]">@Html.DisplayNameFor(model => model.Sku)</a>
+               
+                 <a asp-action="Index" asp-route-sortOrder="@ViewData["SkuParm"]" asp-route-currentFilter ="@ViewData["CurrentFilter"]">Sku</a>
             </th>
             <th>
-                <!-- @Html.DisplayNameFor(model => model.Description)-->
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionParm"]">@Html.DisplayNameFor(model => model.Description)</a>
+               
+                 <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionParm"]" asp-route-currentFilter ="@ViewData["CurrentFilter"]">Description</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SingleWeight)
+               
+                SingleWeight
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ContainerWeight)
+               
+                ContainerWeight
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CaseWeight)
+              
+               CaseWeight
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PackSize)
+               
+                PackSize
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HlSingle)
+                
+                HlSingle
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HlContainer)
+               
+                HlContainer
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HlCase)
+                
+                HlCase
             </th>
-         <!--   <th>
-                @Html.DisplayNameFor(model => model.InsertUserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.InsertTimestamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdateUserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdateTimestamp)
-            </th>
-            -->
+        
             <th></th>
         </tr>
     </thead>
@@ -126,3 +122,23 @@
 }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

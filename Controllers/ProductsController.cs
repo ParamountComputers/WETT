@@ -25,11 +25,24 @@ namespace WETT.Controllers
        //     return View(await wETT_DBContext.ToListAsync());
        // }
 
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder; 
             ViewData["DescriptionParm"] = String.IsNullOrEmpty(sortOrder) ? "Description" : "";
             ViewData["SkuParm"] = sortOrder == "Sku" ? "Sku" : "Sku";
             ViewData["SupplierParm"] = String.IsNullOrEmpty(sortOrder) ? "Supplier" : "";
+           
+            
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
 
             var products = from s in _context.Products
@@ -56,7 +69,11 @@ namespace WETT.Controllers
                     products = products.OrderBy(s => s.Sku);
                     break;
             }
-            return View(await products.AsNoTracking().ToListAsync());
+            
+            //return View(await products.AsNoTracking().ToListAsync());
+            int pageSize = 3;
+            return View(await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: Products/Details/5

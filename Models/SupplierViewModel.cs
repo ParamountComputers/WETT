@@ -16,8 +16,8 @@ namespace WETT.Models
         {
             get
             {
-                //  if (_suppliers == null) _suppliers = JsonConvert.DeserializeObject<List<Supplier>>(File.ReadAllText(@"jsondata\suppliers.json"));
-                if (_suppliers == null) _suppliers = new List<Supplier>();
+                  if (_suppliers == null) _suppliers = JsonConvert.DeserializeObject<List<Supplier>>(File.ReadAllText(@"jsondata\suppliers.json"));
+                //if (_suppliers == null) _suppliers = new List<Supplier>();
                // if (_claims == null) _claims = new List<Claim>();
 
                 return _suppliers;

@@ -5,20 +5,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using WETT.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace WETT.Models
 {
     public class SupplierViewModel
     {
         private IList<Supplier> _suppliers;
+        
 
         public IList<Supplier> SuppliersDatabase
         {
             get
             {
                   if (_suppliers == null) _suppliers = JsonConvert.DeserializeObject<List<Supplier>>(File.ReadAllText(@"jsondata\suppliers.json"));
-                //if (_suppliers == null) _suppliers = new List<Supplier>();
-               // if (_claims == null) _claims = new List<Claim>();
+               // if (_suppliers == null) _suppliers = new List<Supplier>();
+               // if (_suppliers == null) _suppliers =  _context.Suppliers.ToList();
+
 
                 return _suppliers;
             }

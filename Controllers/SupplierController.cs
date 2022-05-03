@@ -4,6 +4,9 @@ using WETT.Models;
 using System.Linq;
 using System.Linq.Dynamic;
 using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace WETT.Controllers
 {
@@ -11,16 +14,36 @@ namespace WETT.Controllers
     {
         private Supplier db = new Supplier();
 
-         
-        public IActionResult Index()
+        //ty add
+        private readonly WETT_DBContext _context;
+        public SupplierController(WETT_DBContext context)
         {
-
-            return View();
+            _context = context;
         }
+
+
+        //GET: Products
+         public async Task<IActionResult> Index()
+        {
+            var wETT_DBContext = _context.Suppliers;
+            return View(await wETT_DBContext.ToListAsync());
+        }
+
+        //end ty add
+
+
+        // public IActionResult Index()
+        // {
+
+        //     return View();
+        //}
 
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var supplierData = new SupplierViewModel().SuppliersDatabase;
+            var wETT_DBContext = _context.Suppliers;
+            // var supplierData = new SupplierViewModel().SuppliersDatabase;
+            var supplierData = _context.Suppliers.ToList();
+
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 

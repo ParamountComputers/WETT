@@ -87,16 +87,47 @@ namespace WETT.Controllers
 
         public JsonResult Update(Supplier s)
         {
-            SupplierViewModel supp = new SupplierViewModel();
-            supp.UpdateSupplier(s);
+
+            Supplier r= _context.Suppliers.Single(e => e.SupplierId == s.SupplierId);
+            r.SupplierCode = s.SupplierCode;
+            r.Name = s.Name;
+            r.Address1= s.Address1;
+            r.Address2 = s.Address2;
+            r.City = s.City;
+            r.Province = s.Province;
+            r.PostalCode = s.PostalCode;
+            r.GeneralPhone = s.GeneralPhone;
+            r.Contact1Name = s.Contact1Name;
+
+            _context.SaveChanges();
+
 
             return Json(true);
         }
 
-        public JsonResult Delete(string id)
+         public JsonResult Delete(Supplier s)
+         {
+            /* Supplier r = _context.Suppliers.Where(a => a.SupplierId == s.SupplierId).First();
+             if(r !=null)
+             _context.Suppliers.Remove(s);
+             _context.SaveChanges();
+
+             return Json(true);
+            */
+            //Supplier r = _context.Suppliers.Include(a => a.SupplierId).Single(a2 => a2.SupplierId == s.SupplierId);
+            /*  _context.Entry(s).State = EntityState.Modified;
+              _context.Suppliers.Remove(s);
+              _context.SaveChanges();
+
+            */
+            return Json(true);
+        }
+
+        public JsonResult Add(Supplier s)
         {
-            SupplierViewModel supp = new SupplierViewModel();
-            supp.DeleteSupplier(id);
+
+            _context.Suppliers.Add(s);
+            _context.SaveChanges();
 
             return Json(true);
         }

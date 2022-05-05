@@ -49,7 +49,8 @@
                             delOptions: { url: 'Supplier/Delete' }
                         }
                     },
-                   { label: 'Supplier Code', name: 'supplierCode', key: true },
+                   { label: 'Supplier Id', name: 'supplierId', editable: true, editoptions: { readonly: 'readonly' }},
+                   { label: 'Supplier Code', name: 'supplierCode', editable: true, edittype:"text"  },
                    { label: 'Supplier Name', name: 'name', editable: true, edittype:"text" },
                    { label: 'Address1', name: 'address1', editable: true, edittype:"text" },
                    { label: 'Address2', name: 'address2',editable: true, edittype:"text" },
@@ -65,12 +66,14 @@
                pager: "#jqGridPager",
                editurl: 'Supplier/Update'
                //onSelectRow: editRow, // the javascript function to call on row click. will use to put the row in edit mode
-           });
+               
+           }).hideCol("supplierId");
 
            $('#supplier').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
+               {},
                {
                    closeAfterAdd: true,
                    recreateForm: true,

@@ -1,13 +1,10 @@
 {
   "dependencies": {
     "mssql1": {
-      "secretStore": "LocalSecretsFile",
+      "secretStore": "AzureAppSettings",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/wett-dev-db/databases/WETT_DEV",
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:WETTDEVConnection"
-    },
-    "secrets1": {
-      "type": "secrets.user"
     }
   }
 }

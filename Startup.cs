@@ -29,7 +29,7 @@ namespace WETT
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-			services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDEVConnection")));
+            services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
       //      services.AddDatabaseDeveloperPageExceptionFilter();
 						//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 						//	.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));

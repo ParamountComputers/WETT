@@ -42,7 +42,7 @@ namespace WETT.Controllers
         {
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var supplierData = _context.Suppliers.ToList();
+            var supplierData = (_context.Suppliers.Where(a=> a.ActiveFlag=="Y")).ToList();
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -105,8 +105,12 @@ namespace WETT.Controllers
             return Json(true);
         }
 
-         public JsonResult Delete(Supplier s)
+         public JsonResult Delete(int id)
          {
+            Supplier r = _context.Suppliers.Single(e => e.SupplierId == id);
+            r.ActiveFlag = "N";
+            _context.SaveChanges();
+
             /* Supplier r = _context.Suppliers.Where(a => a.SupplierId == s.SupplierId).First();
              if(r !=null)
              _context.Suppliers.Remove(s);
@@ -125,7 +129,8 @@ namespace WETT.Controllers
 
         public JsonResult Add(Supplier s)
         {
-
+            s.ActiveFlag = "Y";
+           
             _context.Suppliers.Add(s);
             _context.SaveChanges();
 

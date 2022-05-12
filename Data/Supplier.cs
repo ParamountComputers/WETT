@@ -31,6 +31,7 @@ namespace WETT.Data
         public DateTime InsertTimestamp { get; set; }
         public string UpdateUserId { get; set; }
         public DateTime UpdateTimestamp { get; set; }
+        public string ActiveFlag { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<SupplierOrder> SupplierOrders { get; set; }

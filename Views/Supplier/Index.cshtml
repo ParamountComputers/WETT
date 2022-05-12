@@ -50,16 +50,16 @@
                         }
                     },
                    { label: 'Supplier Id', name: 'supplierId', editable: true, editoptions: { readonly: 'readonly' }, key: true},
-                   { label: 'Supplier Code', name: 'supplierCode', editable: true, edittype:"text",editoptions: {maxlength: 15}},
+                   { label: 'Supplier Code', name: 'supplierCode', editable: true,editrules: { required: true }, edittype:"text",editoptions: {maxlength: 15}},
                    { label: 'Supplier Name', name: 'name', editable: true, edittype:"text",editrules: { required: true },editoptions: {maxlength: 100} },
-                   { label: 'Address1', name: 'address1', editable: true, edittype:"text",editoptions: {maxlength: 100} },
+                   { label: 'Address1', name: 'address1', editable: true, edittype:"text",editrules: { required: true },editoptions: {maxlength: 100} },
                    { label: 'Address2', name: 'address2',editable: true, edittype:"text",editoptions: {maxlength: 100} },
                    { label: 'City', name: 'city',editable: true, edittype:"text",editoptions: {maxlength: 100} },
                    { label: 'Province', name: 'province',editable: true, edittype:"text",editoptions: {maxlength: 50} },
                    { label: 'Postal Code', name: 'postalCode',editable: true, edittype:"text",editoptions: {maxlength: 12} },
-                   { label: 'General Phone', name: 'generalPhone',editable: true, edittype:"text",editrules:{custom:true, custom_func:IsPhoneNumber()},editable: true},
+                   { label: 'General Phone', name: 'generalPhone',editable: true, edittype:"text",editable: true,editrules:{custom:true, custom_func:IsPhoneNumber, number:true}},
                    { label: 'Contact 1 Name', name: 'contactName', edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Contact 1 Phone 1 ', name: 'contact1Phone1',edittype:"text",editrules:{custom:true, custom_func:IsPhoneNumber()},editable: true }
+                   { label: 'Contact 1 Phone 1 ', name: 'contact1Phone1',edittype:"text",editable: true,editrules:{custom:true, custom_func:IsPhoneNumber, number:true} }
                ],
                viewrecords: true,
                height: 250,
@@ -113,10 +113,14 @@
     
       function IsPhoneNumber(value,colname)
        {
-         if (value < 10 || value >11) 
+         if (value.length < 10 || value.length >11) 
+         {
               return [false,"Please enter valid phone number"];
+         }
                 else 
+                {
              return [true,""];
+                }
       }
 
 </script>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WETT.Data;
+using WETT.Models;
 
 namespace WETT.Controllers
 {
@@ -205,6 +206,93 @@ namespace WETT.Controllers
         private bool ProductExists(long id)
         {
             return _context.Products.Any(e => e.ProductId == id);
+        }
+        public JsonResult GetAll(JqGridViewModel request)
+        {
+            var wETT_DBContext = _context.Products;
+            // var supplierData = new SupplierViewModel().SuppliersDatabase;
+            var productData = _context.Products.ToList();
+
+
+            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+
+            if (issearch)
+                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+                {
+                    switch (rule.field)
+                    {
+                        case "name":
+                            productData = productData.Where(w => w.Description.Contains(rule.data)).ToList();
+                            break;
+                    }
+                }
+
+            int totalRecords = productData.Count();
+            var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
+            int currentPageIndex = request.page - 1;
+
+            //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
+            if (request.sord.ToUpper() == "DESC")
+            {
+                productData = productData.OrderByDescending(t => t.Description).ToList();
+                productData = productData.Skip(currentPageIndex * request.rows).Take(request.rows).ToList();
+            }
+            else
+            {
+                productData = productData.OrderBy(t => t.Description).ToList();
+                productData = productData.Skip(currentPageIndex * request.rows).Take(request.rows).ToList();
+            }
+
+            var jsonData = new
+            {
+                total = totalPages,
+                request.page,
+                records = totalRecords,
+                rows = productData
+            };
+
+            return Json(jsonData);
+        }
+        public JsonResult Update(Product p)
+        {
+
+            Product r = _context.Products.Single(e => e.ProductId == p.ProductId);
+            r.SupplierId = p.SupplierId;
+            r.Sku = p.Sku;
+            r.Description = p.Description;
+            r.SingleWeight = p.SingleWeight;
+            r.ContainerWeight = p.ContainerWeight;
+            r.CaseWeight = p.CaseWeight;
+            r.PackSize = p.PackSize;
+            r.HlSingle = p.HlSingle;
+            r.HlContainer = p.HlContainer;
+            r.HlCase = p.HlCase;
+
+
+            _context.SaveChanges();
+
+
+            return Json(true);
+        }
+
+        public JsonResult Delete(int id)
+        {
+            Product r = _context.Products.Single(e => e.ProductId == id);
+
+            _context.SaveChanges();
+
+
+            return Json(true);
+        }
+
+        public JsonResult Add(Supplier s)
+        {
+
+
+            _context.Suppliers.Add(s);
+            _context.SaveChanges();
+
+            return Json(true);
         }
     }
 }

@@ -59,7 +59,7 @@
                    { label: 'Postal Code', name: 'postalCode',editable: true, edittype:"text",editoptions: {maxlength: 12} },
                    { label: 'General Phone', name: 'generalPhone',editable: true, edittype:"text",editable: true,editrules:{custom:true, custom_func:IsPhoneNumber, number:true}},
                    { label: 'Contact 1 Name', name: 'contactName', edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Contact 1 Phone 1 ', name: 'contact1Phone1',edittype:"text",editable: true,editrules:{custom:true, custom_func:IsPhoneNumber, number:true} }
+                   { label: 'Contact 1 Phone 1 ', name: 'contact1Phone1',edittype:"text",editable: true,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} }
                ],
                viewrecords: true,
                height: 250,
@@ -69,6 +69,7 @@
                //onSelectRow: editRow, // the javascript function to call on row click. will use to put the row in edit mode
                
            }).hideCol("supplierId");
+
 
            $('#supplier').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid

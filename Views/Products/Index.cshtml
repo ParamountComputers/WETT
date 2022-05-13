@@ -50,10 +50,9 @@
                         }
                     },
 
-
  			       { label: 'Product Id',name: 'productId', editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
 
-                   { label: 'Supplier Id',name: 'supplierId', editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
+                   { label: 'Supplier Id',name: 'supplierId', editable: true, edittype:"select",formatter: 'select', editoptions: { value: getAllSelectOptions()}},
 
 			       { label: 'Sku',name: 'sku', editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
 
@@ -106,7 +105,14 @@
        $("#description").on('change keyup paste', function () {
            SearchByProductName();
        });
+        function getAllSelectOptions()
+        {
+        var states = { '2': 'Carlsberg', '3': 'Moosehead Brewery', '15': 'Kokanee', 
+               '16': 'mil' };
 
+        return states;
+
+        }
     function SearchByProductName()
     {
         //  Fetch the text from our <input> control

@@ -174,7 +174,7 @@ namespace WETT.Controllers
         }
 
         // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+       /* public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -191,18 +191,18 @@ namespace WETT.Controllers
 
             return View(product);
         }
-
+       */
         // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+       // [HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+      /*  public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+      */
         private bool ProductExists(long id)
         {
             return _context.Products.Any(e => e.ProductId == id);
@@ -278,18 +278,18 @@ namespace WETT.Controllers
         public JsonResult Delete(int id)
         {
             Product r = _context.Products.Single(e => e.ProductId == id);
-
+            _context.Products.Remove(r);
             _context.SaveChanges();
 
 
             return Json(true);
         }
 
-        public JsonResult Add(Supplier s)
+        public JsonResult Add(Product p)
         {
 
 
-            _context.Suppliers.Add(s);
+            _context.Products.Add(p);
             _context.SaveChanges();
 
             return Json(true);

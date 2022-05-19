@@ -2,11 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WETT.Data;
 using WETT.Models;
+using BindAttribute = Microsoft.AspNetCore.Mvc.BindAttribute;
+using Controller = Microsoft.AspNetCore.Mvc.Controller;
+using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
+using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
+using JsonResult = Microsoft.AspNetCore.Mvc.JsonResult;
+using SelectList = Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+using ValidateAntiForgeryTokenAttribute = Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute;
 
 namespace WETT.Controllers
 {
@@ -294,5 +302,51 @@ namespace WETT.Controllers
 
             return Json(true);
         }
+        [HttpGet]
+        public IActionResult CreateList()
+        {
+            var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
+            var li = from s in suppliers
+                     select new
+                     {
+                         text = s.Name,
+                         value= s.SupplierId
+                     };
+            //var li=  new SelectList(_context.Suppliers, "SupplierId", "Name");
+            return Json(li);
+        }
+       
+        //public JsonResult GetDestinationList(JqGridViewModel request)
+        //{
+
+
+
+
+        //    int totalRecords = suppliers.Count();
+        //    var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
+        //    int currentPageIndex = request.page - 1;
+        //    var jsonData = new
+        //    {
+        //        total = totalPages,
+        //        request.page,
+        //        records = totalRecords,
+        //        rows = suppliers
+        //    };
+
+        //    var suppliers = new SelectList(_context.Suppliers.Where(a => a.ActiveFlag == "Y"), "supplierId", "Name");
+        //    Newtonsoft.Json.JsonConvert.SerializeObject(suppliers);
+        //    return Json(suppliers, JsonRequestBehavior.AllowGet);
+
+        //    var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
+        //    var li = from s in suppliers
+        //             select new
+        //             {
+        //                 SupplierId = s.SupplierId,
+        //                 Name = s.Name
+                         
+        //             };
+
+        //    return Json(li, JsonRequestBehavior.AllowGet);
+        //}
     }
 }

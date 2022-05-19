@@ -40,7 +40,7 @@
                    {
                         label: "Edit Actions",
                         name: "actions",
-                        width: 150,
+                        width: 125,
                         formatter: "actions",
                         formatoptions: {
                             keys: true,
@@ -49,28 +49,27 @@
                             delOptions: { url: 'Products/Delete' }
                         }
                     },
+                   { label: ' Product Code',name: 'sku',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
 
- 			       { label: 'Product Id',name: 'productId', editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
+			       { label: 'Name',name: 'description',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength: 100}, editrules: { required: true }},
 
-                   { label: 'Supplier Id',name: 'supplierId', editable: true, edittype:"select",formatter: 'select', editoptions: { value: getAllSelectOptions()}},
+ 			       { label: 'Product Id',name: 'productId',fixed:true,width:100, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
 
-			       { label: 'Sku',name: 'sku', editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
+                   { label: 'Supplier',name: 'supplierId',fixed:true,width:125, editable: true, edittype:"select",formatter: 'select', editoptions: { value: getAllSelectOptions()}},
 
-			       { label: 'Description',name: 'description', editable: true, edittype:"text", editoptions: { maxlength: 100}, editrules: { required: true }},
+                   { label: 'Single Weight',name: 'singleWeight',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength:15},editrules: { required: true }},
 
-                   { label: 'SingleWeight',name: 'singleWeight', editable: true, edittype:"text", editoptions: { maxlength:15},editrules: { required: true }},
+                   { label: 'Containe Weight', name: 'containerWeight',fixed:true,width:125, editable: true, edittype:"text",editoptions: {maxlength: 15}, editrules: { required: true } },
 
-                   { label: 'ContainerWeight', name: 'containerWeight', editable: true, edittype:"text",editoptions: {maxlength: 15}, editrules: { required: true } },
+                   { label: 'Case Weight', name: 'caseWeight',fixed:true,width:100, editable: true, edittype:"text",editoptions: {maxlength: 100},editrules: { required: true } },
 
-                   { label: 'CaseWeight', name: 'caseWeight', editable: true, edittype:"text",editoptions: {maxlength: 100},editrules: { required: true } },
+                   { label: 'Pack Size', name: 'packSize',fixed:true,width:100, editable: true, edittype:"text",editoptions: {maxlength: 100},editrules: { required: true }},
 
-                   { label: 'PackSize', name: 'packSize', editable: true, edittype:"text",editoptions: {maxlength: 100},editrules: { required: true }},
+                   { label: 'Hl Single', name: 'hlSingle',fixed:true,width:100,editable: true, edittype:"text", editoptions: {maxlength: 100}},
 
-                   { label: 'HlSingle', name: 'hlSingle',editable: true, edittype:"text", editoptions: {maxlength: 100}},
+                   { label: 'Hl Container', name: 'hlContainer',fixed:true,width:100,editable: true, edittype:"text", editoptions: {maxlength: 100}},
 
-                   { label: 'HlContainer', name: 'hlContainer',editable: true, edittype:"text", editoptions: {maxlength: 100}},
-
-                   { label: 'HlCase', name: 'hlCase',editable: true, edittype:"text", editoptions: {maxlength: 100}}
+                   { label: 'Hl Case', name: 'hlCase',fixed:true,width:80,editable: true, edittype:"text", editoptions: {maxlength: 100}}
                  ], 
                viewrecords: true,
                height: 250,
@@ -107,8 +106,24 @@
        });
         function getAllSelectOptions()
         {
-        var states = { '2': 'Carlsberg', '3': 'Moosehead Brewery', '15': 'Kokanee', 
-               '16': 'mil' };
+        var states = '';
+      
+          //sel +='<option value="select">Select...</option>';
+        $.getJSON('Products/CreateList', function(data) {
+        if (data != null) {
+            alert(data.length);
+            //construct string.  
+            //(or the server could return a string directly)
+             for (var i = 0; i < data.length; i++) {
+            states += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                         
+                 }
+                sel +="</select>";
+                 }
+                 alert(sel);
+                return sel;
+            });
+         var states = { '2': 'Carlsberg', '3': 'Moosehead Brewery', '15': 'Kokanee','16': 'mil' };
 
         return states;
 
@@ -131,8 +146,26 @@
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
-
-
+        function getSequenceNumbers() {
+        
+        var sel = '<select>';
+      
+          //sel +='<option value="select">Select...</option>';
+        $.getJSON('Products/CreateList', function(data) {
+        if (data != null) {
+            alert(data.length);
+            //construct string.  
+            //(or the server could return a string directly)
+             for (var i = 0; i < data.length; i++) {
+            sel += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                         
+                 }
+                sel +="</select>";
+                 }
+                 alert(sel);
+                return sel;
+            });
+        }
 
 </script>
 }

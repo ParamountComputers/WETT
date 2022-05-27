@@ -121,7 +121,7 @@
        {
             var phoneNum = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
          //if (value.length < 10 || value.length >11)
-         if(!value.match(phoneNum))
+         if(!value.match(phoneNum) || value.length !=10)
 
          {
               return [false,"Please enter valid phone number"];

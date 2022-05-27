@@ -28,20 +28,20 @@ namespace WETT.Controllers
         }
 
         // GET: Products
-       // public async Task<IActionResult> Index()
-       // {
-       //     var wETT_DBContext = _context.Products.Include(p => p.Supplier);
-       //     return View(await wETT_DBContext.ToListAsync());
-       // }
+        // public async Task<IActionResult> Index()
+        // {
+        //     var wETT_DBContext = _context.Products.Include(p => p.Supplier);
+        //     return View(await wETT_DBContext.ToListAsync());
+        // }
 
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            ViewData["CurrentSort"] = sortOrder; 
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["DescriptionParm"] = String.IsNullOrEmpty(sortOrder) ? "Description" : "";
             ViewData["SkuParm"] = sortOrder == "Sku" ? "Sku" : "Sku";
             ViewData["SupplierParm"] = String.IsNullOrEmpty(sortOrder) ? "Supplier" : "";
-           
-            
+
+
 
             if (searchString != null)
             {
@@ -78,7 +78,7 @@ namespace WETT.Controllers
                     products = products.OrderBy(s => s.Sku);
                     break;
             }
-            
+
             //return View(await products.AsNoTracking().ToListAsync());
             int pageSize = 3;
             return View(await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
@@ -182,35 +182,35 @@ namespace WETT.Controllers
         }
 
         // GET: Products/Delete/5
-       /* public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        /* public async Task<IActionResult> Delete(long? id)
+         {
+             if (id == null)
+             {
+                 return NotFound();
+             }
 
-            var product = await _context.Products
-                .Include(p => p.Supplier)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+             var product = await _context.Products
+                 .Include(p => p.Supplier)
+                 .FirstOrDefaultAsync(m => m.ProductId == id);
+             if (product == null)
+             {
+                 return NotFound();
+             }
 
-            return View(product);
-        }
-       */
+             return View(product);
+         }
+        */
         // POST: Products/Delete/5
-       // [HttpPost, ActionName("Delete")]
+        // [HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
-      /*  public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-      */
+        /*  public async Task<IActionResult> DeleteConfirmed(long id)
+          {
+              var product = await _context.Products.FindAsync(id);
+              _context.Products.Remove(product);
+              await _context.SaveChangesAsync();
+              return RedirectToAction(nameof(Index));
+          }
+        */
         private bool ProductExists(long id)
         {
             return _context.Products.Any(e => e.ProductId == id);
@@ -310,12 +310,26 @@ namespace WETT.Controllers
                      select new
                      {
                          text = s.Name,
-                         value= s.SupplierId
+                         value = s.SupplierId
                      };
             //var li=  new SelectList(_context.Suppliers, "SupplierId", "Name");
             return Json(li);
         }
-       
+        [HttpGet]
+        public IActionResult CreateSelectList()
+        {
+            var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
+            var list = "";
+            foreach (var s in suppliers)
+            {
+                list +=s.SupplierId +":" +s.Name+",";
+            }
+            list=list.Remove(list.Length - 1);
+            
+            //var li=  new SelectList(_context.Suppliers, "SupplierId", "Name");
+            return Json(list);
+        }
+
         //public JsonResult GetDestinationList(JqGridViewModel request)
         //{
 
@@ -343,7 +357,7 @@ namespace WETT.Controllers
         //             {
         //                 SupplierId = s.SupplierId,
         //                 Name = s.Name
-                         
+
         //             };
 
         //    return Json(li, JsonRequestBehavior.AllowGet);

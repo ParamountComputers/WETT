@@ -312,55 +312,7 @@ namespace WETT.Controllers
                          text = s.Name,
                          value = s.SupplierId
                      };
-            //var li=  new SelectList(_context.Suppliers, "SupplierId", "Name");
             return Json(li);
         }
-        [HttpGet]
-        public IActionResult CreateSelectList()
-        {
-            var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
-            var list = "";
-            foreach (var s in suppliers)
-            {
-                list +=s.SupplierId +":" +s.Name+",";
-            }
-            list=list.Remove(list.Length - 1);
-            
-            //var li=  new SelectList(_context.Suppliers, "SupplierId", "Name");
-            return Json(list);
-        }
-
-        //public JsonResult GetDestinationList(JqGridViewModel request)
-        //{
-
-
-
-
-        //    int totalRecords = suppliers.Count();
-        //    var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
-        //    int currentPageIndex = request.page - 1;
-        //    var jsonData = new
-        //    {
-        //        total = totalPages,
-        //        request.page,
-        //        records = totalRecords,
-        //        rows = suppliers
-        //    };
-
-        //    var suppliers = new SelectList(_context.Suppliers.Where(a => a.ActiveFlag == "Y"), "supplierId", "Name");
-        //    Newtonsoft.Json.JsonConvert.SerializeObject(suppliers);
-        //    return Json(suppliers, JsonRequestBehavior.AllowGet);
-
-        //    var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
-        //    var li = from s in suppliers
-        //             select new
-        //             {
-        //                 SupplierId = s.SupplierId,
-        //                 Name = s.Name
-
-        //             };
-
-        //    return Json(li, JsonRequestBehavior.AllowGet);
-        //}
     }
 }

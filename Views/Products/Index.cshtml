@@ -127,6 +127,7 @@
 
         var grid = $('#product');
         grid[0].p.search = f.rules.length > 0;
+        
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }

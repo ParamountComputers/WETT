@@ -9,12 +9,20 @@ namespace WETT.Models
 {
     public class invAdjViewModel 
     {
-        public IEnumerable<InventoryTx> InventoryHeader { get; set; }
-        public IEnumerable<InventoryTxDetail> InventoryBody { get; set; }
+        public long ProductId { get; set; }
 
-        internal Task<string> ToListAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public string SupplierName { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string InventoryLocation { get; set; }
+
+        public int Amount { get; set; }
+
+        public string InventoryTxReason { get; set; }
+
+        public string Comments { get; set; }
+
+        public string Date { get; set; }
     }
 }

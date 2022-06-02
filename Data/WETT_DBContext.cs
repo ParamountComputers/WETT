@@ -28,7 +28,7 @@ namespace WETT.Data
         public virtual DbSet<CustomerType> CustomerTypes { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<InventoryLocation> InventoryLocations { get; set; }
-        public virtual DbSet<InventoryTx> InventoryTxes { get; set; }
+        public virtual DbSet<InventoryTx> InventoryTx { get; set; }
         public virtual DbSet<InventoryTxDetail> InventoryTxDetails { get; set; }
         public virtual DbSet<InventoryTxReason> InventoryTxReasons { get; set; }
         public virtual DbSet<MbllCustomer> MbllCustomers { get; set; }

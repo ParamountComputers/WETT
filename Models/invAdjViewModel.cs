@@ -9,6 +9,7 @@ namespace WETT.Models
 {
     public class invAdjViewModel 
     {
+        public long InventoryTxId { get; set; }
         public long ProductId { get; set; }
 
         public string SupplierName { get; set; }
@@ -23,6 +24,8 @@ namespace WETT.Models
 
         public string Comments { get; set; }
 
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
+
+        public string SaCode { get; set; }
     }
 }

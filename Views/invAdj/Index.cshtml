@@ -32,7 +32,8 @@
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     $.jgrid.defaults.responsive = true;
-
+    var curRowId = -1;
+    var name=[];
     $(document).ready(function() {
        $("#invAdj").jqGrid({
                url: 'invAdj/GetAll',
@@ -62,22 +63,45 @@
                             delOptions: { url: 'Products/Delete' }
                         }
                     },
-                   { label: 'Date',name: 'date',fixed:true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
- 			       { label: 'Product Id',name: 'productId',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
-                   { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
-                   { label: 'Product Name',name: 'productName',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
-                   { label: 'Locations',name: 'inventoryLocation',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
-                   { label: 'Updated Stock',name: 'amount',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
-                   { label: 'Reasons',name: 'inventoryTxReason',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
-                   { label: 'Notes',name: 'comments',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true}
+                   { label: 'Date',name: 'date',fixed:true, edittype:"text", editoptions: { readonly: 'readonly'}},
+ 			       { label: 'Product Id',name: 'productId',fixed:true, editable: true,edittype:"slect",formatter:'select', editoptions: {value:getProductIds()}},
+                   { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: { value: getSequenceNumbers(),                
+                   dataInit: function (elem) {
+                    name = $(elem).val();
+                    $('#invAdj').setColProp('productId', { editoptions: { value:getProductIds()} });
+                    console.log();
+                    },
+                       dataEvents: [
+                    {
+                        type: 'change',
+                        fn: function(e) {
+                       // name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
+                       // ProductList= getProductIds();
+                        jQuery('#invAdj').setColProp('productId', { editoptions:{value: getProductIds()} });
+                         jQuery('#invAdj').trigger("reloadGrid", [{ page: 1 }]);
+                        console.log(name);
+                        console.log(ProductList);
+                        }
+                    }
+                       ]
+                    }},
+                   { label: 'Product Name',name: 'productName',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
+                   { label: 'Locations',name: 'inventoryLocation',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
+                   { label: 'Updated Stock',name: 'amount',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
+                   { label: 'Reasons',name: 'inventoryTxReason',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
+                   { label: 'Notes',name: 'comments',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}}
 
                  ], 
                viewrecords: true,
                height: 250,
                rowNum: 20,
                pager: "#jqGridPager",
-               editurl: 'Products/Update'
-               //onSelectRow: editRow, // the javascript function to call on row click. will use to put the row in edit mode
+               editurl: 'Products/Update',
+               onSelectRow: function(rowid) {
+                curRowId=rowid;
+                 jQuery('#invAdj').setColProp('productId', { editoptions: { value:getProductIds()} });
+
+               }
 
            })
                
@@ -88,7 +112,8 @@
                // the buttons to appear on the toolbar of the grid
                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
-               {},
+               {
+            },
                {
                    closeAfterAdd: true,
                    recreateForm: true,
@@ -99,16 +124,17 @@
                });
 
        });
-
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
-
        $("#productName").on('change keyup paste', function () {
            SearchByProductName();
        });
        $("#date").on('change keyup paste', function () {
            SearchByDate();
-       });
-
+           
+       }); 
+            $("#saCode").on('change keyup paste', function () {
+           SearchBySaCode();
+        });
     function SearchByProductName()
     {
         //  Fetch the text from our <input> control
@@ -121,6 +147,25 @@
         //  In this example, I'm searching through the UserName column.
 
         f.rules.push({ field: "productName", op: "cn", data: searchString });
+
+        var grid = $('#invAdj');
+        grid[0].p.search = f.rules.length > 0;
+        console.log(grid[0].p.postData);
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+        function SearchBySaCode()
+    {
+        //  Fetch the text from our <input> control
+        var searchString = $("#saCode").val();
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "saCode", op: "cn", data: searchString });
 
         var grid = $('#invAdj');
         grid[0].p.search = f.rules.length > 0;
@@ -143,10 +188,54 @@
 
         var grid = $('#invAdj');
         grid[0].p.search = f.rules.length > 0;
-        console.log(grid[0].p.postData);
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
+            function getSequenceNumbers() {
+          var SupplierList= {};
+
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('InvAdj/CreateList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+             SupplierList[data[i].text]=data[i].text;
+              } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return SupplierList; 
+
+        }
+         
+
+         function getProductIds() {
+                 var ProductList= {};
+
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('InvAdj/CreateProductIdList', function(data) {
+        if (data != null) {
+            var placeValue=0;
+             name=$("#invAdj").jqGrid("getCol", "supplierName");            
+            alert(name);
+            console.log(name);
+            for (var i = 0; i < data.length; i++) {
+               
+                if(data[i].value== name[i])
+                {
+             ProductList[placeValue]=data[i].text;
+             placeValue ++;
+                }
+              } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
         
+           return ProductList; 
+
+        }
+  
+
 </script>
 }

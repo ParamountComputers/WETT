@@ -56,13 +56,13 @@
                             delOptions: { url: 'Products/Delete' }
                         }
                     },
-                   { label: ' Product Code',name: 'sku',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
+                   { label: ' Product Sku',name: 'sku',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
 
 			       { label: 'Product Name',name: 'description',fixed:true,width:150, editable: true, edittype:"text", editoptions: { maxlength: 150}, editrules: { required: true }},
 
  			       { label: 'Product Id',name: 'productId',fixed:true,width:100, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}, key: true},
 
-                   { label: 'Supplier',name: 'supplierId',fixed:true,width:125, editable: true, edittype:"select",formatter: 'select', editoptions: {value: getSequenceNumbers()}},
+                   { label: 'Supplier',name: 'supplierId',fixed:true,width:125, editable: true, edittype:"select",formatter: 'select', editoptions: {value: getSupplierNames()}},
 
                    { label: 'Single Weight',name: 'singleWeight',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength:15},editrules: { required: true }},
 
@@ -131,7 +131,7 @@
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
-        function getSequenceNumbers() {
+        function getSupplierNames() {
           var SupplierList= {};
 
         $.ajaxSetup( { "async": false } );

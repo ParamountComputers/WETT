@@ -9,10 +9,10 @@ using WETT.Models;
 
 namespace WETT.Controllers
 {
-    public class invAdjController : Controller
+    public class SaDamageRecoupController : Controller
     {
         private readonly WETT_DBContext _context;
-        public invAdjController(WETT_DBContext context)
+        public SaDamageRecoupController(WETT_DBContext context)
         {
             _context = context;
         }
@@ -25,10 +25,10 @@ namespace WETT.Controllers
                          join d in _context.InventoryLocations on b.InventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                         select new invAdjViewModel
+                         select new SaDamageRecoupViewModel
                          {
                              InventoryTxId = a.InventoryTxId,
-                             ProductSku = e.Sku,
+                             ProductCode = e.Sku,
                              SupplierName = f.Name,
                              ProductName = e.Description,
                              InventoryLocation = d.Description,
@@ -37,8 +37,8 @@ namespace WETT.Controllers
                              Comments = a.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = "1s2s3"
-                                 
-                             };
+
+                         };
             return View(result);
         }
 
@@ -46,25 +46,25 @@ namespace WETT.Controllers
         {
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var invAdjData = from b in _context.InventoryTxDetails
-                             join a in _context.InventoryTx on b.InventoryTxId equals a.InventoryTxId
-                             join c in _context.InventoryTxReasons on a.InventoryTxReasonId equals c.InventoryTxReasonId
-                             join d in _context.InventoryLocations on b.InventoryLocationId equals d.InventoryLocationId
-                             join e in _context.Products on b.ProductId equals e.ProductId
-                             join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                             select new invAdjViewModel
-                             {
-                                 InventoryTxId= a.InventoryTxId,
-                                 ProductSku = e.Sku,
-                                 SupplierName = f.Name,
-                                 ProductName = e.Description,
-                                 InventoryLocation = d.Description,
-                                 Amount = b.Amount,
-                                 InventoryTxReason = c.Description,
-                                 Comments = a.Comments,
-                                 Date = a.Date,
-                                 SaCode = "1s2s3"
-                             };
+            var SaDamageRecoupData = from b in _context.InventoryTxDetails
+                                     join a in _context.InventoryTx on b.InventoryTxId equals a.InventoryTxId
+                                     join c in _context.InventoryTxReasons on a.InventoryTxReasonId equals c.InventoryTxReasonId
+                                     join d in _context.InventoryLocations on b.InventoryLocationId equals d.InventoryLocationId
+                                     join e in _context.Products on b.ProductId equals e.ProductId
+                                     join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                     select new SaDamageRecoupViewModel
+                                     {
+                                         InventoryTxId = a.InventoryTxId,
+                                         ProductCode = e.Sku,
+                                         SupplierName = f.Name,
+                                         ProductName = e.Description,
+                                         InventoryLocation = d.Description,
+                                         Amount = b.Amount,
+                                         InventoryTxReason = c.Description,
+                                         Comments = a.Comments,
+                                         Date = a.Date,
+                                         SaCode = "1s2s3"
+                                     };
 
 
 
@@ -76,38 +76,38 @@ namespace WETT.Controllers
                     switch (rule.field)
                     {
                         case "date":
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
                             break;
                         case "productName":
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.ProductName.Contains(rule.data));
+                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.ProductName.Contains(rule.data));
                             break;
                         case "saCode":
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.SaCode.Contains(rule.data));
+                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.SaCode.Contains(rule.data));
                             break;
                     }
                 }
 
-            int totalRecords = invAdjData.Count();
+            int totalRecords = SaDamageRecoupData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
 
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
             if (request.sord.ToUpper() == "DESC")
             {
-                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.OrderByDescending(t => t.ProductName);
-                invAdjData = invAdjData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.OrderByDescending(t => t.ProductName);
+                SaDamageRecoupData = SaDamageRecoupData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             else
             {
-                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.OrderBy(t => t.ProductName);
-                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.OrderBy(t => t.ProductName);
+                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             var jsonData = new
             {
                 total = totalPages,
                 request.page,
                 records = totalRecords,
-                rows = invAdjData
+                rows = SaDamageRecoupData
             };
 
             return Json(jsonData);
@@ -119,7 +119,7 @@ namespace WETT.Controllers
                      select new
                      {
                          text = s.Name,
-                         
+
                      };
             return Json(li);
         }
@@ -128,11 +128,11 @@ namespace WETT.Controllers
             var invAdjData = from a in _context.Products
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
-                     {
-                         text = a.Sku,
-                         value = b.Name
+                             {
+                                 text = a.Sku,
+                                 value = b.Name
 
-                     };
+                             };
             return Json(invAdjData);
         }
         public IActionResult CreateProductName()
@@ -166,4 +166,4 @@ namespace WETT.Controllers
             return Json(invAdjData);
         }
     }
-    }
+}

@@ -2,11 +2,11 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "invAdj";
+    ViewData["Title"] = "saDamageRecoup";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Inventory Adjustment</h1>
+    <h1 class="display-4">Stock Adjustment- Damage/Recoup</h1>
 </div>
 <fieldset class="scheduler-border">
     <legend class="scheduler-border">Search</legend>
@@ -24,7 +24,7 @@
     </div>
 </fieldset>
 
-<table id="invAdj" style="align: center"></table>
+<table id="saDamageRecoup" style="align: center"></table>
 <div id="jqGridPager"></div>
 
 @section scripts {
@@ -36,8 +36,8 @@
     var curRowId = -1;
     var name="";
     $(document).ready(function() {
-       $("#invAdj").jqGrid({
-               url: 'InvAdj/GetAll',
+       $("#saDamageRecoup").jqGrid({
+               url: 'SaDamageRecoup/GetAll',
                mtype: "GET",
                guiStyle: "bootstrap",
                iconSet: "fontAwesome",
@@ -68,8 +68,8 @@
                    { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
                    dataInit: function (elem) {
                     name = $(elem).val();
-                    $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    $('#invAdj').setColProp('productName', { editoptions: { value:getProductName()} });
+                    $('#saDamageRecoup').setColProp('productSku', { editoptions: { value:getProductSku()} });
+                    $('#saDamageRecoup').setColProp('productName', { editoptions: { value:getProductName()} });
                    // console.log(name);
                     },
                        dataEvents: [
@@ -77,9 +77,9 @@
                         type: 'change',
                         fn: function(e) {
                        name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
-                      $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                      $('#invAdj').setColProp('productName', { editoptions: { value:getProductName()} });
-                       jQuery("invAdj").trigger('reloadGrid');
+                      $('#saDamageRecoup').setColProp('productSku', { editoptions: { value:getProductSku()} });
+                      $('#saDamageRecoup').setColProp('productName', { editoptions: { value:getProductName()} });
+                       jQuery("saDamageRecoup").trigger('reloadGrid');
                        console.log(name);
                        
                         }
@@ -110,7 +110,7 @@
 
 
 
-           $('#invAdj').navGrid('#jqGridPager',
+           $('#saDamageRecoup').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
@@ -127,7 +127,7 @@
                });
 
        });
-       $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
+       $('#saDamageRecoup').setGridWidth(parseInt($(window).width()) - 20);
        $("#productName").on('change keyup paste', function () {
            SearchByProductName();
        });
@@ -151,7 +151,7 @@
 
         f.rules.push({ field: "productName", op: "cn", data: searchString });
 
-        var grid = $('#invAdj');
+        var grid = $('#saDamageRecoup');
         grid[0].p.search = f.rules.length > 0;
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
@@ -169,7 +169,7 @@
 
         f.rules.push({ field: "saCode", op: "cn", data: searchString });
 
-        var grid = $('#invAdj');
+        var grid = $('#saDamageRecoup');
         grid[0].p.search = f.rules.length > 0;
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
@@ -187,7 +187,7 @@
 
         f.rules.push({ field: "date", op: "cn", data: searchString });
 
-        var grid = $('#invAdj');
+        var grid = $('#saDamageRecoup');
         grid[0].p.search = f.rules.length > 0;
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
@@ -196,7 +196,7 @@
             function getSupplierNames() {
         var SupplierList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateList', function(data) {
+        $.getJSON('SaDamageRecoup/CreateList', function(data) {
         if (data != null) {
             
             for (var i = 0; i < data.length; i++) {
@@ -213,7 +213,7 @@
               function getProductSku() {
         var ProductSkuList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductIdList', function(data) {
+        $.getJSON('SaDamageRecoup/CreateProductIdList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
                 if(data[i].value == name)
@@ -232,7 +232,7 @@
                 function getProductName() {
         var ProductNameList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductName', function(data) {
+        $.getJSON('SaDamageRecoup/CreateProductName', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
                 if(data[i].value == name)
@@ -251,7 +251,7 @@
          function getLocation() {
         var LocationList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateLocationList', function(data) {
+        $.getJSON('SaDamageRecoup/CreateLocationList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
              LocationList[data[i].text]=data[i].text;
@@ -268,7 +268,7 @@
                  function getReasons() {
         var ReasonsList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateReasonsList', function(data) {
+        $.getJSON('SaDamageRecoup/CreateReasonsList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
              ReasonsList[data[i].text]=data[i].text;

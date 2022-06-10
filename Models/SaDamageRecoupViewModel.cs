@@ -7,10 +7,10 @@ using WETT.Data;
 
 namespace WETT.Models
 {
-    public class invAdjViewModel 
+    public class SaDamageRecoupViewModel
     {
         public long InventoryTxId { get; set; }
-        public string ProductSku { get; set; }
+        public string ProductCode { get; set; }
 
         public string SupplierName { get; set; }
 

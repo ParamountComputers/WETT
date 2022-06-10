@@ -36,8 +36,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customer</a>
                         </li>
                           <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="invAdj" asp-action="Index">Inventory Adjustment</a>
-                        </li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="InvAdj" asp-action="Index">Inventory Adjustment</a>
+                        
+ 
+                         <li class="nav-item dropdown">
+                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Stock Adjustment </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                 <a class="dropdown-item" asp-area="" asp-controller="SaDamageRecoup" asp-action="Index">Damage/Recoup</a>
+                                 <a class="dropdown-item" asp-area="" asp-controller="SaDamageRecoup" asp-action="Index">SA</a>
+                             </div>
+                         </li>
+                           
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

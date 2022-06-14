@@ -61,36 +61,39 @@
                             keys: true,
                             editOptions: { },
                             addOptions: { },
-                            delOptions: { url: 'Products/Delete' }
+                            delOptions: { url: 'InvAdj/Delete' }
                         }
                     },
+                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
                    { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
                    dataInit: function (elem) {
                     name = $(elem).val();
+                   
+                    $('#invAdj').setColProp('productId', { editoptions: { value:getProductName()} });
                     $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    $('#invAdj').setColProp('productName', { editoptions: { value:getProductName()} });
-                   // console.log(name);
+                    console.log(name);
                     },
                        dataEvents: [
                     {
                         type: 'change',
                         fn: function(e) {
                        name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
+                      $('#invAdj').setColProp('productId', { editoptions: { value:getProductName()} });
                       $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                      $('#invAdj').setColProp('productName', { editoptions: { value:getProductName()} });
-                       jQuery("invAdj").trigger('reloadGrid');
+                       //jQuery("invAdj").trigger('reloadGrid');
                        console.log(name);
                        
                         }
                     }
                        ]
                     }},
-                    { label: 'Product Sku',name: 'productSku',fixed:true, editable: true,edittype:"select",formatter:'select'},
-                   { label: 'Product Name',name: 'productName',fixed:true, editable: true, edittype:"select",formatter:'select'},
-                   { label: 'Locations',name: 'inventoryLocation',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
+                   { label: 'Product Sku',name: 'productSku',fixed:true, editable: true,edittype:"select",formatter:'select',},
+                   { label: 'Product Name',name: 'productId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: { value:getProductName()} },
+                   { label: 'Locations',name: 'inventoryLocationId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
                    { label: 'Updated Stock',name: 'amount',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
-                   { label: 'Reasons',name: 'inventoryTxReason',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
+                   { label: 'Reasons',name: 'inventoryTxReasonId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}}
 
                  ], 
@@ -98,7 +101,7 @@
                height: 250,
                rowNum: 20,
                pager: "#jqGridPager",
-               editurl: 'Products/Update',
+               editurl: 'InvAdj/Update',
                onSelectRow: function(rowid) {
                 curRowId=rowid;
 
@@ -123,7 +126,7 @@
                    errorTextFormat: function (data) {
                        return 'Error: ' + data.responseText
                    },
-                   url: "Products/Add"
+                   url: "InvAdj/Add"
                });
 
        });
@@ -213,7 +216,7 @@
               function getProductSku() {
         var ProductSkuList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductIdList', function(data) {
+        $.getJSON('InvAdj/CreateProductSkuList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
                 if(data[i].value == name)
@@ -225,7 +228,6 @@
 
             });
             $.ajaxSetup( { "async": true } );
-
            return ProductSkuList; 
 
         }
@@ -235,16 +237,13 @@
         $.getJSON('InvAdj/CreateProductName', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-                if(data[i].value == name)
-                {
-             ProductNameList[data[i].text]=data[i].text;
-                } 
+                 ProductNameList[data[i].id]=data[i].text;
               }
             }//if
 
             });
             $.ajaxSetup( { "async": true } );
-
+            console.log(ProductNameList);
            return ProductNameList; 
 
         }
@@ -254,7 +253,7 @@
         $.getJSON('InvAdj/CreateLocationList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-             LocationList[data[i].text]=data[i].text;
+             LocationList[data[i].value]=data[i].text;
                  
               }
             }//if
@@ -271,7 +270,7 @@
         $.getJSON('InvAdj/CreateReasonsList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-             ReasonsList[data[i].text]=data[i].text;
+             ReasonsList[data[i].value]=data[i].text;
                  
               }
             }//if

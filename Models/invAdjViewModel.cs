@@ -9,18 +9,19 @@ namespace WETT.Models
 {
     public class invAdjViewModel 
     {
-        public long InventoryTxId { get; set; }
+        public long InventoryTxDetailId { get; set; }
         public string ProductSku { get; set; }
 
         public string SupplierName { get; set; }
 
-        public string ProductName { get; set; }
+        public long ProductId { get; set; }
 
-        public string InventoryLocation { get; set; }
+        public string ProductName { get; set; }
+        public long InventoryLocationId { get; set; }
 
         public int Amount { get; set; }
 
-        public string InventoryTxReason { get; set; }
+        public long InventoryTxReasonId { get; set; }
 
         public string Comments { get; set; }
 

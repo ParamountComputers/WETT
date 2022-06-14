@@ -7,8 +7,13 @@ using WETT.Data;
 
 namespace WETT.Models
 {
-    public class SaDamageRecoupViewModel
+    public class SaStockReceivedViewModel
     {
+        public string SealNo { get; set; }
+        public string TruckingCompany { get; set; }
+        public long TruckerProbillNumber { get; set; }
+        
+        public string PurchaseOrder { get; set; }
         public long InventoryTxDetailId { get; set; }
         public string ProductSku { get; set; }
 
@@ -20,8 +25,6 @@ namespace WETT.Models
         public long InventoryLocationId { get; set; }
 
         public int Amount { get; set; }
-
-        public long InventoryTxReasonId { get; set; }
 
         public string Comments { get; set; }
 

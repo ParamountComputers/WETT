@@ -27,13 +27,14 @@ namespace WETT.Controllers
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          select new SaDamageRecoupViewModel
                          {
-                             InventoryTxId = a.InventoryTxId,
-                             ProductCode = e.Sku,
+                             InventoryTxDetailId = b.InventoryTxDetailId,
+                             ProductSku = e.Sku,
                              SupplierName = f.Name,
+                             ProductId = e.ProductId,
                              ProductName = e.Description,
-                             InventoryLocation = d.Description,
+                             InventoryLocationId = d.InventoryLocationId,
                              Amount = b.Amount,
-                             InventoryTxReason = c.Description,
+                             InventoryTxReasonId = c.InventoryTxReasonId,
                              Comments = a.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = "1s2s3"
@@ -54,16 +55,18 @@ namespace WETT.Controllers
                                      join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                      select new SaDamageRecoupViewModel
                                      {
-                                         InventoryTxId = a.InventoryTxId,
-                                         ProductCode = e.Sku,
+                                         InventoryTxDetailId = b.InventoryTxDetailId,
+                                         ProductSku = e.Sku,
                                          SupplierName = f.Name,
+                                         ProductId = e.ProductId,
                                          ProductName = e.Description,
-                                         InventoryLocation = d.Description,
+                                         InventoryLocationId = d.InventoryLocationId,
                                          Amount = b.Amount,
-                                         InventoryTxReason = c.Description,
+                                         InventoryTxReasonId = c.InventoryTxReasonId,
                                          Comments = a.Comments,
-                                         Date = a.Date,
+                                         Date = a.Date, //.ToShortDateString(),
                                          SaCode = "1s2s3"
+
                                      };
 
 
@@ -112,6 +115,27 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
+        public JsonResult Update(SaDamageRecoupViewModel p)
+        {
+
+
+            InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
+            r.InventoryLocationId = p.InventoryLocationId;
+            r.ProductId = p.ProductId;
+            r.Amount = p.Amount;
+            _context.SaveChanges();
+            return Json(true);
+        }
+        public JsonResult Delete(long id)
+        {
+            InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
+            _context.InventoryTxDetails.Remove(r);
+            _context.SaveChanges();
+
+
+            return Json(true);
+        }
+
         public IActionResult CreateList()
         {
 
@@ -123,7 +147,7 @@ namespace WETT.Controllers
                      };
             return Json(li);
         }
-        public IActionResult CreateProductIdList()
+        public IActionResult CreateProductSkuList()
         {
             var invAdjData = from a in _context.Products
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
@@ -142,7 +166,8 @@ namespace WETT.Controllers
                              select new
                              {
                                  text = a.Description,
-                                 value = b.Name
+                                 value = b.Name,
+                                 id = a.ProductId
 
                              };
             return Json(invAdjData);
@@ -152,6 +177,7 @@ namespace WETT.Controllers
             var invAdjData = from a in _context.InventoryLocations
                              select new
                              {
+                                 value = a.InventoryLocationId,
                                  text = a.Description
                              };
             return Json(invAdjData);
@@ -161,6 +187,7 @@ namespace WETT.Controllers
             var invAdjData = from a in _context.InventoryTxReasons
                              select new
                              {
+                                 value = a.InventoryTxReasonId,
                                  text = a.Description
                              };
             return Json(invAdjData);

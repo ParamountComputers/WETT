@@ -1,19 +1,20 @@
-﻿@*
+﻿
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "saDamageRecoup";
+    ViewData["Title"] = "saStockReceived";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Stock Adjustment- Damage/Recoup</h1>
+    <h1 class="display-4">Stock Received</h1>
 </div>
 <fieldset class="scheduler-border">
     <legend class="scheduler-border">Search</legend>
     <div class="input-group mb-3">
         <label for="date">Transaction Date:</label>
         <input type="date" id="date" name="date">
-        <input type="text" class="form-control" placeholder="ProductName" aria-label="ProductName" aria-describedby="basic-addon2" id="productName">
+        <input type="text" class="form-control" placeholder="Product Name:" aria-label="Product Name:" aria-describedby="basic-addon2" id="productName">
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button">Search</button>
         </div>
@@ -21,10 +22,34 @@
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button">Search</button>
         </div>
+         <input type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button">Search</button>
+        </div>
+         <input type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOder">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button">Search</button>
+        </div>
+         <input type="text" class="form-control" placeholder="Trucker/Probill Number:" aria-label="Trucker/Probill Number:" aria-describedby="basic-addon2" id="truckerProbillNumber">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button">Search</button>
+        </div>
+         <input type="text" class="form-control" placeholder="Seal No:" aria-label="Seal No:" aria-describedby="basic-addon2" id="sealNo">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button">Search</button>
+        </div>
+        <label for="locations">Locations:</label>
+        <select id="locations">
+        <option>Locations</option>
+        </select>
+        <label for="truckingCompany">Trucking Company:</label>
+        <select id="truckingCompany">
+        <option>Trucking Company</option>
+        </select>
     </div>
 </fieldset>
 
-<table id="saDamageRecoup" style="align: center"></table>
+<table id="saStockReceived" style="align: center"></table>
 <div id="jqGridPager"></div>
 
 @section scripts {
@@ -36,8 +61,8 @@
     var curRowId = -1;
     var name="";
     $(document).ready(function() {
-       $("#saDamageRecoup").jqGrid({
-               url: 'SaDamageRecoup/GetAll',
+       $("#saStockReceived").jqGrid({
+               url: 'SaStockReceived/GetAll',
                mtype: "GET",
                guiStyle: "bootstrap",
                iconSet: "fontAwesome",
@@ -61,38 +86,20 @@
                             keys: true,
                             editOptions: { },
                             addOptions: { },
-                            delOptions: { url: 'saDamageRecoup/Delete' }
+                            delOptions: { url: 'SaStockReceived/Delete' }
                         }
                     },
-                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'},key:true},
-                   { label: 'Sa Code',name: 'saCode', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Seal No',name: 'sealNo',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'trucker Probill Number',name: 'truckerProbillNumber',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'PO',name: 'purchaseOder',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
-                   dataInit: function (elem) {
-                    name = $(elem).val();
-                    $('#saDamageRecoup').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    $('#saDamageRecoup').setColProp('productName', { editoptions: { value:getProductName()} });
-                   // console.log(name);
-                    },
-                       dataEvents: [
-                    {
-                        type: 'change',
-                        fn: function(e) {
-                       name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
-                      $('#saDamageRecoup').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                      $('#saDamageRecoup').setColProp('productName', { editoptions: { value:getProductName()} });
-                       jQuery("saDamageRecoup").trigger('reloadGrid');
-                       console.log(name);
-                       
-                        }
-                    }
-                       ]
-                    }},
-                   { label: 'Product Sku',name: 'productSku',fixed:true, editable: true,edittype:"select",formatter:'select'},
-                   { label: 'Product Name',name: 'productName',fixed:true, editable: true, edittype:"select",formatter:'select'},
-                   { label: 'Locations',name: 'inventoryLocationId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
-                   { label: 'Adjusted Stock',name: 'amount',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
-                   { label: 'Reasons',name: 'inventoryTxReasonId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
+                   { label: 'Supplier',name: 'supplierName',hidden:true, editable: true,  editoptions:  { readonly: 'readonly'}},
+                   { label: 'Product Sku',name: 'productSku',fixed:true, editable: true,edittype:"select",formatter:'select',},
+                   { label: 'Product Name',name: 'productId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: { value:getProductName()} },
+                   { label: 'Updated Stock',name: 'amount',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
+                   { label: 'Reasons',name: 'inventoryTxLocationId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocations()}},
                    { label: 'Notes',name: 'comments',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}}
 
                  ], 
@@ -100,7 +107,7 @@
                height: 250,
                rowNum: 20,
                pager: "#jqGridPager",
-               editurl: 'saDamageRecoup/Update',
+               editurl: 'SaStockReceived/Update',
                onSelectRow: function(rowid) {
                 curRowId=rowid;
 
@@ -112,7 +119,7 @@
 
 
 
-           $('#saDamageRecoup').navGrid('#jqGridPager',
+           $('#saStockReceived').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
@@ -125,11 +132,11 @@
                    errorTextFormat: function (data) {
                        return 'Error: ' + data.responseText
                    },
-                   url: "Products/Add"
+                   url: "SaStockReceived/Add"
                });
 
        });
-       $('#saDamageRecoup').setGridWidth(parseInt($(window).width()) - 20);
+       $('#saStockReceived').setGridWidth(parseInt($(window).width()) - 20);
        $("#productName").on('change keyup paste', function () {
            SearchByProductName();
        });
@@ -153,7 +160,7 @@
 
         f.rules.push({ field: "productName", op: "cn", data: searchString });
 
-        var grid = $('#saDamageRecoup');
+        var grid = $('#saStockReceived');
         grid[0].p.search = f.rules.length > 0;
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
@@ -171,7 +178,7 @@
 
         f.rules.push({ field: "saCode", op: "cn", data: searchString });
 
-        var grid = $('#saDamageRecoup');
+        var grid = $('#saStockReceived');
         grid[0].p.search = f.rules.length > 0;
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
@@ -189,7 +196,7 @@
 
         f.rules.push({ field: "date", op: "cn", data: searchString });
 
-        var grid = $('#saDamageRecoup');
+        var grid = $('#saStockReceived');
         grid[0].p.search = f.rules.length > 0;
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
@@ -198,7 +205,7 @@
             function getSupplierNames() {
         var SupplierList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateList', function(data) {
+        $.getJSON('SaStockReceived/CreateList', function(data) {
         if (data != null) {
             
             for (var i = 0; i < data.length; i++) {
@@ -215,7 +222,7 @@
               function getProductSku() {
         var ProductSkuList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateProductIdList', function(data) {
+        $.getJSON('SaStockReceived/CreateProductSkuList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
                 if(data[i].value == name)
@@ -227,50 +234,29 @@
 
             });
             $.ajaxSetup( { "async": true } );
-
            return ProductSkuList; 
 
         }
                 function getProductName() {
         var ProductNameList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateProductName', function(data) {
+        $.getJSON('SaStockReceived/CreateProductName', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-                if(data[i].value == name)
-                {
-             ProductNameList[data[i].text]=data[i].text;
-                } 
+                 ProductNameList[data[i].id]=data[i].text;
               }
             }//if
 
             });
             $.ajaxSetup( { "async": true } );
-
+            console.log(ProductNameList);
            return ProductNameList; 
 
         }
-         function getLocation() {
+                 function getLocations() {
         var LocationList= {};
         $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateLocationList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             LocationList[data[i].value]=data[i].text;
-                 
-              }
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-
-           return LocationList; 
-
-        }
-                 function getReasons() {
-        var ReasonsList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateReasonsList', function(data) {
+        $.getJSON('SaStockReceived/CreateLocationsList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
              ReasonsList[data[i].value]=data[i].text;
@@ -281,7 +267,7 @@
             });
             $.ajaxSetup( { "async": true } );
 
-           return ReasonsList; 
+           return LocationList; 
 
         }
 

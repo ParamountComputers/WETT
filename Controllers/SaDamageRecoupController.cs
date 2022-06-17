@@ -126,6 +126,22 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
+        public JsonResult Add(SaDamageRecoupViewModel p)
+        {
+
+
+            InventoryTxDetail r=  new InventoryTxDetail
+            {
+                InventoryLocationId = p.InventoryLocationId,
+                ProductId = p.ProductId,
+                Amount = p.Amount
+            };
+            _context.InventoryTxDetails.Add(r);
+            _context.SaveChanges();
+            return Json(true);
+
+        }
+
         public JsonResult Delete(long id)
         {
             InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);

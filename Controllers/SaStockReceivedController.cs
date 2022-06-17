@@ -93,6 +93,10 @@ namespace WETT.Controllers
                         case "saCode":
                             SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.SaCode.Contains(rule.data));
                             break;
+                        case "comments":
+                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Comments.Contains(rule.data));
+                            break;
+
                     }
                 }
 
@@ -120,6 +124,21 @@ namespace WETT.Controllers
             };
 
             return Json(jsonData);
+        }
+        public JsonResult Add(SaStockReceivedViewModel p)
+        {
+
+
+            InventoryTxDetail r = new InventoryTxDetail
+            {
+                InventoryLocationId = p.InventoryLocationId,
+                ProductId = p.ProductId,
+                Amount = p.Amount
+            };
+            _context.InventoryTxDetails.Add(r);
+            _context.SaveChanges();
+            return Json(true);
+
         }
         public JsonResult Update(SaStockReceivedViewModel p)
         {

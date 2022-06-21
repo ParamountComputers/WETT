@@ -140,22 +140,15 @@
                { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
                {
-                 beforeRefresh: function(){
-                      $('#invAdj').setColProp('productId', { editoptions: { value:getProductName()} });
-                      $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                       $("invAdj").trigger('reloadGrid');
-                 }
                },
                {
-                   afterShowForm : function (formid)
-                   {
-                       if(header==false)
-                       {
-                          
-                           alert("Error");
-                           $("invAdj").trigger('reloadGrid');
-                       }
-                   },
+              afterShowForm: function () {
+              var idSelector = $.jgrid.jqID(this.p.id);
+              if(header==false) {
+              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              alert("Error: Need Header");
+              }
+              },
                    closeAfterAdd: true,
                    recreateForm: true,
                    errorTextFormat: function (data) {

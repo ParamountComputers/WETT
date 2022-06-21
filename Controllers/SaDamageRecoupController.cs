@@ -11,7 +11,10 @@ namespace WETT.Controllers
 {
     public class SaDamageRecoupController : Controller
     {
+        private DateTime searchDate;
+        private string Notes;
         private readonly WETT_DBContext _context;
+        public long CurrentHeaderId;
         public SaDamageRecoupController(WETT_DBContext context)
         {
             _context = context;
@@ -80,12 +83,11 @@ namespace WETT.Controllers
                     {
                         case "date":
                             SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+                            searchDate = DateTime.Parse(rule.data);
                             break;
-                        case "productName":
+                        case "comments":
                             SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.ProductName.Contains(rule.data));
-                            break;
-                        case "saCode":
-                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.SaCode.Contains(rule.data));
+                            Notes = rule.data;
                             break;
                     }
                 }
@@ -115,6 +117,23 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
+        public JsonResult Add(SaDamageRecoupViewModel p)
+        {
+
+            InventoryTxDetail r = new InventoryTxDetail
+            {
+                InventoryLocationId = p.InventoryLocationId,
+                ProductId = p.ProductId,
+                Amount = p.Amount,
+                InventoryTxId = CurrentHeaderId
+            };
+
+            _context.InventoryTxDetails.Add(r);
+            _context.SaveChanges();
+
+
+            return Json(true);
+        }
         public JsonResult Update(SaDamageRecoupViewModel p)
         {
 
@@ -126,21 +145,7 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
-        public JsonResult Add(SaDamageRecoupViewModel p)
-        {
 
-
-            InventoryTxDetail r=  new InventoryTxDetail
-            {
-                InventoryLocationId = p.InventoryLocationId,
-                ProductId = p.ProductId,
-                Amount = p.Amount
-            };
-            _context.InventoryTxDetails.Add(r);
-            _context.SaveChanges();
-            return Json(true);
-
-        }
 
         public JsonResult Delete(long id)
         {
@@ -150,6 +155,20 @@ namespace WETT.Controllers
 
 
             return Json(true);
+        }
+        public IActionResult CreateHeader(string data)
+        {
+
+            var li = data.Split("/");
+            InventoryTx s = new InventoryTx
+            {
+                Date = DateTime.Parse(li[0]),
+                Comments = li[1],
+            };
+            _context.InventoryTx.Add(s);
+            _context.SaveChanges();
+            CurrentHeaderId = s.InventoryTxId;
+            return Json(s.SaCode);
         }
 
         public IActionResult CreateList()

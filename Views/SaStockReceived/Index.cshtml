@@ -12,39 +12,38 @@
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
     <legend class="scheduler-border">Search</legend>
  <form class="row row-cols-lg-auto g-3">
-  <div class="col">
+  <div class="col-sm-3">
         <label for="date">Transaction Date:</label>
         <input type="date" id="date" name="date">
-        </div>
-          <div class="col">
+            </div>
+  <div class="col-sm-3">
+        <label for="truckingCompanyDropdown"class="d-inline">Trucking company:</label>  
+        <select class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
+            </div>
+  <div class="col-sm-3">
+        <label for="locationsDropdown" class="d-inline">Locations:</label>  
+        <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+    </div>
+    </form>
+   <form class="row row-cols-sm-auto g-3">
+  <div class="col">
         <input type="text" class="form-control" placeholder="Product Name:" aria-label="Product Name:" aria-describedby="basic-addon2" id="productName">
-        </div>
+            </div>
   <div class="col">
         <input type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode">
-        </div>
-        </form>
-         <br />
-  <form class="row row-cols-lg-auto g-3">      
-<div class="col"> 
-        <label for="locationsDropdown">Locations:</label>  
-        <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+            </div>
+  <div class="col">
+         <input type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder">
          </div>
-          <div class="col">
-         <input type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOder">
-         </div>
+             </form>
+   <form class="row row-cols-lg-auto g-3">
           <div class="col">
          <input type="text" class="form-control" placeholder="Trucker/Probill Number:" aria-label="Trucker/Probill Number:" aria-describedby="basic-addon2" id="truckerProbillNumber">
-        </div>
-        </form>
-        <form class="row row-cols-lg-auto g-3">
-<div class="col">
-        <label for="truckingCompanyDropdown">Trucking company:</label>  
-        <select class="form-control" id="truckingCompanyDropdown" name="ltruckingCompanyDropdown"></select>
-         </div>
-         <div class="col">
+             </div>
+  <div class="col">
          <input type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments">
-        </div>
-        <div class="col">
+             </div>
+  <div class="col">
          <input type="text" class="form-control" placeholder="Seal No:" aria-label="Seal No:" aria-describedby="basic-addon2" id="sealNo">
         </div>
         </form>
@@ -93,12 +92,12 @@
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'trucker Probill Number',name: 'truckerProbillNumber',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'PO',name: 'purchaseOder',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Date',name: 'date', editable: true, edittype:"text", hidden:true},
+                   { label: 'Date',name: 'date', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
                    { label: 'Supplier',name: 'supplierName', editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
                    dataInit: function (elem) {
                     name = $(elem).val();
                     $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    $('#saStockReceived').setColProp('productName', { editoptions: { value:getProductName()} });
+                    $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName()} });
                    // console.log(name);
                     },
                        dataEvents: [
@@ -107,7 +106,7 @@
                         fn: function(e) {
                        name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
                       $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                      $('#saStockReceived').setColProp('productName', { editoptions: { value:getProductName()} });
+                      $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName()} });
                        jQuery("saStockReceived").trigger('reloadGrid');
                        console.log(name);
                        
@@ -161,7 +160,7 @@ $(document).ready(function () {
            url: "SaStockReceived/CreateLocationsList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Please Select a Location</option>';  
+               var s = '<option value="-1">Select a Location</option>';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
@@ -175,7 +174,7 @@ $(document).ready(function () {
            url: "SaStockReceived/CreateLocationsList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Please Select a Trcuking company</option>';  
+               var s = '<option value="-1">Select a Trcuking company</option>';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
@@ -197,6 +196,13 @@ $(document).ready(function () {
        }); 
             $("#saCode").on('change keyup paste', function () {
            SearchBySaCode();
+        });
+               $("#locationsDropdown").on('change keyup paste', function () {
+           SearchByLocations();
+           
+       }); 
+                   $("#purchaseOrder").on('change keyup paste', function () {
+           SearchByPurchaseOrder()
         });
     function SearchByProductName()
     {
@@ -271,6 +277,47 @@ $(document).ready(function () {
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
 
+        function SearchByLocations()
+    {
+        //  Fetch the text from our <input> control
+        var searchString = $("#locationsDropdown").val();
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "locationsDropdown", op: "cn", data: searchString });
+
+        var grid = $('#saStockReceived');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+    
+     function SearchByPurchaseOrder()
+    {
+        //  Fetch the text from our <input> control
+        var searchString = $("#purchaseOrder").val();
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "purchaseOrder", op: "cn", data: searchString });
+
+        var grid = $('#saStockReceived');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+    //
+    //End of search functions
+    //
+
             function getSupplierNames() {
         var SupplierList= {};
         $.ajaxSetup( { "async": false } );
@@ -312,13 +359,18 @@ $(document).ready(function () {
         $.getJSON('SaStockReceived/CreateProductName', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-                 ProductNameList[data[i].id]=data[i].text;
+                if(data[i].value == name || name =="")
+                {
+                    console.log(data[i].id);
+                    console.log(data[i].text);
+             ProductNameList[data[i].id]=data[i].text;
+                } 
               }
             }//if
 
             });
             $.ajaxSetup( { "async": true } );
-            console.log(ProductNameList);
+
            return ProductNameList; 
 
         }

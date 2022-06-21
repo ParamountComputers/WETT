@@ -9,19 +9,29 @@
     <h1 class="display-4">Inventory Adjustment</h1>
 </div>
 <fieldset class="scheduler-border">
-    <legend class="scheduler-border">Search</legend>
-    <div class="input-group mb-3">
-        <label for="date">Transaction Date:</label>
-        <input type="date" id="date" name="date">
-        <input type="text" class="form-control" placeholder="ProductName" aria-label="ProductName" aria-describedby="basic-addon2" id="productName">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Search</button>
-        </div>
-        <input type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Search</button>
-        </div>
-    </div>
+  <legend class="scheduler-border">Search</legend>
+<div class="container-flow">
+  <div class="row">
+           <div class="col-3 text-left">
+         <label for="date" style="font-size:14px;">Transaction Date:</label>
+         <input type="date" style="font-size:14px;" id="date" name="date">
+           </div>
+           
+           <div class="col-4">
+         <input type="text"  style="font-size:14px;" class="form-control" placeholder="Notes" aria-label="Notes" aria-describedby="basic-addon2" id="comments">
+           </div>
+           
+           <div class="col-3">
+          <input type="text" name="input" id="saCode" value="SA Code" readonly>
+            </div>
+
+            <div class="col-2 text-right">
+          <button class="btn btn-outline-secondary" id="save" type="button">Save</button>  
+            </div>        
+
+  </div>
+</div>
+
 </fieldset>
 
 <table id="invAdj" style="align: center"></table>
@@ -32,7 +42,7 @@
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     $.jgrid.defaults.responsive = true;
-
+    var header = false;
     var curRowId = -1;
     var name="";
     $(document).ready(function() {
@@ -66,7 +76,7 @@
                     },
                    { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Date',name: 'date',fixed:true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
                    dataInit: function (elem) {
                     name = $(elem).val();
@@ -82,19 +92,31 @@
                        name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
                       $('#invAdj').setColProp('productId', { editoptions: { value:getProductName()} });
                       $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                       //jQuery("invAdj").trigger('reloadGrid');
+                       $("invAdj").trigger('reloadGrid');
                        console.log(name);
                        
                         }
                     }
                        ]
                     }},
-                   { label: 'Product Sku',name: 'productSku',fixed:true, editable: true,edittype:"select",formatter:'select',},
-                   { label: 'Product Name',name: 'productId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: { value:getProductName()} },
-                   { label: 'Locations',name: 'inventoryLocationId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
-                   { label: 'Updated Stock',name: 'amount',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}},
-                   { label: 'Reasons',name: 'inventoryTxReasonId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
-                   { label: 'Notes',name: 'comments',fixed:true, editable: true, edittype:"text", editoptions: { readonly: 'readonly'}}
+                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80, editable: true,edittype:"select",formatter:'select',},
+                   { label: 'Product Name',name: 'productId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: { dataUrl:'InvAdj/CreateProductName',
+                 buildSelect: function(data) {
+                     var s = '<select>';
+                          for (var i = 0; i <data.length; i++) { 
+                             if(data[i].value == name)
+                             {
+                             s += '<option value="'+data[i].id+'">'+data[i].text+'</option>';
+                             
+                             }
+                             
+                     }                
+                     return  s += "</select>";
+                 },value:getProductName()} },
+                   { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
+                   { label: 'Updated Stock',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text"},
+                   { label: 'Reasons',name: 'inventoryTxReasonId',fixed:true,width:100, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
+                   { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text",}
 
                  ], 
                viewrecords: true,
@@ -115,12 +137,25 @@
 
            $('#invAdj').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
-               { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+               { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
                {
-                  
+                 beforeRefresh: function(){
+                      $('#invAdj').setColProp('productId', { editoptions: { value:getProductName()} });
+                      $('#invAdj').setColProp('productSku', { editoptions: { value:getProductSku()} });
+                       $("invAdj").trigger('reloadGrid');
+                 }
                },
                {
+                   afterShowForm : function (formid)
+                   {
+                       if(header==false)
+                       {
+                          
+                           alert("Error");
+                           $("invAdj").trigger('reloadGrid');
+                       }
+                   },
                    closeAfterAdd: true,
                    recreateForm: true,
                    errorTextFormat: function (data) {
@@ -131,38 +166,41 @@
 
        });
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
-       $("#productName").on('change keyup paste', function () {
-           SearchByProductName();
+       $("#comments").on('change keyup paste', function () {
+           SearchByComments();
        });
        $("#date").on('change keyup paste', function () {
            SearchByDate();
            
        }); 
-            $("#saCode").on('change keyup paste', function () {
-           SearchBySaCode();
+       $("#save").on('click', function () {
+           SaveHeader();
         });
-    function SearchByProductName()
+            function SaveHeader()
     {
-        //  Fetch the text from our <input> control
-        var searchString = $("#productName").val();
-        
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+         header = true;
+        var date = $("#date").val();
+        var notes = $("#comments").val();
+        if(date=="")
+        {
+            var currentDate = new Date();
+         var day = ("0" + currentDate.getDate()).slice(-2);
+         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+         date = today;
+        }
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('InvAdj/CreateHeader?data='+date+'/'+notes, function(data) {
+ 
+        $("#saCode").val(data);
+                    });
+            $.ajaxSetup( { "async": true } );
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
-
-        f.rules.push({ field: "productName", op: "cn", data: searchString });
-
-        var grid = $('#invAdj');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
     }
-        function SearchBySaCode()
+    function SearchByComments()
     {
         //  Fetch the text from our <input> control
-        var searchString = $("#saCode").val();
+        var searchString = $("#comments").val();
         
         //  Prepare to pass a new search filter to our jqGrid
         var f = { groupOp: "AND", rules: [] };
@@ -170,7 +208,7 @@
         //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
         //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "saCode", op: "cn", data: searchString });
+        f.rules.push({ field: "comments", op: "cn", data: searchString });
 
         var grid = $('#invAdj');
         grid[0].p.search = f.rules.length > 0;
@@ -235,7 +273,7 @@
         var ProductNameList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateProductName', function(data) {
-        if (data != null) {
+        if (data != null && name =="") {
             for (var i = 0; i < data.length; i++) {
                  ProductNameList[data[i].id]=data[i].text;
               }
@@ -243,7 +281,7 @@
 
             });
             $.ajaxSetup( { "async": true } );
-            console.log(ProductNameList);
+           // console.log(ProductNameList);
            return ProductNameList; 
 
         }

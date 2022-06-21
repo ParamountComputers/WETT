@@ -11,6 +11,9 @@ namespace WETT.Controllers
 {
     public class invAdjController : Controller
     {
+        private DateTime searchDate;
+        private string Notes;
+        public long CurrentHeaderId;
         private readonly WETT_DBContext _context;
         public invAdjController(WETT_DBContext context)
         {
@@ -79,12 +82,11 @@ namespace WETT.Controllers
                     {
                         case "date":
                             invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+                            searchDate = DateTime.Parse(rule.data);
                             break;
-                        case "productName":
+                        case "comments":
                             invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.ProductName.Contains(rule.data));
-                            break;
-                        case "saCode":
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.SaCode.Contains(rule.data));
+                            Notes = rule.data;
                             break;
                     }
                 }
@@ -127,19 +129,12 @@ namespace WETT.Controllers
         }
         public JsonResult Add(invAdjViewModel p)
         {
-            InventoryTx s = new InventoryTx
-            {
-                InventoryTxReasonId = p.InventoryTxReasonId,
-              //  Date= p.Date,
-                Comments = p.Comments,
-            };
-            _context.InventoryTx.Add(s);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 InventoryLocationId = p.InventoryLocationId,
                 ProductId = p.ProductId,
                 Amount = p.Amount,
-                InventoryTxId = s.InventoryTxId
+                InventoryTxId = CurrentHeaderId
         };
 
         _context.InventoryTxDetails.Add(r);
@@ -147,8 +142,8 @@ namespace WETT.Controllers
 
 
             return Json(true);
-    }
-    public JsonResult Delete(long id)
+        }
+        public JsonResult Delete(long id)
         {
             InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
             _context.InventoryTxDetails.Remove(r);
@@ -156,6 +151,21 @@ namespace WETT.Controllers
 
 
             return Json(true);
+        }
+        public IActionResult CreateHeader(string data)
+        {
+
+            var li = data.Split("/");
+            InventoryTx s = new InventoryTx
+            {
+                Date = DateTime.Parse(li[0]),
+                Comments = li[1],
+            };
+           // _context.InventoryTx.Add(s);
+           // _context.SaveChanges();
+            CurrentHeaderId = s.InventoryTxId;
+            return Json("hi");
+            //return Json(s.SaCode);
         }
 
         public IActionResult CreateList()

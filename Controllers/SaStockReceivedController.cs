@@ -11,6 +11,7 @@ namespace WETT.Controllers
 {
     public class SaStockReceivedController : Controller
     {
+        private DateTime searchDate;
         private readonly WETT_DBContext _context;
         public SaStockReceivedController(WETT_DBContext context)
         {
@@ -37,6 +38,7 @@ namespace WETT.Controllers
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
+                             InventoryLocation = d.Description,
                              Amount = b.Amount,
                              Comments = a.Comments,
                              Date = a.Date, //.ToShortDateString(),
@@ -68,7 +70,8 @@ namespace WETT.Controllers
                                          ProductId = e.ProductId,
                                          ProductName = e.Description,
                                          InventoryLocationId = d.InventoryLocationId,
-                                         Amount = b.Amount,
+                                          InventoryLocation = d.Description,
+                                          Amount = b.Amount,
                                          Comments = a.Comments,
                                          Date = a.Date, //.ToShortDateString(),
                                          SaCode = "1s2s3"
@@ -86,6 +89,7 @@ namespace WETT.Controllers
                     {
                         case "date":
                             SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+                            searchDate = DateTime.Parse(rule.data);
                             break;
                         case "productName":
                             SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.ProductName.Contains(rule.data));
@@ -95,6 +99,21 @@ namespace WETT.Controllers
                             break;
                         case "comments":
                             SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Comments.Contains(rule.data));
+                            break;
+                        case "locationsDropdown":
+                            if (rule.data.Contains("-1"))
+                            {
+                               
+
+                                break; 
+                            }
+                            else
+                            {
+                                SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
+                                break;
+                            }
+                        case "purchaseOrder":
+                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.PurchaseOrder.Contains(rule.data));
                             break;
 
                     }
@@ -127,10 +146,18 @@ namespace WETT.Controllers
         }
         public JsonResult Add(SaStockReceivedViewModel p)
         {
+            InventoryTx s = new InventoryTx
+            {
+                Date = searchDate,
+                Comments = p.Comments,
 
+            };
+            _context.InventoryTx.Add(s);
+            _context.SaveChanges();
 
             InventoryTxDetail r = new InventoryTxDetail
             {
+                InventoryTxId=s.InventoryTxId,
                 InventoryLocationId = p.InventoryLocationId,
                 ProductId = p.ProductId,
                 Amount = p.Amount

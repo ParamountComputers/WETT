@@ -9,7 +9,7 @@ namespace WETT.Data
         {
             InventoryTxDetails = new HashSet<InventoryTxDetail>();
         }
-
+        public string SaCode { get; set; }
         public long InventoryTxId { get; set; }
         public DateTime Date { get; set; }
         public long InventoryTxReasonId { get; set; }

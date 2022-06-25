@@ -7,8 +7,8 @@ namespace WETT.Data
     {
         public Supplier()
         {
+            InventoryTxes = new HashSet<InventoryTx>();
             Products = new HashSet<Product>();
-            SupplierOrders = new HashSet<SupplierOrder>();
         }
 
         public long SupplierId { get; set; }
@@ -33,7 +33,7 @@ namespace WETT.Data
         public DateTime UpdateTimestamp { get; set; }
         public string ActiveFlag { get; set; }
 
+        public virtual ICollection<InventoryTx> InventoryTxes { get; set; }
         public virtual ICollection<Product> Products { get; set; }
-        public virtual ICollection<SupplierOrder> SupplierOrders { get; set; }
     }
 }

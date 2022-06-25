@@ -23,9 +23,9 @@ namespace WETT.Controllers
         {
 
             var result = from b in _context.InventoryTxDetails
-                         join a in _context.InventoryTx on b.InventoryTxId equals a.InventoryTxId
-                         join c in _context.InventoryTxReasons on a.InventoryTxReasonId equals c.InventoryTxReasonId
-                         join d in _context.InventoryLocations on b.InventoryLocationId equals d.InventoryLocationId
+                         join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                         join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                         join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          select new SaDamageRecoupViewModel
@@ -37,7 +37,7 @@ namespace WETT.Controllers
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
                              Amount = b.Amount,
-                             InventoryTxReasonId = c.InventoryTxReasonId,
+                             InventoryTxTypeId = c.InventoryTxTypeId,
                              Comments = a.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = "1s2s3"
@@ -51,9 +51,9 @@ namespace WETT.Controllers
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
             var SaDamageRecoupData = from b in _context.InventoryTxDetails
-                                     join a in _context.InventoryTx on b.InventoryTxId equals a.InventoryTxId
-                                     join c in _context.InventoryTxReasons on a.InventoryTxReasonId equals c.InventoryTxReasonId
-                                     join d in _context.InventoryLocations on b.InventoryLocationId equals d.InventoryLocationId
+                                     join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                                     join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                     join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
                                      join e in _context.Products on b.ProductId equals e.ProductId
                                      join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                      select new SaDamageRecoupViewModel
@@ -65,7 +65,7 @@ namespace WETT.Controllers
                                          ProductName = e.Description,
                                          InventoryLocationId = d.InventoryLocationId,
                                          Amount = b.Amount,
-                                         InventoryTxReasonId = c.InventoryTxReasonId,
+                                         InventoryTxTypeId = c.InventoryTxTypeId,
                                          Comments = a.Comments,
                                          Date = a.Date, //.ToShortDateString(),
                                          SaCode = "1s2s3"
@@ -122,7 +122,7 @@ namespace WETT.Controllers
 
             InventoryTxDetail r = new InventoryTxDetail
             {
-                InventoryLocationId = p.InventoryLocationId,
+                ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = p.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId
@@ -139,7 +139,7 @@ namespace WETT.Controllers
 
 
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-            r.InventoryLocationId = p.InventoryLocationId;
+            r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = p.ProductId;
             r.Amount = p.Amount;
             _context.SaveChanges();
@@ -165,10 +165,10 @@ namespace WETT.Controllers
                 Date = DateTime.Parse(li[0]),
                 Comments = li[1],
             };
-            _context.InventoryTx.Add(s);
+            _context.InventoryTxes.Add(s);
             _context.SaveChanges();
             CurrentHeaderId = s.InventoryTxId;
-            return Json(s.SaCode);
+            return Json(s.StockAdjCode);
         }
 
         public IActionResult CreateList()

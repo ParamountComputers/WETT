@@ -7,12 +7,12 @@ namespace WETT.Data
     {
         public InventoryTxReason()
         {
-            InventoryTxes = new HashSet<InventoryTx>();
+            InventoryTxDetails = new HashSet<InventoryTxDetail>();
         }
 
         public long InventoryTxReasonId { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<InventoryTx> InventoryTxes { get; set; }
+        public virtual ICollection<InventoryTxDetail> InventoryTxDetails { get; set; }
     }
 }

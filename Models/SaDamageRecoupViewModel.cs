@@ -21,7 +21,7 @@ namespace WETT.Models
 
         public int Amount { get; set; }
 
-        public long InventoryTxReasonId { get; set; }
+        public long InventoryTxTypeId { get; set; }
 
         public string Comments { get; set; }
 

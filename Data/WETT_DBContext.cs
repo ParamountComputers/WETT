@@ -28,17 +28,18 @@ namespace WETT.Data
         public virtual DbSet<CustomerType> CustomerTypes { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<InventoryLocation> InventoryLocations { get; set; }
-        public virtual DbSet<InventoryTx> InventoryTx { get; set; }
+        public virtual DbSet<InventoryTx> InventoryTxes { get; set; }
         public virtual DbSet<InventoryTxDetail> InventoryTxDetails { get; set; }
         public virtual DbSet<InventoryTxReason> InventoryTxReasons { get; set; }
+        public virtual DbSet<InventoryTxType> InventoryTxTypes { get; set; }
         public virtual DbSet<MbllCustomer> MbllCustomers { get; set; }
         public virtual DbSet<MbllSalesOrder> MbllSalesOrders { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Segment> Segments { get; set; }
+        public virtual DbSet<ShippingLocation> ShippingLocations { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
-        public virtual DbSet<SupplierOrder> SupplierOrders { get; set; }
-        public virtual DbSet<SupplierOrderDetail> SupplierOrderDetails { get; set; }
         public virtual DbSet<Territory> Territories { get; set; }
+        public virtual DbSet<TruckingCompany> TruckingCompanies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -87,14 +88,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -108,14 +107,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.UpdateTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Update Timestamp");
 
                 entity.Property(e => e.UpdateUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Update UserId");
             });
 
             modelBuilder.Entity<Cdo>(entity =>
@@ -178,14 +175,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.LicenceNumber)
                     .HasMaxLength(10)
@@ -236,14 +231,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.UpdateTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Update Timestamp");
 
                 entity.Property(e => e.UpdateUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Update UserId");
 
                 entity.HasOne(d => d.CallFrequency)
                     .WithMany(p => p.Customers)
@@ -311,14 +304,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.OrderNumber)
                     .IsRequired()
@@ -329,14 +320,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.UpdateTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Update Timestamp");
 
                 entity.Property(e => e.UpdateUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Update UserId");
 
                 entity.HasOne(d => d.Carrier)
                     .WithMany(p => p.CustomerOrders)
@@ -365,9 +354,30 @@ namespace WETT.Data
 
                 entity.Property(e => e.CustomerOrderId).HasColumnName("Customer Order Id");
 
+                entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
+
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
+
+                entity.Property(e => e.Notes).HasMaxLength(100);
+
+                entity.Property(e => e.ProductId).HasColumnName("Product Id");
+
                 entity.Property(e => e.QtyFulfilled).HasColumnName("Qty Fulfilled");
 
                 entity.Property(e => e.QtyOrdered).HasColumnName("Qty Ordered");
+
+                entity.Property(e => e.UpdateTimestamkp)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Timestamkp");
+
+                entity.Property(e => e.UpdateUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
 
                 entity.HasOne(d => d.CustomerOrder)
                     .WithMany(p => p.CustomerOrderDetails)
@@ -438,7 +448,7 @@ namespace WETT.Data
 
             modelBuilder.Entity<Inventory>(entity =>
             {
-                entity.HasKey(e => e.ProductId);
+                entity.HasKey(e => new { e.ProductId, e.InventoryLocationId });
 
                 entity.ToTable("Inventory");
 
@@ -458,14 +468,14 @@ namespace WETT.Data
                     .ValueGeneratedOnAdd()
                     .HasColumnName("Product Id");
 
+                entity.Property(e => e.InventoryLocationId).HasColumnName("Inventory Location Id");
+
                 entity.Property(e => e.Date).HasColumnType("date");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("Insert UserId");
-
-                entity.Property(e => e.InventoryLocationId).HasColumnName("Inventory Location Id");
 
                 entity.HasOne(d => d.InventoryLocation)
                     .WithMany(p => p.Inventories)
@@ -474,8 +484,8 @@ namespace WETT.Data
                     .HasConstraintName("FK_Inventory_Inventory Location");
 
                 entity.HasOne(d => d.Product)
-                    .WithOne(p => p.Inventory)
-                    .HasForeignKey<Inventory>(d => d.ProductId)
+                    .WithMany(p => p.Inventories)
+                    .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Inventory_Product");
             });
@@ -495,38 +505,101 @@ namespace WETT.Data
             {
                 entity.ToTable("Inventory Tx");
 
+                entity.HasIndex(e => e.StockAdjCode, "IX_Stock_Adj_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.InventoryTxId).HasColumnName("Inventory Tx Id");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
+                entity.Property(e => e.FromInventoryLocationId).HasColumnName("From Inventory Location Id");
+
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
-                entity.Property(e => e.InventoryTxReasonId).HasColumnName("Inventory Tx Reason Id");
+                entity.Property(e => e.InventoryTxTypeId).HasColumnName("Inventory Tx Type Id");
 
-                entity.Property(e => e.UpdateTimestamp)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.PortOfEntry)
+                    .HasMaxLength(50)
+                    .HasColumnName("Port of Entry");
+
+                entity.Property(e => e.PreviousTransactionNo)
+                    .HasMaxLength(50)
+                    .HasColumnName("Previous Transaction No");
+
+                entity.Property(e => e.Probill).HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseOrder)
+                    .HasMaxLength(20)
+                    .HasColumnName("Purchase Order");
+
+                entity.Property(e => e.Seal).HasMaxLength(20);
+
+                entity.Property(e => e.ShippingLocationId)
+                    .HasColumnName("Shipping Location Id")
+                    .IsSparse();
+
+                entity.Property(e => e.StockAdjCode)
+                    .HasMaxLength(20)
+                    .HasColumnName("Stock Adj Code");
+
+                entity.Property(e => e.SupplierId)
+                    .HasColumnName("Supplier Id")
+                    .IsSparse();
+
+                entity.Property(e => e.ToInventoryLocationId).HasColumnName("To Inventory Location Id");
+
+                entity.Property(e => e.TransactionNo)
+                    .HasMaxLength(50)
+                    .HasColumnName("Transaction No");
+
+                entity.Property(e => e.TruckingCompanyId)
+                    .HasColumnName("Trucking Company Id")
+                    .IsSparse();
+
+                entity.Property(e => e.UpdateTimestamp).HasColumnName("Update Timestamp");
 
                 entity.Property(e => e.UpdateUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Update UserId");
 
-                entity.HasOne(d => d.InventoryTxReason)
+                entity.HasOne(d => d.FromInventoryLocation)
+                    .WithMany(p => p.InventoryTxFromInventoryLocations)
+                    .HasForeignKey(d => d.FromInventoryLocationId)
+                    .HasConstraintName("FK_Inventory Tx_From Inventory Location");
+
+                entity.HasOne(d => d.InventoryTxType)
                     .WithMany(p => p.InventoryTxes)
-                    .HasForeignKey(d => d.InventoryTxReasonId)
+                    .HasForeignKey(d => d.InventoryTxTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Inventory Tx_Inventory Tx Reason");
+                    .HasConstraintName("FK_Inventory Tx_Inventory Tx Type");
+
+                entity.HasOne(d => d.ShippingLocation)
+                    .WithMany(p => p.InventoryTxes)
+                    .HasForeignKey(d => d.ShippingLocationId)
+                    .HasConstraintName("FK_Inventory Tx_Shipping Location");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.InventoryTxes)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK_Inventory Tx_Supplier");
+
+                entity.HasOne(d => d.ToInventoryLocation)
+                    .WithMany(p => p.InventoryTxToInventoryLocations)
+                    .HasForeignKey(d => d.ToInventoryLocationId)
+                    .HasConstraintName("FK_Inventory Tx_To Inventory Location");
+
+                entity.HasOne(d => d.TruckingCompany)
+                    .WithMany(p => p.InventoryTxes)
+                    .HasForeignKey(d => d.TruckingCompanyId)
+                    .HasConstraintName("FK_Inventory Tx_Trucking Company");
             });
 
             modelBuilder.Entity<InventoryTxDetail>(entity =>
@@ -535,23 +608,44 @@ namespace WETT.Data
 
                 entity.Property(e => e.InventoryTxDetailId).HasColumnName("Inventory Tx Detail Id");
 
-                entity.Property(e => e.InventoryLocationId).HasColumnName("Inventory Location Id");
+                entity.Property(e => e.FromInventoryLocationId).HasColumnName("From Inventory Location Id");
+
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
+
+                entity.Property(e => e.InsertUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert Userid");
 
                 entity.Property(e => e.InventoryTxId).HasColumnName("Inventory Tx Id");
 
+                entity.Property(e => e.InventoryTxReasonId).HasColumnName("Inventory Tx Reason Id");
+
                 entity.Property(e => e.ProductId).HasColumnName("Product Id");
 
-                entity.HasOne(d => d.InventoryLocation)
-                    .WithMany(p => p.InventoryTxDetails)
-                    .HasForeignKey(d => d.InventoryLocationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Inventory Tx Detail_Inventory Location");
+                entity.Property(e => e.ToInventoryLocationId).HasColumnName("To Inventory Location Id");
+
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
+
+                entity.Property(e => e.UpdateUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
 
                 entity.HasOne(d => d.InventoryTx)
                     .WithMany(p => p.InventoryTxDetails)
                     .HasForeignKey(d => d.InventoryTxId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Inventory Tx Detail_Inventory Tx");
+
+                entity.HasOne(d => d.InventoryTxReason)
+                    .WithMany(p => p.InventoryTxDetails)
+                    .HasForeignKey(d => d.InventoryTxReasonId)
+                    .HasConstraintName("FK_Inventory Tx Detail_Inventory Tx Reason");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.InventoryTxDetails)
@@ -569,6 +663,22 @@ namespace WETT.Data
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<InventoryTxType>(entity =>
+            {
+                entity.ToTable("Inventory Tx Type");
+
+                entity.Property(e => e.InventoryTxTypeId).HasColumnName("Inventory Tx Type Id");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.InventoryTxTypeCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("Inventory Tx Type Code");
             });
 
             modelBuilder.Entity<MbllCustomer>(entity =>
@@ -598,14 +708,11 @@ namespace WETT.Data
                     .HasColumnName("Customer Status")
                     .IsFixedLength();
 
-                entity.Property(e => e.InsertTimestamp)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Municipality).HasMaxLength(25);
 
@@ -668,13 +775,11 @@ namespace WETT.Data
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.ItemNumber)
                     .IsRequired()
@@ -739,14 +844,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.PackSize).HasColumnName("Pack Size");
 
@@ -763,14 +866,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.UpdateTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Update Timestamp");
 
                 entity.Property(e => e.UpdateUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Update UserId");
 
                 entity.HasOne(d => d.Supplier)
                     .WithMany(p => p.Products)
@@ -792,6 +893,32 @@ namespace WETT.Data
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<ShippingLocation>(entity =>
+            {
+                entity.ToTable("Shipping Location");
+
+                entity.Property(e => e.ShippingLocationId).HasColumnName("Shipping Location Id");
+
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
+
+                entity.Property(e => e.InsertUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert Userid");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdateTimestamp).HasColumnName("Update Timestamp");
+
+                entity.Property(e => e.UpdateUserid)
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
+            });
+
             modelBuilder.Entity<Supplier>(entity =>
             {
                 entity.ToTable("Supplier");
@@ -800,6 +927,12 @@ namespace WETT.Data
                     .IsUnique();
 
                 entity.Property(e => e.SupplierId).HasColumnName("Supplier Id");
+
+                entity.Property(e => e.ActiveFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.Address1)
                     .IsRequired()
@@ -841,14 +974,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.InsertTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Insert Timestamp");
 
                 entity.Property(e => e.InsertUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -867,80 +998,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.UpdateTimestamp)
                     .HasPrecision(0)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("Update Timestamp");
 
                 entity.Property(e => e.UpdateUserId)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
-            });
-
-            modelBuilder.Entity<SupplierOrder>(entity =>
-            {
-                entity.ToTable("Supplier Order");
-
-                entity.Property(e => e.SupplierOrderId).HasColumnName("Supplier Order Id");
-
-                entity.Property(e => e.InsertTimestamp)
-                    .HasPrecision(0)
-                    .HasColumnName("Insert Timestamp")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.InsertUserId)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .HasColumnName("Insert UserId")
-                    .HasDefaultValueSql("(user_name())");
-
-                entity.Property(e => e.OrderDate)
-                    .HasColumnType("date")
-                    .HasColumnName("Order Date");
-
-                entity.Property(e => e.SupplierId).HasColumnName("Supplier Id");
-
-                entity.Property(e => e.UpdateTimestamp)
-                    .HasPrecision(0)
-                    .HasColumnName("Update Timestamp")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.UpdateUserId)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .HasColumnName("Update UserId")
-                    .HasDefaultValueSql("(user_name())");
-
-                entity.HasOne(d => d.Supplier)
-                    .WithMany(p => p.SupplierOrders)
-                    .HasForeignKey(d => d.SupplierId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Supplier Order_Supplier");
-            });
-
-            modelBuilder.Entity<SupplierOrderDetail>(entity =>
-            {
-                entity.ToTable("Supplier Order Detail");
-
-                entity.Property(e => e.SupplierOrderDetailId).HasColumnName("Supplier Order Detail Id");
-
-                entity.Property(e => e.InventoryLocationId).HasColumnName("Inventory Location Id");
-
-                entity.Property(e => e.ProductId).HasColumnName("Product Id");
-
-                entity.Property(e => e.SupplierOrderId).HasColumnName("Supplier Order Id");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.SupplierOrderDetails)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Supplier Order Detail_Product");
-
-                entity.HasOne(d => d.SupplierOrder)
-                    .WithMany(p => p.SupplierOrderDetails)
-                    .HasForeignKey(d => d.SupplierOrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Supplier Order Detail_Supplier Order");
+                    .HasColumnName("Update UserId");
             });
 
             modelBuilder.Entity<Territory>(entity =>
@@ -952,6 +1015,34 @@ namespace WETT.Data
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TruckingCompany>(entity =>
+            {
+                entity.ToTable("Trucking Company");
+
+                entity.Property(e => e.TruckingCompanyId).HasColumnName("Trucking Company Id");
+
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
+
+                entity.Property(e => e.InsertUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert Userid");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
+
+                entity.Property(e => e.UpdateUserid)
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
             });
 
             OnModelCreatingPartial(modelBuilder);

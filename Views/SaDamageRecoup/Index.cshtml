@@ -6,35 +6,42 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Stock Adjustment- Damage/Recoup</h1>
+    <h1 class="display-4">Stock Adjustment-Damage/Recoup</h1>
 </div>
 <fieldset class="scheduler-border">
-    <legend class="scheduler-border">Search</legend>
-    <div class="input-group mb-3">
-        <label for="date">Transaction Date:</label>
-        <input type="date" id="date" name="date">
-        <input type="text" class="form-control" placeholder="ProductName" aria-label="ProductName" aria-describedby="basic-addon2" id="productName">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Search</button>
-        </div>
-        <input type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Search</button>
-        </div>
-    </div>
+  <legend class="scheduler-border">Search</legend>
+  <div class="container-flow">
+  <div class="row">
+           <div class="col-sm-3">
+         <label for="date" style="font-size:14px;">Transaction Date:</label>
+         <input type="date" style="font-size:14px;" id="date" name="date">
+           </div>
+           
+           <div class="col-sm-5">
+         <input type="text"  style="font-size:10px;" class="form-control" placeholder="Notes" id="comments" name="comments">
+             </div>
+            <div class="col-sm-2">
+          <input type="text" style="font-size:10px;" name="input" id="saCode" value="SA Code" readonly>
+           </div>
+            <div class="col-sm-2 text-right">
+          <button class="btn btn-outline-secondary" id="save" type="button">Save</button>  
+            </div>        
+</div>
+</div>
 </fieldset>
 
 <table id="saDamageRecoup" style="align: center"></table>
 <div id="jqGridPager"></div>
-
 @section scripts {
+
 <script type="text/javascript">
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
-    $.jgrid.defaults.responsive = true;
-
+     $.jgrid.defaults.responsive = true;
+    var header = false;
     var curRowId = -1;
-    var name="";
+    var ProductNameList= [];
+    var name ="";
     $(document).ready(function() {
        $("#saDamageRecoup").jqGrid({
                url: 'SaDamageRecoup/GetAll',
@@ -64,36 +71,34 @@
                             delOptions: { url: 'SaDamageRecoup/Delete' }
                         }
                     },
-                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'},key:true},
-                   { label: 'Sa Code',name: 'saCode', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Date',name: 'date',fixed:true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Supplier',name: 'supplierName',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
-                   dataInit: function (elem) {
-                    name = $(elem).val();
-                    $('#saDamageRecoup').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    $('#saDamageRecoup').setColProp('productId', { editoptions: { value:getProductName()} });
-                   console.log(name);
-                    },
+                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,                                                             
+                    editoptions: { value:getProductName(),
+                                  dataInit: function(elem) {
+                                        
+                                   $(elem).autocomplete({source: ProductNameList,autoFocus: true,minLength: 0 });   
+                                    //console.log(elem);
+                                  },
                        dataEvents: [
-                    {
+                           {
                         type: 'change',
                         fn: function(e) {
-                       name =$('#saDamageRecoup').jqGrid ('getCell', curRowId, 'supplierName');
-                      $('#saDamageRecoup').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                      $('#saDamageRecoup').setColProp('productId', { editoptions: { value:getProductName()} });
-                       jQuery("saDamageRecoup").trigger('reloadGrid');
-                       console.log(name);
-                       
-                        }
-                    }
-                       ]
-                    }},
-                   { label: 'Product Sku',name: 'productSku',fixed:true, editable: true,edittype:"select",formatter:'select'},
-                   { label: 'Product Name',name: 'productId',fixed:true, editable: true, edittype:"select",formatter:'select',editoptions:{value:getProductName()}},
-                   { label: 'Locations',name: 'inventoryLocationId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
-                   { label: 'Adjusted Stock',name: 'amount',fixed:true, editable: true, edittype:"text"},
-                   { label: 'Reasons',name: 'inventoryTxReasonId',fixed:true, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
-                   { label: 'Notes',name: 'comments',fixed:true, editable: true, edittype:"text"}
+                       name= $('#saDamageRecoup').getCell(curRowId, 'productName');
+                       $('#saDamageRecoup').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(name));
+                       $('#saDamageRecoup').jqGrid('setCell',curRowId,'productSku', getProductSku(name));
+                                            
+                         }
+                     }]
+                   }},
+                   { label: 'Supplier',name: 'supplierName',fixed:true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
+                   { label: 'Updated Stock',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text"},
+                   { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
+                   { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text",}
 
                  ], 
                viewrecords: true,
@@ -102,6 +107,7 @@
                pager: "#jqGridPager",
                editurl: 'SaDamageRecoup/Update',
                onSelectRow: function(rowid) {
+                
                 curRowId=rowid;
 
 
@@ -114,12 +120,20 @@
 
            $('#saDamageRecoup').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
-               { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
-               // options for the Add Dialog
+               { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+              
                {
                   
                },
                {
+             zIndex:99,
+              afterShowForm: function () {
+              var idSelector = $.jgrid.jqID(this.p.id);
+              if(header==false) {
+              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              alert("Error: Need Header");
+              }
+              },
                    closeAfterAdd: true,
                    recreateForm: true,
                    errorTextFormat: function (data) {
@@ -129,39 +143,44 @@
                });
 
        });
+
        $('#saDamageRecoup').setGridWidth(parseInt($(window).width()) - 20);
        $("#comments").on('change keyup paste', function () {
-           SearchByProductName();
+           SearchByComments();
        });
        $("#date").on('change keyup paste', function () {
            SearchByDate();
            
        }); 
-            $("#saCode").on('change keyup paste', function () {
-           SearchBySaCode();
+       $("#save").on('click', function () {
+           SaveHeader();
         });
-    function SearchByProductName()
+    
+            function SaveHeader()
     {
-        //  Fetch the text from our <input> control
-        var searchString = $("#productName").val();
-        
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+         header = true;
+        var date = $("#date").val();
+        var notes = $("#comments").val();
+        if(date=="")
+        {
+         var currentDate = new Date();
+         var day = ("0" + currentDate.getDate()).slice(-2);
+         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+         date = today;
+        }
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('SaDamageRecoup/CreateHeader?data='+date+'/'+notes, function(data) {
+ 
+        $("#saCode").val(data);
+                    });
+            $.ajaxSetup( { "async": true } );
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
-
-        f.rules.push({ field: "productName", op: "cn", data: searchString });
-
-        var grid = $('#saDamageRecoup');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
     }
-        function SearchBySaCode()
+    function SearchByComments()
     {
         //  Fetch the text from our <input> control
-        var searchString = $("#saCode").val();
+        var searchString = $("#comments").val();
         
         //  Prepare to pass a new search filter to our jqGrid
         var f = { groupOp: "AND", rules: [] };
@@ -169,7 +188,7 @@
         //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
         //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "saCode", op: "cn", data: searchString });
+        f.rules.push({ field: "comments", op: "cn", data: searchString });
 
         var grid = $('#saDamageRecoup');
         grid[0].p.search = f.rules.length > 0;
@@ -195,59 +214,61 @@
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
 
-            function getSupplierNames() {
-        var SupplierList= {};
+            function getSupplierNames(value) {
+        var Supplier="";
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaDamageRecoup/CreateList', function(data) {
         if (data != null) {
-            
+           
             for (var i = 0; i < data.length; i++) {
-             SupplierList[data[i].text]=data[i].text;
-              } 
+                if(value == data[i].value)
+                {
+             Supplier= data[i].text;
+                }
+                } 
             }//if
 
             });
             $.ajaxSetup( { "async": true } );
-           return SupplierList; 
+           return Supplier; 
 
         }
 
-              function getProductSku() {
-        var ProductSkuList= {};
+              function getProductSku(value) {
+        var ProductSku= "";
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaDamageRecoup/CreateProductSkuList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-                if(data[i].value == name)
+                if(data[i].value == value)
                 {
-             ProductSkuList[data[i].text]=data[i].text;
+             ProductSku=data[i].text;
                 } 
               }
             }//if
 
             });
             $.ajaxSetup( { "async": true } );
-
-           return ProductSkuList; 
+            console.log(ProductSku);
+           return ProductSku; 
 
         }
-
                 function getProductName() {
-        var ProductNameList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaDamageRecoup/CreateProductName', function(data) {
         if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                if(data[i].value == name || name =="")
-                {
-             ProductNameList[data[i].id]=data[i].text;
-                } 
-              }
-            }//if
+
+
+            for (var i = 0; i < data.length; i++) 
+            {
+                ProductNameList[i]=data[i].value;
+            }
+         }//if
 
             });
             $.ajaxSetup( { "async": true } );
-
+            
+            console.log(ProductNameList);
            return ProductNameList; 
 
         }

@@ -18,6 +18,7 @@ namespace WETT.Models
 
         public string ProductName { get; set; }
         public long InventoryLocationId { get; set; }
+        public long InventoryTxReasonsId { get; set; }
 
         public int Amount { get; set; }
 

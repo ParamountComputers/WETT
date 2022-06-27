@@ -26,10 +26,10 @@ namespace WETT.Data
         public string TransactionNo { get; set; }
         public string PreviousTransactionNo { get; set; }
         public string Comments { get; set; }
-        public string InsertUserId { get; set; }
-        public DateTime InsertTimestamp { get; set; }
-        public string UpdateUserId { get; set; }
-        public DateTime UpdateTimestamp { get; set; }
+      ///  public string InsertUserId { get; set; }
+      //  public DateTime InsertTimestamp { get; set; }
+      //  public string UpdateUserId { get; set; }
+      //  public DateTime UpdateTimestamp { get; set; }
 
         public virtual InventoryLocation FromInventoryLocation { get; set; }
         public virtual InventoryTxType InventoryTxType { get; set; }

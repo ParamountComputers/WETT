@@ -11,6 +11,7 @@ namespace WETT.Controllers
 {
     public class SaDamageRecoupController : Controller
     {
+        
         public static DateTime searchDate;
         public static string Notes;
         private readonly WETT_DBContext _context;
@@ -21,7 +22,6 @@ namespace WETT.Controllers
         }
         public async Task<IActionResult> Index()
         {
-
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -50,82 +50,85 @@ namespace WETT.Controllers
 
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.Suppliers;
-            // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var SaDamageRecoupData = from b in _context.InventoryTxDetails
-                                     join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                                     join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                     join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                                     join e in _context.Products on b.ProductId equals e.ProductId
-                                     join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                     join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                     select new SaDamageRecoupViewModel
-                                     {
-                                         InventoryTxDetailId = b.InventoryTxDetailId,
-                                         ProductSku = e.Sku,
-                                         SupplierName = f.Name,
-                                         ProductId = e.ProductId,
-                                         ProductName = e.Description,
-                                         InventoryLocationId = d.InventoryLocationId,
-                                         InventoryTxReasonsId = g.InventoryTxReasonId,
-                                         Amount = b.Amount,
-                                         InventoryTxTypeId = c.InventoryTxTypeId,
-                                         Comments = a.Comments,
-                                         Date = a.Date, //.ToShortDateString(),
-                                         SaCode = a.StockAdjCode
+          var  SaDamageRecoupData = from b in _context.InventoryTxDetails
+                                 join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                                 join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                 join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
+                                 join e in _context.Products on b.ProductId equals e.ProductId
+                                 join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                 join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
 
-                                     };
+                                 select new SaDamageRecoupViewModel
+                                 {
+                               InventoryTxDetailId = b.InventoryTxDetailId,
+                             ProductSku = e.Sku,
+                             SupplierName = f.Name,
+                             ProductId = e.ProductId,
+                             ProductName = e.Description,
+                             InventoryLocationId = d.InventoryLocationId,
+                             InventoryTxReasonsId = g.InventoryTxReasonId,
+                             Amount = b.Amount,
+                             InventoryTxTypeId = c.InventoryTxTypeId,
+                             //Comments = a.Comments,
+                             Date = a.Date, //.ToShortDateString(),
+                             SaCode = a.StockAdjCode
 
-            SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
+                                 };
 
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
+            
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
+                bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+
+                if (issearch)
+                    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
                     {
-                        case "date":
-                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = DateTime.Parse(rule.data);
-                            break;
-                        case "comments":
+                        switch (rule.field)
+                        {
+                            case "date":
+                                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+                                searchDate = DateTime.Parse(rule.data);
+                                break;
+                            case "comments":
                             SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Comments.Contains(rule.data) && w.Date.Equals(searchDate));
-                            Notes = rule.data;
-                            break;
+                                Notes = rule.data;
+                                break;
+                        }
                     }
+
+                int totalRecords = SaDamageRecoupData.Count();
+                var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
+                int currentPageIndex = request.page - 1;
+
+                //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
+                if (request.sord.ToUpper() == "DESC")
+                {
+                    SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.OrderByDescending(t => t.ProductName);
+                    SaDamageRecoupData = SaDamageRecoupData.Skip(currentPageIndex * request.rows).Take(request.rows);
                 }
+                else
+                {
+                    SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.OrderBy(t => t.ProductName);
+                    SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                }
+                var jsonData = new
+                {
+                    total = totalPages,
+                    request.page,
+                    records = totalRecords,
+                    rows = SaDamageRecoupData
+                };
 
-            int totalRecords = SaDamageRecoupData.Count();
-            var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
-            int currentPageIndex = request.page - 1;
 
-            //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
-            if (request.sord.ToUpper() == "DESC")
-            {
-                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.OrderByDescending(t => t.ProductName);
-                SaDamageRecoupData = SaDamageRecoupData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
-            else
-            {
-                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.OrderBy(t => t.ProductName);
-                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
-            var jsonData = new
-            {
-                total = totalPages,
-                request.page,
-                records = totalRecords,
-                rows = SaDamageRecoupData
-            };
+                return Json(jsonData);
 
-            return Json(jsonData);
         }
         public JsonResult Add(SaDamageRecoupViewModel p)
         {
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
+                //comments = p.Comments,
                 ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
@@ -170,9 +173,11 @@ namespace WETT.Controllers
                 Date = DateTime.Parse(li[0]),
                 Comments = li[1],
                 InventoryTxTypeId = 2,
-                StockAdjCode ="DR8"                
+                StockAdjCode ="DR"                
             };
             _context.InventoryTxes.Add(s);
+            _context.SaveChanges();
+            s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
             _context.SaveChanges();
             CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);

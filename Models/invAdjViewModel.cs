@@ -29,5 +29,6 @@ namespace WETT.Models
         public DateTime Date { get; set; }
 
         public string SaCode { get; set; }
+        public long InventoryTxId { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace WETT.Models
 {
     public class SaDamageRecoupViewModel
     {
+        public long InventoryTxId { get; set; }
         public long InventoryTxDetailId { get; set; }
         public string ProductSku { get; set; }
 

@@ -190,7 +190,7 @@ namespace WETT.Controllers
             {
                 Date = DateTime.Parse(li[0]),
                 Comments = li[1],
-                InventoryTxTypeId = 2,
+                InventoryTxTypeId = 1,
                 StockAdjCode = "IA"
             };
 

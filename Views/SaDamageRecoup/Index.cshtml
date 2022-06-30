@@ -80,7 +80,7 @@
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,                                                             
+                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { value:getProductName(),
                                   dataInit: function(elem) {
                     curRowId = $('#saDamageRecoup').getGridParam('selrow');        
@@ -153,6 +153,38 @@
        $("#save").on('click', function () {
            SaveHeader();
         });
+                      function IsProduct(value,colname)
+       {
+           var containsProduct = false;
+                   $.ajaxSetup( { "async": false } );
+        $.getJSON('InvAdj/CreateProductName', function(data) {
+        if (data != null) {
+
+
+            for (var i = 0; i < data.length; i++) 
+            {
+                console.log(data[i].value);
+         if(value== data[i].value)
+         {
+             
+           containsProduct = true;
+               
+         }
+            }
+                         }//if
+
+            });
+            if(containsProduct==true)
+            {
+              $.ajaxSetup( { "async": true } );
+              return [true,""];
+            }
+            else{
+            $.ajaxSetup( { "async": true } );
+            return [false,"Please Enter Valid Product"];
+            }
+
+      }
         function date()
         {
          var currentDate = new Date();

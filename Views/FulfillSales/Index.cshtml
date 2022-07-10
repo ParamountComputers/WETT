@@ -1,0 +1,477 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "FulfillSales";
+}
+
+<div class="text-center">
+    <h1 class="display-5">Fulfill Sales</h1>
+</div>
+<fieldset class="scheduler-border"  style="max-height: 18rem;">
+    <legend class="scheduler-border">Search</legend>
+    <form class="row row-cols-lg-auto g-3">
+        <div class="col-sm-3">
+            <label for="date">Order Date:</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <div class="col-sm-3">
+            <label for="truckingCompanyDropdown"class="d-inline">Supplier:</label>  
+            <select class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
+        </div>
+        <div class="col-sm-3">
+            <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
+            <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+        </div>
+    </form>
+    <form class="row row-cols-sm-auto g-3">
+        <div class="col">
+            <label for="date">Delivery Date:</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Pending:" aria-label="Pending:" aria-describedby="basic-addon2" id="Pending">
+        </div>
+        <div class="col">
+                <input type="text" class="form-control" placeholder="Fulfilled:" aria-label="Fulfilled:" aria-describedby="basic-addon2" id="Fulfilled">
+        </div>
+        <div class="col-sm-3">
+            <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
+            <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+        </div>
+    </form>
+   
+</fieldset>
+
+<table id="FulfillSalesHdr" style="align: center"></table>
+<div id="jqGridPager"></div>
+
+<div class="text-center">
+    <h1 class="display-8">Details</h1>
+</div>
+
+<table id="FulfillSalesDtls" style="align: center"></table>
+<div id="jqGridPager2"></div>
+
+@section scripts {
+<script type="text/javascript">
+
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+    $.jgrid.defaults.responsive = true;
+    var curRowId = -1;
+    var name="";
+    $(document).ready(function() {
+       $("#FulfillSalesHdr").jqGrid({
+               url: 'FulfillSales/GetAllHdr',
+               mtype: "GET",
+               guiStyle: "bootstrap",
+               iconSet: "fontAwesome",
+               idPrefix: "gb1_",
+               datatype: "json",
+               ajaxSelectOptions: {
+                          type: "GET", 
+                          contentType: 'application/json; charset=utf-8',
+                          dataType: "json",
+                          cache: false,
+                          },
+               autowidth:true,
+               colModel: [
+                   {
+                        label: "Edit Actions",
+                        name: "actions",
+                        width: 100,
+                        formatter: "actions",
+                        formatoptions: {
+                            keys: true,
+                            editOptions: { },
+                            addOptions: { },
+                            delOptions: { url: 'FulfillSales/DeleteHdr' }
+                        }
+                    },
+                   { label: 'Customer Order Id',name: 'CustomerOrderId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Order Date',name: 'OrderDate', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Delivery Date',name: 'DelveryDate', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Order Number',name: 'OrderNumber', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Customer',name: 'Customer', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'City',name: 'City', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Carrier',name: 'Carrier', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
+
+
+
+
+                   //editable: true, edittype:"select",formatter:'select', editoptions: {value:getCarrierNames(),                
+                  // dataInit: function (elem) {
+                  //      name = $(elem).val();
+                  //      $('#FulfillSalesHdr').setColProp('productSku', { editoptions: { value:getProductSku()} });
+                  //      $('#FulfillSalesHdr').setColProp('productId', { editoptions: { value:getProductName()} });
+                       // console.log(name);
+                 //   },
+                 //  dataEvents: [
+                 //   {
+                 //       type: 'change',
+                 //       fn: function(e) {
+                 //      name =$('#FulfillSalesHdr').jqGrid ('getCell', curRowId, 'supplierName');
+                     // $('#FulfillSalesHdr').setColProp('productSku', { editoptions: { value:getProductSku()} });
+                    //  $('#FulfillSalesHdr').setColProp('productId', { editoptions: { value:getProductName()} });
+                //       jQuery("FulfillSalesHdr").trigger('reloadGrid');
+                 //      console.log(name);
+                       
+                 //       }
+                 //       }
+                //     ]
+                 //   }
+                 //  },
+                  { label: 'Instructions',name: 'Instructions', editable: true,editoptions: { readonly: 'readonly'}},
+                  { label: 'Status',name: 'Status',  editable: true,editoptions: { readonly: 'readonly'}}
+
+
+                 ], 
+               viewrecords: true,
+               height: 250,
+               rowNum: 20,
+               pager: "#jqGridPager",
+               editurl: 'FulfillSales/UpdateHdr',
+               onSelectRow: function(rowid) {
+                curRowId=rowid;
+
+
+               }
+
+           }
+        )
+               
+
+
+
+        $('#FulfillSalesHdr').navGrid('#jqGridPager',
+            // the buttons to appear on the toolbar of the grid
+            { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            // options for the Add Dialog
+            {
+                  
+            },
+            {
+                closeAfterAdd: true,
+                recreateForm: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                },
+                url: "FulfillSales/AddHdr"
+            }
+         );
+
+
+         $("#FulfillSalesDtls").jqGrid({
+               url: 'FulfillSales/GetAllDtls',
+               mtype: "GET",
+               guiStyle: "bootstrap",
+               iconSet: "fontAwesome",
+               idPrefix: "gb1_",
+               datatype: "json",
+               ajaxSelectOptions: {
+                          type: "GET", 
+                          contentType: 'application/json; charset=utf-8',
+                          dataType: "json",
+                          cache: false,
+                          },
+               autowidth:true,
+               colModel: [
+                   {
+                        label: "Edit Actions",
+                        name: "actions",
+                        width: 100,
+                        formatter: "actions",
+                        formatoptions: {
+                            keys: true,
+                            editOptions: { },
+                            addOptions: { },
+                            delOptions: { url: 'FulfillSales/DeleteDtls' }
+                        }
+                    },
+                    { label: 'Customer Order Detail Id',name: 'CustomerOrderDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Customer Order Id',name: 'CustomerOrderId', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Product ID(Sku)',name: 'ProductSku', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Product Desc',name: 'ProductDesc', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Stoc kQty',name: 'StockQty', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Qty Ordered',name: 'QtyOrdered', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Qty Fulfilled',name: 'QtyFulfilled', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Notes',name: 'Notes', editable: true,editoptions: { readonly: 'readonly'}}
+
+
+                 ], 
+               viewrecords: true,
+               height: 250,
+               rowNum: 20,
+               pager: "#jqGridPager2",
+               editurl: 'FulfillSales/UpdateDtls',
+               onSelectRow: function(rowid) {
+                curRowId=rowid;
+
+
+               }
+
+           }
+        )
+               
+
+
+
+        $('#FulfillSalesDtls').navGrid('#jqGridPager2',
+            // the buttons to appear on the toolbar of the grid
+            { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            // options for the Add Dialog
+            {
+                  
+            },
+            {
+                closeAfterAdd: true,
+                recreateForm: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                },
+                url: "FulfillSales/AddDtls"
+            }
+         );
+
+     });
+//$(document).ready(function () {  
+//       $.ajax({  
+//           type: "GET",  
+//           url: "FulfillSales/CreateLocationsList",  
+//           data: "{}",  
+//           success: function (data) {  
+//               var s = '<option value="-1">Select a Location</option>';  
+//               for (var i = 0; i < data.length; i++) {  
+//                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+//               }  
+//               $("#locationsDropdown").html(s);  
+//           }  
+//       });  
+//   });
+//   $(document).ready(function () {  
+//       $.ajax({  
+//           type: "GET",  
+//           url: "FulfillSales/CreateLocationsList",  
+//           data: "{}",  
+//           success: function (data) {  
+//               var s = '<option value="-1">Select a Trcuking company</option>';  
+//               for (var i = 0; i < data.length; i++) {  
+//                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+//               }  
+//               $("#truckingCompanyDropdown").html(s);  
+//           }  
+//       });  
+//   });
+//       $('#FulfillSalesHdr').setGridWidth(parseInt($(window).width()) - 20);
+//       $("#productName").on('change keyup paste', function () {
+//           SearchByProductName();
+//       });
+//       $("#date").on('change keyup paste', function () {
+//           SearchByDate();
+           
+//       }); 
+//              $("#comments").on('change keyup paste', function () {
+//           SearchByComments();
+           
+//       }); 
+//            $("#saCode").on('change keyup paste', function () {
+//           SearchBySaCode();
+//        });
+//               $("#locationsDropdown").on('change keyup paste', function () {
+//           SearchByLocations();
+           
+//       }); 
+//                   $("#purchaseOrder").on('change keyup paste', function () {
+//           SearchByPurchaseOrder()
+//        });
+//    function SearchByProductName()
+//    {
+//        //  Fetch the text from our <input> control
+//        var searchString = $("#productName").val();
+        
+//        //  Prepare to pass a new search filter to our jqGrid
+//        var f = { groupOp: "AND", rules: [] };
+
+//        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+//        //  In this example, I'm searching through the UserName column.
+
+//        f.rules.push({ field: "productName", op: "cn", data: searchString });
+
+//        var grid = $('#FulfillSalesHdr');
+//        grid[0].p.search = f.rules.length > 0;
+//        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+//        grid.trigger("reloadGrid", [{ page: 1 }]);
+//    }
+//        function SearchBySaCode()
+//    {
+//        //  Fetch the text from our <input> control
+//        var searchString = $("#saCode").val();
+        
+//        //  Prepare to pass a new search filter to our jqGrid
+//        var f = { groupOp: "AND", rules: [] };
+
+//        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+//        //  In this example, I'm searching through the UserName column.
+
+//        f.rules.push({ field: "saCode", op: "cn", data: searchString });
+
+//        var grid = $('#FulfillSalesHdr');
+//        grid[0].p.search = f.rules.length > 0;
+//        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+//        grid.trigger("reloadGrid", [{ page: 1 }]);
+//    }
+//        function SearchByDate()
+//    {
+//        //  Fetch the text from our <input> control
+//        var searchString = $("#date").val();
+        
+//        //  Prepare to pass a new search filter to our jqGrid
+//        var f = { groupOp: "AND", rules: [] };
+
+//        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+//        //  In this example, I'm searching through the UserName column.
+
+//        f.rules.push({ field: "date", op: "cn", data: searchString });
+
+//        var grid = $('#FulfillSalesHdr');
+//        grid[0].p.search = f.rules.length > 0;
+//        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+//        grid.trigger("reloadGrid", [{ page: 1 }]);
+//    }
+//            function SearchByComments()
+//    {
+//        //  Fetch the text from our <input> control
+//        var searchString = $("#comments").val();
+        
+//        //  Prepare to pass a new search filter to our jqGrid
+//        var f = { groupOp: "AND", rules: [] };
+
+//        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+//        //  In this example, I'm searching through the UserName column.
+
+//        f.rules.push({ field: "comments", op: "cn", data: searchString });
+
+//        var grid = $('#FulfillSalesHdr');
+//        grid[0].p.search = f.rules.length > 0;
+//        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+//        grid.trigger("reloadGrid", [{ page: 1 }]);
+//    }
+
+//        function SearchByLocations()
+//    {
+//        //  Fetch the text from our <input> control
+//        var searchString = $("#locationsDropdown").val();
+        
+//        //  Prepare to pass a new search filter to our jqGrid
+//        var f = { groupOp: "AND", rules: [] };
+
+//        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+//        //  In this example, I'm searching through the UserName column.
+
+//        f.rules.push({ field: "locationsDropdown", op: "cn", data: searchString });
+
+//        var grid = $('#FulfillSalesHdr');
+//        grid[0].p.search = f.rules.length > 0;
+//        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+//        grid.trigger("reloadGrid", [{ page: 1 }]);
+//    }
+    
+//     function SearchByPurchaseOrder()
+//    {
+//        //  Fetch the text from our <input> control
+//        var searchString = $("#purchaseOrder").val();
+        
+//        //  Prepare to pass a new search filter to our jqGrid
+//        var f = { groupOp: "AND", rules: [] };
+
+//        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+//        //  In this example, I'm searching through the UserName column.
+
+//        f.rules.push({ field: "purchaseOrder", op: "cn", data: searchString });
+
+//        var grid = $('#FulfillSalesHdr');
+//        grid[0].p.search = f.rules.length > 0;
+//        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+//        grid.trigger("reloadGrid", [{ page: 1 }]);
+//    }
+//    //
+//    //End of search functions
+//    //
+
+//            function getSupplierNames() {
+//        var SupplierList= {};
+//        $.ajaxSetup( { "async": false } );
+//        $.getJSON('FulfillSales/CreateList', function(data) {
+//        if (data != null) {
+            
+//            for (var i = 0; i < data.length; i++) {
+//             SupplierList[data[i].text]=data[i].text;
+//              } 
+//            }//if
+
+//            });
+//            $.ajaxSetup( { "async": true } );
+//           return SupplierList; 
+
+//        }
+
+//              function getProductSku() {
+//        var ProductSkuList= {};
+//        $.ajaxSetup( { "async": false } );
+//        $.getJSON('FulfillSales/CreateProductSkuList', function(data) {
+//        if (data != null) {
+//            for (var i = 0; i < data.length; i++) {
+//                if(data[i].value == name)
+//                {
+//             ProductSkuList[data[i].text]=data[i].text;
+//                } 
+//              }
+//            }//if
+
+//            });
+//            $.ajaxSetup( { "async": true } );
+//           return ProductSkuList; 
+
+//        }
+//                function getProductName() {
+//        var ProductNameList= {};
+//        $.ajaxSetup( { "async": false } );
+//        $.getJSON('FulfillSales/CreateProductName', function(data) {
+//        if (data != null) {
+//            for (var i = 0; i < data.length; i++) {
+//                if(data[i].value == name || name =="")
+//                {
+//                    console.log(data[i].id);
+//                    console.log(data[i].text);
+//             ProductNameList[data[i].id]=data[i].text;
+//                } 
+//              }
+//            }//if
+
+//            });
+//            $.ajaxSetup( { "async": true } );
+
+//           return ProductNameList; 
+
+//        }
+//                 function getLocations() {
+//        var LocationList= {};
+//        $.ajaxSetup( { "async": false } );
+//        $.getJSON('FulfillSales/CreateLocationsList', function(data) {
+//        if (data != null) {
+//            for (var i = 0; i < data.length; i++) {
+//             LocationList[data[i].value]=data[i].text;
+                 
+//              }
+//            }//if
+
+//            });
+//            $.ajaxSetup( { "async": true } );
+//            console.log(LocationList);
+//           return LocationList; 
+
+//        }
+
+</script>
+}

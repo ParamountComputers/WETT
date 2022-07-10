@@ -26,24 +26,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Supplier" asp-action="Index">Suppliers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customer</a>
-                        </li>                  
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sales</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                 <a class="dropdown-item" asp-area="" asp-controller="FulfillSales" asp-action="Index">Fulfill Sales</a>
+                            </div>
+                         </li>                
                          <li class="nav-item dropdown">
-                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Stock Adjustment </a>
+                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Stock Adjustment</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                  <a class="dropdown-item" asp-area="" asp-controller="InvAdj" asp-action="Index">Inventory Adjustment</a>
                                  <a class="dropdown-item" asp-area="" asp-controller="SaDamageRecoup" asp-action="Index">Damage/Recoup</a>
                                  <a class="dropdown-item" asp-area="" asp-controller="SaStockReceived" asp-action="Index">Stock Received</a>
-                             </div>
+                            </div>
                          </li>
-                           
+                         <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Maintenance</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                 <a class="dropdown-item" asp-area="" asp-controller="Supplier" asp-action="Index">Supplier</a>
+                                 <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
+                                 <a class="dropdown-item" asp-area="" asp-controller="Customers" asp-action="Index">Customer</a>
+                             </div>
+                         </li> 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

@@ -81,13 +81,14 @@
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
-                    editoptions: { value:getProductName(),
+                    editoptions: { 
                                   dataInit: function(elem) {
                     curRowId = $('#invAdj').getGridParam('selrow');        
-                    $(elem).autocomplete({source: ProductNameList,autoFocus: true,minLength: 0, select:function (event, ui) {
-                    $('#invAdj').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
-                    $('#invAdj').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
-                    
+                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
+                   $('#invAdj').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
+                   $('#invAdj').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
+                    console.log(getSupplierNames(ui.item.value));
+                    console.log(getProductSku(ui.item.value));
                     $('input#supplierName').val(getSupplierNames(ui.item.value));
                     $('input#productSku').val(getProductSku(ui.item.value));
                 } });   
@@ -135,7 +136,7 @@
                    },
                    url: "InvAdj/Add"
                });
-
+               
        });
        $(document).ready(function () {  
            $('#date').val(date());
@@ -163,7 +164,7 @@
 
             for (var i = 0; i < data.length; i++) 
             {
-                console.log(data[i].value);
+               // console.log(data[i].value);
          if(value== data[i].value)
          {
              
@@ -199,16 +200,10 @@
             function SaveHeader()
     {
          header = true;
+         console.log($("#date").val());
         var date = $("#date").val();
         var notes = $("#comments").val();
-        if(date=="")
-        {
-         var currentDate = new Date();
-         var day = ("0" + currentDate.getDate()).slice(-2);
-         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
-         date = today;
-        }
+
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateHeader?data='+date+'/'+notes, function(data) {
  

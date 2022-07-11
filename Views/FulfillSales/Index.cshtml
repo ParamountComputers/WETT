@@ -11,7 +11,8 @@
 </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
     <legend class="scheduler-border">Search</legend>
-    <form class="row row-cols-lg-auto g-3">
+  <div class="container-flow">
+  <div class="row">
         <div class="col-sm-3">
             <label for="date">Order Date:</label>
             <input type="date" id="date" name="date">
@@ -24,8 +25,8 @@
             <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
             <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
         </div>
-    </form>
-    <form class="row row-cols-sm-auto g-3">
+    </div>
+    <div class="row">
         <div class="col">
             <label for="date">Delivery Date:</label>
             <input type="date" id="date" name="date">
@@ -40,7 +41,8 @@
             <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
             <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
         </div>
-    </form>
+      </div>
+    </div>
    
 </fieldset>
 
@@ -89,13 +91,13 @@
                             delOptions: { url: 'FulfillSales/DeleteHdr' }
                         }
                     },
-                   { label: 'Customer Order Id',name: 'CustomerOrderId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
-                   { label: 'Order Date',name: 'OrderDate', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Delivery Date',name: 'DelveryDate', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Order Number',name: 'OrderNumber', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Customer',name: 'Customer', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'City',name: 'City', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Carrier',name: 'Carrier', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Customer Order Id',name: 'customerOrderID',hidden:true, editable: true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Order Date',name: 'orderDate', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Delivery Date',name: 'delveryDate', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Order Number',name: 'orderNumber', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Customer',name: 'customer', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'City',name: 'city', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Carrier',name: 'carrier', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
 
 
 
@@ -122,8 +124,8 @@
                 //     ]
                  //   }
                  //  },
-                  { label: 'Instructions',name: 'Instructions', editable: true,editoptions: { readonly: 'readonly'}},
-                  { label: 'Status',name: 'Status',  editable: true,editoptions: { readonly: 'readonly'}}
+                  { label: 'Instructions',name: 'instructions', editable: true,editoptions: { readonly: 'readonly'}},
+                  { label: 'Status',name: 'status',  editable: true,editoptions: { readonly: 'readonly'}}
 
 
                  ], 
@@ -135,6 +137,14 @@
                onSelectRow: function(rowid) {
                 curRowId=rowid;
 
+
+               },
+               ondblClickRow: function(rowid) {
+                
+               var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
+                console.log(id);
+                getDetails(id);
+                 $("#FulfillSalesDtls").trigger('reloadGrid');
 
                }
 
@@ -189,14 +199,14 @@
                             delOptions: { url: 'FulfillSales/DeleteDtls' }
                         }
                     },
-                    { label: 'Customer Order Detail Id',name: 'CustomerOrderDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
-                   { label: 'Customer Order Id',name: 'CustomerOrderId', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Product ID(Sku)',name: 'ProductSku', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Desc',name: 'ProductDesc', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Stoc kQty',name: 'StockQty', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Qty Ordered',name: 'QtyOrdered', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Qty Fulfilled',name: 'QtyFulfilled', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Notes',name: 'Notes', editable: true,editoptions: { readonly: 'readonly'}}
+                    { label: 'Customer Order Detail Id',name: 'customerOrderDetailID', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Product ID(Sku)',name: 'productSku', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Product Desc',name: 'productDesc', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Stoc kQty',name: 'stockQty', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Qty Ordered',name: 'qtyOrdered', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Notes',name: 'notes', editable: true,editoptions: { readonly: 'readonly'}}
 
 
                  ], 
@@ -235,6 +245,21 @@
          );
 
      });
+
+            function getDetails(value) {
+        
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('FulfillSales/CreateDetails?data='+value, function(data) {
+
+
+            });
+            $.ajaxSetup( { "async": true } );
+          
+
+        }
+
+
+
 //$(document).ready(function () {  
 //       $.ajax({  
 //           type: "GET",  

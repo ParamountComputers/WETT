@@ -13,6 +13,8 @@ namespace WETT.Controllers
     {
         private DateTime searchDate;
         private readonly WETT_DBContext _context;
+        public static long CurrentHeaderId=-1;
+
         public FulfillSalesController(WETT_DBContext context)
         {
             _context = context;
@@ -146,7 +148,7 @@ namespace WETT.Controllers
         {
           //  var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var FulfillSalesDtlsData =  from a in _context.CustomerOrders
+            var AllFulfillSalesDtlsData =  from a in _context.CustomerOrders
                                         join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                         join c in _context.Products on b.ProductId equals c.ProductId
                                    select new FulfillSalesDtlsViewModel
@@ -162,7 +164,7 @@ namespace WETT.Controllers
                                        Notes = b.Notes
                                    };
 
-
+            var FulfillSalesDtlsData = AllFulfillSalesDtlsData;
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
@@ -179,6 +181,18 @@ namespace WETT.Controllers
 
                     }
                 }
+            if (CurrentHeaderId != -1)
+            {
+                //this is the type of transaction id
+                FulfillSalesDtlsData = FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
+
+            }
+            else
+            {
+                //this is to hide all transactons by type
+                FulfillSalesDtlsData = FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
+            }
+
 
             int totalRecords = FulfillSalesDtlsData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -205,7 +219,12 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
-        public JsonResult Add(FulfillSalesViewModel p)
+        public IActionResult CreateDetails(long data)
+        {
+            CurrentHeaderId = data;
+            return Json(true);
+       }
+            public JsonResult Add(FulfillSalesViewModel p)
         {
             //InventoryTx s = new InventoryTx
             //{

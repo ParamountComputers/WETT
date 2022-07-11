@@ -12,7 +12,7 @@ namespace WETT.Controllers
     public class invAdjController : Controller
     {
         public static Boolean showPage = false;
-        public static string searchDate = DateTime.Now.ToShortDateString();
+        public static string searchDate = DateTime.Today.ToShortDateString();
         public static string Notes;
         public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;

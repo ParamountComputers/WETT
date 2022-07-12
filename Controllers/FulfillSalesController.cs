@@ -268,17 +268,7 @@ namespace WETT.Controllers
             return Json(true);
         }
 
-        public IActionResult CreateList()
-        {
 
-            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     select new
-                     {
-                         text = s.Name,
-
-                     };
-            return Json(li);
-        }
         public IActionResult CreateProductSkuList()
         {
             var invAdjData = from a in _context.Products
@@ -304,6 +294,17 @@ namespace WETT.Controllers
                              };
             return Json(invAdjData);
         }
+        public IActionResult CreateCarrierList()
+        {
+            var invAdjData = from a in _context.Carriers
+                             select new
+                             {
+                                 value = a.CarrierId,
+                                 text = a.Name
+                                 
+                             };
+            return Json(invAdjData);
+        }
         public IActionResult CreateLocationsList()
         {
             var invAdjData = from a in _context.InventoryLocations
@@ -311,6 +312,16 @@ namespace WETT.Controllers
                              {
                                  value = a.InventoryLocationId,
                                  text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateSupplierList()
+        {
+            var invAdjData = from a in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                             select new
+                             {
+                                 value = a.SupplierId,
+                                 text = a.Name
                              };
             return Json(invAdjData);
         }

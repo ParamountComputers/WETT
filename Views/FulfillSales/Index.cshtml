@@ -13,33 +13,50 @@
     <legend class="scheduler-border">Search</legend>
   <div class="container-flow">
   <div class="row">
-        <div class="col-sm-3">
-            <label for="date">Order Date:</label>
-            <input type="date" id="date" name="date">
+        <div class="col-sm-2">
+            <label for="date" style="font-size:10px;">Order Date:</label>
+            <input type="date" id="date" name="date" style="font-size:10px;">
         </div>
+        <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label for="truckingCompanyDropdown"class="d-inline">Supplier:</label>  
-            <select class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
-        </div>
+            <form class="form-inline">
+            <div class="form-group">
+            <label for="supplierDropdown">Supplier:</label>  
+            <select class="form-control " id="supplierDropdown" name="supplierDropdown"></select>
+            </div>
+            </form>
+       </div>
+       <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
-            <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+            <form class="form-inline">
+            <div class="form-group">
+            <label for="locationsDropdown"  class="d-inline">Record Limit:</label>  
+            <select class="form-control"  id="locationsDropdown" name="locationsDropdown"></select> 
+            </div>
+            </form>
         </div>
     </div>
     <div class="row">
-        <div class="col">
-            <label for="date">Delivery Date:</label>
-            <input type="date" id="date" name="date">
-        </div>
-        <div class="col">
-            <input type="text" class="form-control" placeholder="Pending:" aria-label="Pending:" aria-describedby="basic-addon2" id="Pending">
-        </div>
-        <div class="col">
-                <input type="text" class="form-control" placeholder="Fulfilled:" aria-label="Fulfilled:" aria-describedby="basic-addon2" id="Fulfilled">
+        <div class="col-sm-3">
+            <label for="date" style="font-size:10px;">Delivery Date:</label>
+            <input type="date" style="font-size:10px;" id="date" name="date">
         </div>
         <div class="col-sm-3">
+                <label class="checkbox-inline">
+      <input id="Pending" type="checkbox" value="Pending">:Pending</label>
+            
+        </div>
+        <div class="col-sm-3">
+       <label class="checkbox-inline">
+      <input id="Fulfilled" type="checkbox" value="Fulfilled">:Fulfilled</label>
+        </div>
+        <div class="col-sm-3">
+            <form class="form-inline">
+            <div class="form-group">
             <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
-            <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+            <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>
+            </div>
+            </form>
         </div>
       </div>
     </div>
@@ -97,7 +114,7 @@
                    { label: 'Order Number',name: 'orderNumber', editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Customer',name: 'customer', editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'City',name: 'city', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Carrier',name: 'carrier', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Carrier',name: 'carrierID', editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getCarrier()}},
 
 
 
@@ -153,7 +170,6 @@
                
 
 
-
         $('#FulfillSalesHdr').navGrid('#jqGridPager',
             // the buttons to appear on the toolbar of the grid
             { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
@@ -170,6 +186,52 @@
                 url: "FulfillSales/AddHdr"
             }
          );
+         $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "FulfillSales/CreateLocationsList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '<option value="-1">Select a Location</option>';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#locationsDropdown").html(s);  
+           }  
+       });  
+   });
+      $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "FulfillSales/CreateSupplierList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '<option value="-1">Select a Supplier</option>';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#supplierDropdown").html(s);  
+           }  
+       });  
+   });
+              
+        function getCarrier() {
+        var CarrierList= {};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('FulfillSales/CreateCarrierList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+             CarrierList[data[i].value]=data[i].text;
+                 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            console.log(CarrierList);
+           return CarrierList; 
+
+        }
 
 
          $("#FulfillSalesDtls").jqGrid({

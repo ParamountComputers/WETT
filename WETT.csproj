@@ -29,4 +29,11 @@
 	<PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\SaRelease\" />
+    <Folder Include="Views\SaExciseDuty\" />
+    <Folder Include="Views\SaInternalTransfer\" />
+    <Folder Include="Views\SaOutbound\" />
+  </ItemGroup>
+
 </Project>

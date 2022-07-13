@@ -10,43 +10,59 @@
     <h1 class="display-4">Stock Received</h1>
 </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
-    <legend class="scheduler-border">Search</legend>
- <form class="row row-cols-lg-auto g-3">
+ <div class="container-flow">
+ <div class="row">
   <div class="col-sm-3">
-        <label for="date">Transaction Date:</label>
-        <input type="date" id="date" name="date">
+        <label style="font-size:10px;" for="date">Transaction Date:</label>
+        <input style="font-size:10px;" type="date" id="date" name="date">
+  </div>
+  <div class="col-sm-3">
+            <form class="form-inline">
+            <div class="form-group">
+        <label style="font-size:10px;" for="truckingCompanyDropdown"class="d-inline">Trucking company:</label>  
+        <select style="font-size:10px;" class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
+               </div>
+            </form>
+  </div>
+                    <div class="col-sm-1"></div>
+  <div class="col-sm-3">
+            <form class="form-inline">
+            <div class="form-group">
+        <label style="font-size:10px;" for="locationsDropdown" class="d-inline">Locations:</label>  
+        <select style="font-size:10px;" class="form-control" id="locationsDropdown" name="locationsDropdown"></select> 
             </div>
-  <div class="col-sm-3">
-        <label for="truckingCompanyDropdown"class="d-inline">Trucking company:</label>  
-        <select class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
-            </div>
-  <div class="col-sm-3">
-        <label for="locationsDropdown" class="d-inline">Locations:</label>  
-        <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>  
+            </form>
     </div>
-    </form>
-   <form class="row row-cols-sm-auto g-3">
-  <div class="col">
-        <input type="text" class="form-control" placeholder="Product Name:" aria-label="Product Name:" aria-describedby="basic-addon2" id="productName">
+</div>
+<div class="row">
+  <div class="col-sm-3">
+        <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Product Name:" aria-label="Product Name:" aria-describedby="basic-addon2" id="productName"/>
             </div>
-  <div class="col">
-        <input type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode">
+          <div class="col-sm-3">
+        <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder"/>
             </div>
-  <div class="col">
-         <input type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder">
+            <div class="col-sm-1"></div>
+  <div class="col-sm-2">
+      <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Seal No:" aria-label="Seal No:" aria-describedby="basic-addon2" id="sealNo"/>
          </div>
-             </form>
-   <form class="row row-cols-lg-auto g-3">
-          <div class="col">
-         <input type="text" class="form-control" placeholder="Trucker/Probill Number:" aria-label="Trucker/Probill Number:" aria-describedby="basic-addon2" id="truckerProbillNumber">
+         </div>
+<div class="row">
+  <div class="col-sm-3">
+         <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Trucker/Probill Number:" aria-label="Trucker/Probill Number:" aria-describedby="basic-addon2" id="truckerProbillNumber"/>
              </div>
-  <div class="col">
-         <input type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments">
+  <div class="col-sm-3">
+         <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments"/>
              </div>
-  <div class="col">
-         <input type="text" class="form-control" placeholder="Seal No:" aria-label="Seal No:" aria-describedby="basic-addon2" id="sealNo">
+             <div class="col-sm-1"></div>
+  <div class="col-sm-2">
+         <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
         </div>
-        </form>
+        <div class="col-sm-2"></div>
+           <div class="col-sm-1 text-right">
+          <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
+            </div> 
+    </div>
+</div>
 </fieldset>
 
 <table id="saStockReceived" style="align: center"></table>
@@ -182,6 +198,9 @@ $(document).ready(function () {
            }  
        });  
    });
+          $(document).ready(function () {  
+           $('#date').val(date());
+       });
        $('#saStockReceived').setGridWidth(parseInt($(window).width()) - 20);
        $("#productName").on('change keyup paste', function () {
            SearchByProductName();
@@ -204,6 +223,16 @@ $(document).ready(function () {
                    $("#purchaseOrder").on('change keyup paste', function () {
            SearchByPurchaseOrder()
         });
+           function date()
+        {
+         var date;
+         var currentDate = new Date();
+         var day = ("0" + currentDate.getDate()).slice(-2);
+         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+         date = today.toString();
+         return date;
+        }
     function SearchByProductName()
     {
         //  Fetch the text from our <input> control

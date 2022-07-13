@@ -14,8 +14,8 @@
   <div class="container-flow">
   <div class="row">
         <div class="col-sm-2">
-            <label for="date" style="font-size:10px;">Order Date:</label>
-            <input type="date" id="date" name="date" style="font-size:10px;">
+            <label for="OrderDate" style="font-size:10px;">Order Date:</label>
+            <input type="date" id="OrderDate" name="OrderDate" style="font-size:10px;">
         </div>
         <div class="col-sm-2"></div>
         <div class="col-sm-3">
@@ -27,33 +27,33 @@
             </form>
        </div>
        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
+        <div class="col-sm-3 text-right">
             <form class="form-inline">
             <div class="form-group">
-            <label for="locationsDropdown"  class="d-inline">Record Limit:</label>  
-            <select class="form-control"  id="locationsDropdown" name="locationsDropdown"></select> 
+            <label for="RecordLimitDropdown">Record Limits:</label>  
+            <select class="form-control"  id="RecordLimitDropdown" name="RecordLimitDropdown"></select> 
             </div>
             </form>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label for="date" style="font-size:10px;">Delivery Date:</label>
-            <input type="date" style="font-size:10px;" id="date" name="date">
+            <label for="DeliveryDate" style="font-size:10px;">Delivery Date:</label>
+            <input type="date" style="font-size:10px;" id="DeliveryDate" name="DeliveryDate">
         </div>
         <div class="col-sm-3">
                 <label class="checkbox-inline">
-      <input id="Pending" type="checkbox" value="Pending">:Pending</label>
+      <input id="PendingCheckbox" type="checkbox" value="PendingCheckbox">:Pending</label>
             
         </div>
         <div class="col-sm-3">
        <label class="checkbox-inline">
-      <input id="Fulfilled" type="checkbox" value="Fulfilled">:Fulfilled</label>
+      <input id="FulfilledCheckbox" type="checkbox" value="FulfilledCheckbox">:Fulfilled</label>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-3 text-right">
             <form class="form-inline">
             <div class="form-group">
-            <label for="locationsDropdown" class="d-inline">Record Limit:</label>  
+            <label for="locationsDropdown">Order Source:</label>  
             <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>
             </div>
             </form>
@@ -151,6 +151,7 @@
                rowNum: 20,
                pager: "#jqGridPager",
                editurl: 'FulfillSales/UpdateHdr',
+               multiselect: true,
                onSelectRow: function(rowid) {
                 curRowId=rowid;
 
@@ -214,6 +215,137 @@
            }  
        });  
    });
+         $(document).ready(function () {  
+             var limit = 10;
+             var s = '<option value="-1">Select a Limit</option>'; 
+               for (var i = 0; i < 4; i++) {  
+                   s += '<option value="' + i + '">' + limit + '</option>';  
+                   limit = limit*10;
+               }  
+               $("#RecordLimitDropdown").html(s); 
+
+   });
+           $(document).ready(function () {  
+           $('#OrderDate').val(date());
+           $('#DeliveryDate').val(date());
+       });
+
+
+           $("#PendingCheckbox").on('click', function () { 
+               console.log('hi');
+            if($('#PendingCheckbox').prop('checked')== true)
+            {
+               searchByPendingCheckbox("Pending"); 
+            }
+            else
+            {
+                searchByPendingCheckbox(""); 
+            }
+       });
+                  $("#FulfilledCheckbox").on('click', function () { 
+               console.log('hi');
+            if($('#FulfilledCheckbox').prop('checked')== true)
+            {
+               searchByFulfilledCheckbox("Fulfilled"); 
+            }
+            else
+            {
+                searchByFulfilledCheckbox(""); 
+            }
+       });
+
+          $("#OrderDate").on('change keyup paste', function () {
+           SearchByOrderDate();
+           
+       }); 
+                 $("#DeliveryDate").on('change keyup paste', function () {
+           SearchByDeliveryDate();
+           
+       }); 
+               function date()
+        {
+         var date;
+         var currentDate = new Date();
+         var day = ("0" + currentDate.getDate()).slice(-2);
+         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+         date = today.toString();
+         console.log(date);
+         return date;
+        }
+
+               function searchByPendingCheckbox(value)
+    {
+        //  Fetch the text from our <input> control
+        var searchString = value;
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "Pending", op: "cn", data: searchString });
+
+        var grid = $('#FulfillSalesHdr');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+                   function searchByFulfilledCheckbox(value)
+    {
+        //  Fetch the text from our <input> control
+        var searchString = value;
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "Fulfilled", op: "cn", data: searchString });
+
+        var grid = $('#FulfillSalesHdr');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+               function SearchByOrderDate()
+    {
+        //  Fetch the text from our <input> control
+        var searchString = $("#OrderDate").val();
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "OrderDate", op: "cn", data: searchString });
+
+        var grid = $('#FulfillSalesHdr');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+     function SearchByDeliveryDate()
+    {
+        //  Fetch the text from our <input> control
+        var searchString = $("#DeliveryDate").val();
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "DeliveryDate", op: "cn", data: searchString });
+
+        var grid = $('#FulfillSalesHdr');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
               
         function getCarrier() {
         var CarrierList= {};

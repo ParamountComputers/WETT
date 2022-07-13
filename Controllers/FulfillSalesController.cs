@@ -177,7 +177,8 @@ namespace WETT.Controllers
                             FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.Where(w => w.ProductDesc.Equals(DateTime.Parse(rule.data)));
                             searchDate = DateTime.Parse(rule.data);
                             break;
-                      
+
+
 
                     }
                 }

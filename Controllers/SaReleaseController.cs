@@ -11,7 +11,12 @@ namespace WETT.Controllers
 {
     public class SaReleaseController : Controller
     {
-        private DateTime searchDate;
+
+        public static Boolean showPage = false;
+        public static string searchDate = DateTime.Today.ToShortDateString();
+        public static string Notes;
+        public static long CurrentHeaderId;
+        public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
         public SaReleaseController(WETT_DBContext context)
         {
@@ -20,29 +25,29 @@ namespace WETT.Controllers
         public async Task<IActionResult> Index()
         {
 
+            InventoryTxCurrentId = -1;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                         join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
+                         join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                       //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
                          select new SaReleaseViewModel
                          {
-                             SealNo = "1ww1",
-                             TruckingCompany = "ken",
-                             TruckerProbillNumber = 123,
-                             PurchaseOrder = "1ss2",
+                             InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
                              ProductSku = e.Sku,
                              SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
-                             InventoryLocation = d.Description,
+                        //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
+                             InventoryTxTypeId = c.InventoryTxTypeId,
                              Comments = a.Comments,
                              Date = a.Date, //.ToShortDateString(),
-                             SaCode = "1s2s3"
+                             SaCode = a.StockAdjCode
 
                          };
             return View(result);
@@ -50,33 +55,32 @@ namespace WETT.Controllers
 
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.Suppliers;
-            // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var SaReleaseData = from b in _context.InventoryTxDetails
-                                      join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                                      join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                      join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                                      join e in _context.Products on b.ProductId equals e.ProductId
-                                      join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                      select new SaReleaseViewModel
-                                      {
-                                         SealNo = "1ww1",
-                                         TruckingCompany = "ken",
-                                         TruckerProbillNumber = 123,
-                                         PurchaseOrder = "1ss2",
-                                         InventoryTxDetailId = b.InventoryTxDetailId,
-                                         ProductSku = e.Sku,
-                                         SupplierName = f.Name,
-                                         ProductId = e.ProductId,
-                                         ProductName = e.Description,
-                                         InventoryLocationId = d.InventoryLocationId,
-                                          InventoryLocation = d.Description,
-                                          Amount = b.Amount,
-                                         Comments = a.Comments,
-                                         Date = a.Date, //.ToShortDateString(),
-                                         SaCode = "1s2s3"
 
-                                     };
+            var AllSaReleaseData = from b in _context.InventoryTxDetails
+                                join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                                join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                                join e in _context.Products on b.ProductId equals e.ProductId
+                                join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                              //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+
+                                select new SaReleaseViewModel
+                                {
+                                    InventoryTxId = b.InventoryTxId,
+                                    InventoryTxDetailId = b.InventoryTxDetailId,
+                                    ProductSku = e.Sku,
+                                    SupplierName = f.Name,
+                                    ProductId = e.ProductId,
+                                    ProductName = e.Description,
+                                    InventoryLocationId = d.InventoryLocationId,
+                                 //   InventoryTxReasonsId = g.InventoryTxReasonId,
+                                    Amount = b.Amount,
+                                    InventoryTxTypeId = c.InventoryTxTypeId,
+                                    Comments = a.Comments,
+                                    Date = a.Date, //.ToShortDateString(),
+                                    SaCode = a.StockAdjCode
+                                };
+            var SaReleaseData = AllSaReleaseData;
 
 
 
@@ -88,36 +92,33 @@ namespace WETT.Controllers
                     switch (rule.field)
                     {
                         case "date":
+
                             SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = DateTime.Parse(rule.data);
-                            break;
-                        case "productName":
-                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.ProductName.Contains(rule.data));
-                            break;
-                        case "saCode":
-                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.SaCode.Contains(rule.data));
+                            searchDate = rule.data;
                             break;
                         case "comments":
+
                             SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Comments.Contains(rule.data));
-                            break;
-                        case "locationsDropdown":
-                            if (rule.data.Contains("-1"))
-                            {
-                               
+                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
 
-                                break; 
-                            }
-                            else
-                            {
-                                SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
-                                break;
-                            }
-                        case "purchaseOrder":
-                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.PurchaseOrder.Contains(rule.data));
-                            break;
 
+                            Notes = rule.data;
+                            break;
                     }
                 }
+            if (showPage == true)
+            {
+                //this is the type of transaction id
+                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == 4);
+                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
+
+            }
+            else
+            {
+                //this is to hide all transactons by type
+                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == -1);
+            }
+
 
             int totalRecords = SaReleaseData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -144,38 +145,33 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
-        public JsonResult Add(SaReleaseViewModel p)
-        {
-            InventoryTx s = new InventoryTx
-            {
-                Date = searchDate,
-                Comments = p.Comments,
-
-            };
-            _context.InventoryTxes.Add(s);
-            _context.SaveChanges();
-
-            InventoryTxDetail r = new InventoryTxDetail
-            {
-                InventoryTxId=s.InventoryTxId,
-                ToInventoryLocationId = p.InventoryLocationId,
-                ProductId = p.ProductId,
-                Amount = p.Amount
-            };
-            _context.InventoryTxDetails.Add(r);
-            _context.SaveChanges();
-            return Json(true);
-
-        }
         public JsonResult Update(SaReleaseViewModel p)
         {
-
-
+            Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-            r.ToInventoryLocationId = p.InventoryLocationId;
-            r.ProductId = p.ProductId;
+            //r.ToInventoryLocationId = p.InventoryLocationId;
+            r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             _context.SaveChanges();
+            return Json(true);
+        }
+        public JsonResult Add(SaReleaseViewModel p)
+        {
+            showPage = true;
+            Product s = _context.Products.Single(a => a.Description == p.ProductName);
+            InventoryTxDetail r = new InventoryTxDetail
+            {
+                //comments = p.Comments,
+               // ToInventoryLocationId = p.InventoryLocationId,
+                ProductId = s.ProductId,
+                Amount = p.Amount,
+                InventoryTxId = CurrentHeaderId
+            };
+
+            _context.InventoryTxDetails.Add(r);
+            _context.SaveChanges();
+
+
             return Json(true);
         }
         public JsonResult Delete(long id)
@@ -187,52 +183,89 @@ namespace WETT.Controllers
 
             return Json(true);
         }
+        public IActionResult CreateHeader(string data)
+        {
+            var li = data.Split("/");
+            InventoryTx s = new InventoryTx
+            {
+                Date = DateTime.Parse(li[0]),
+                InventoryTxTypeId = 4,          //hard coded transaction type id for now
+                StockAdjCode = "RB",
+                //add in extra cols here******************************************
+                PurchaseOrder  = li[1],
+                ToInventoryLocationId = 1,//li[3],
+                PortOfEntry = li[2],
+                PreviousTransactionNo = li[4],
+                TransactionNo = li[5],
+                Comments = li[6]
+                //*****************************************************************
+            };
+            //+date + '/' + purchaseOrder + '/' + portEntry + '/' + locationsDropdown + '/' + prevTransNo + '/' + transNumber + '/' + notes, function(data) {
+            _context.InventoryTxes.Add(s);
+            _context.SaveChanges();
+            InventoryTxCurrentId = s.InventoryTxId;
+            s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
+            _context.SaveChanges();
+            CurrentHeaderId = s.InventoryTxId;
+            return Json(s.StockAdjCode);
+        }
 
         public IActionResult CreateList()
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     join b in _context.Products on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
+                         value = b.Description
 
                      };
             return Json(li);
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
-                             join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+            var SaReleaseData = from a in _context.Products
                              select new
                              {
                                  text = a.Sku,
-                                 value = b.Name
+                                 value = a.Description
 
                              };
-            return Json(invAdjData);
+            return Json(SaReleaseData);
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var SaReleaseData = from a in _context.Products
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
                              {
-                                 text = a.Description,
-                                 value = b.Name,
-                                 id = a.ProductId
+                                 label = a.ProductId,
+                                 value = a.Description
+
 
                              };
-            return Json(invAdjData);
+            return Json(SaReleaseData);
         }
-        public IActionResult CreateLocationsList()
+        public IActionResult CreateLocationList()
         {
-            var invAdjData = from a in _context.InventoryLocations
+            var SaReleaseData = from a in _context.InventoryLocations
                              select new
                              {
                                  value = a.InventoryLocationId,
                                  text = a.Description
                              };
-            return Json(invAdjData);
+            return Json(SaReleaseData);
+        }
+        public IActionResult CreateReasonsList()
+        {
+            var SaReleaseData = from a in _context.InventoryTxReasons
+                             select new
+                             {
+                                 value = a.InventoryTxReasonId,
+                                 text = a.Description
+                             };
+            return Json(SaReleaseData);
         }
     }
 }

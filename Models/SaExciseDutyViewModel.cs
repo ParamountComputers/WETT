@@ -9,12 +9,9 @@ namespace WETT.Models
 {
     public class SaExciseDutyViewModel
     {
-        public string SealNo { get; set; }
-        public string TruckingCompany { get; set; }
-        public long TruckerProbillNumber { get; set; }
-        
-        public string PurchaseOrder { get; set; }
+
         public long InventoryTxDetailId { get; set; }
+        public long InventoryTxReasonsId { get; set; }
         public string ProductSku { get; set; }
 
         public string SupplierName { get; set; }
@@ -23,14 +20,17 @@ namespace WETT.Models
 
         public string ProductName { get; set; }
         public long InventoryLocationId { get; set; }
-        public string InventoryLocation { get; set; }
 
         public int Amount { get; set; }
+
+        public long InventoryTxTypeId { get; set; }
 
         public string Comments { get; set; }
 
         public DateTime Date { get; set; }
 
         public string SaCode { get; set; }
+        public long InventoryTxId { get; set; }
     }
 }
+

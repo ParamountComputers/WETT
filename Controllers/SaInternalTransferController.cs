@@ -29,8 +29,8 @@ namespace WETT.Controllers
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                         join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
-                         join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
+                        // join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                        // join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
@@ -42,8 +42,8 @@ namespace WETT.Controllers
                              SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
-                             toInventoryLocationId = d.InventoryLocationId,
-                             fromInventoryLocationId = d2.InventoryLocationId,
+                             toInventoryLocationId = (long)a.ToInventoryLocationId,
+                             fromInventoryLocationId = (long)a.FromInventoryLocationId,
                              InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
@@ -198,8 +198,8 @@ namespace WETT.Controllers
                 InventoryTxTypeId = 6,          //hard coded transaction type id for now
                 StockAdjCode = "IT",
                 //add in extra cols here******************************************            
-                ToInventoryLocationId = 1,//li[1],
-                FromInventoryLocationId = 1,//li[2],
+                ToInventoryLocationId = (long)Convert.ToDouble(li[1]),
+                FromInventoryLocationId = (long)Convert.ToDouble(li[2]),
                 Comments = li[3]
                 //*****************************************************************
             };

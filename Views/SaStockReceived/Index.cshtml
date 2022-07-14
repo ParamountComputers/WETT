@@ -114,7 +114,6 @@
                     name = $(elem).val();
                     $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku()} });
                     $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName()} });
-                   // console.log(name);
                     },
                        dataEvents: [
                     {
@@ -187,7 +186,7 @@ $(document).ready(function () {
    $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
-           url: "SaStockReceived/CreateLocationsList",  
+           url: "SaStockReceived/CreateTruckingList",  
            data: "{}",  
            success: function (data) {  
                var s = '<option value="-1">Select a Trcuking company</option>';  
@@ -220,6 +219,7 @@ $(document).ready(function () {
            SearchByLocations();
            
        }); 
+
                    $("#purchaseOrder").on('change keyup paste', function () {
            SearchByPurchaseOrder()
         });

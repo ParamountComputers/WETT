@@ -26,10 +26,11 @@ namespace WETT.Controllers
                          join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                         join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
                          select new SaStockReceivedViewModel
                          {
                              SealNo = "1ww1",
-                             TruckingCompany = "ken",
+                             TruckingCompany = g.Name,
                              TruckerProbillNumber = 123,
                              PurchaseOrder = "1ss2",
                              InventoryTxDetailId = b.InventoryTxDetailId,
@@ -231,6 +232,16 @@ namespace WETT.Controllers
                              {
                                  value = a.InventoryLocationId,
                                  text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateTruckingList()
+        {
+            var invAdjData = from a in _context.TruckingCompanies
+                             select new
+                             {
+                                 value = a.TruckingCompanyId,
+                                 text = a.Name
                              };
             return Json(invAdjData);
         }

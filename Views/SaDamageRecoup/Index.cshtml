@@ -6,10 +6,9 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Stock Adjustment-Damage/Recoup</h1>
+    <h2 class="display-4">Stock Adjustment-Damage/Recoup</h2>
 </div>
 <fieldset class="scheduler-border">
-  <legend class="scheduler-border">Search</legend>
   <div class="container-flow">
   <div class="row">
            <div class="col-sm-3">
@@ -41,8 +40,6 @@
 <script type="text/javascript">
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
-     $.jgrid.defaults.responsive = true;
-    var date;
     var header = false;
     var curRowId = -1;
     var ProductNameList= [];
@@ -86,18 +83,17 @@
                     curRowId = $('#saDamageRecoup').getGridParam('selrow');        
                     $(elem).autocomplete({source: ProductNameList,autoFocus: true,minLength: 0, select:function (event, ui) {
                     $('#saDamageRecoup').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
-                    $('#saDamageRecoup').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
-                    
                     $('input#supplierName').val(getSupplierNames(ui.item.value));
+                    $('#saDamageRecoup').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
                     $('input#productSku').val(getProductSku(ui.item.value));
                 } });   
                                   }
                    }},
                    { label: 'Supplier',name: 'supplierName',fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
-                   { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocation()}},
-                   { label: 'Updated Stock',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text"},
-                   { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",formatter:'select', editoptions:{value:getReasons()}},
+                   { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select', editrules: { required: true},editoptions:{value:getLocation()}},
+                   { label: 'Updated Stock',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
+                   { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",formatter:'select',editrules: { required: true}, editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text",}
 
                  ], 
@@ -187,6 +183,7 @@
       }
         function date()
         {
+         var date;
          var currentDate = new Date();
          var day = ("0" + currentDate.getDate()).slice(-2);
          var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);

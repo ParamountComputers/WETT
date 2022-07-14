@@ -195,7 +195,7 @@ namespace WETT.Controllers
                 ShippingLocationId = 1,//li[1],
                 TruckingCompanyId = 1,//li[2],
                 Probill = li[3],
-                FromInventoryLocationId = 1,// li[4],
+                FromInventoryLocationId = 1,//li[4]
                 Comments = li[5]
                 //*****************************************************************
             };

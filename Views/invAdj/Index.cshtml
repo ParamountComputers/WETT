@@ -84,16 +84,10 @@
                                   dataInit: function(elem) {
                     curRowId = $('#invAdj').getGridParam('selrow');        
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
-                   
                   $('#invAdj').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
                   $('input#supplierName').val(getSupplierNames(ui.item.value));
                   $('#invAdj').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                  
-                  $('input#productSku').val(ProductSku.toString());
-                    
-                    
-                    
-                    
+                  $('input#productSku').val(ProductSku.toString());   
                 } });   
                                   }
                    }},

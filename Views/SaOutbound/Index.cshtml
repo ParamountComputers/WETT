@@ -19,7 +19,7 @@
   
         </div>
         <div class="row">
-            <div class="col-sm-5">
+            <div class="col-sm-3">
                 <form class="form-inline">
                     <div class="form-group">
                         <label style="font-size:10px;" for="destDropdown" class="d-inline">Destination:</label>  
@@ -27,7 +27,7 @@
                     </div>
                  </form>
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-3">
                 <form class="form-inline">
                     <div class="form-group">
                         <label style="font-size:10px;" for="truckingComp" class="d-inline">Trucking Company:</label>  
@@ -48,16 +48,16 @@
                     </div>
                  </form>
             </div>
-            <div class="col-sm-3">
-                <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
-            </div>
         </div>
         <div class="row">
             <div class="col-sm-6">
                 <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments"/>
             </div>
-            <div class="col-sm-3"></div>
-            <div class="col-sm-3 text-right">
+            <div class="col-sm-1"></div>
+               <div class="col-sm-2">
+                <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
+               </div>
+            <div class="col-sm-2 text-right">
                 <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
             </div>
         </div>
@@ -195,6 +195,34 @@
            }  
        });  
    });
+                   $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "saOutbound/CreateTruckingList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '<option value="-1">Select a Trucking Company</option>';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#truckingComp").html(s);  
+           }  
+       });  
+   });
+                      $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "saOutbound/CreateDestinationList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '<option value="-1">Select a Destination</option>';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#destDropdown").html(s);  
+           }  
+       });  
+   });
               
     function IsProduct(value,colname)
         {
@@ -245,7 +273,7 @@
             var destination= $("#destDropdown").val();
             var truckingCompany= $("#truckingCompDD").val();
             var probillNo= $("#probill").val();
-            var fromLocationDropdown= $("#fromLocationsDropdown").id();
+            var fromLocationDropdown= $("#fromLocationsDropdown").val();
 
             $.ajaxSetup( { "async": false } );
             $.getJSON('saOutbound/CreateHeader?data='+date+'/'+destination+'/'+ truckingCompany+'/'+ probillNo+'/'+ fromLocationDropdown+'/'+ notes, function(data) {

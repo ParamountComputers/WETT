@@ -211,18 +211,13 @@
             console.log($("#date").val());
             var date = $("#date").val();
             var notes = $("#comments").val();
-            var purchaseOrder= $("#purchaseOrder").val();
-            var portEntry= $("#portEntry").val();
-            var locationsDropdown= $("#locationsDropdown").val();
-            var prevTransNo= $("#prevTransNo").val();
-            var transNumber= $("#transNumber").val();
-
+            var toLocationsDropdown= $("#toLocationsDropdown").val();
+            var fromLocationsDropdown= $("#fromLocationsDropdown").val();
 
             $.ajaxSetup( { "async": false } );
             $.getJSON('saInternalTransfer/CreateHeader?data='+date+'/'+ toLocationsDropdown+'/'+fromLocationsDropdown+'/'+ notes, function(data) {
- 
-            $("#saCode").val(data);
-                    });
+                $("#saCode").val(data);
+                 });
             $.ajaxSetup( { "async": true } );
         }
 

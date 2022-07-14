@@ -192,7 +192,7 @@ namespace WETT.Controllers
                 InventoryTxTypeId = 5,          //hard coded transaction type id for now
                 StockAdjCode = "ED",
                 //add in extra cols here******************************************              
-                ToInventoryLocationId = 1,//li[1],              
+                ToInventoryLocationId = (long)Convert.ToDouble(li[1]),              
                 Comments = li[2]
                 //*****************************************************************
             };

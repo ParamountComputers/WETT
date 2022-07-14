@@ -193,7 +193,7 @@ namespace WETT.Controllers
                 StockAdjCode = "RB",
                 //add in extra cols here******************************************
                 PurchaseOrder  = li[1],
-                ToInventoryLocationId = 1,//li[3],
+                ToInventoryLocationId = (long)Convert.ToDouble(li[3]),
                 PortOfEntry = li[2],
                 PreviousTransactionNo = li[4],
                 TransactionNo = li[5],

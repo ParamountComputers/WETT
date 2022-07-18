@@ -47,9 +47,10 @@
                             keys: true,
                             editOptions: { },
                             addOptions: { },
-                            delOptions: { url: 'Customer/Delete' }
+                            delOptions: { url: 'Customers/Delete' }
                         }
                     },
+                   { label: 'CustomerId', name: 'customerId',hidden:true,fixed:true, editable: true,edittype:"text",key:true},
                    { label: 'MbllCustomerNo', name: 'mbllCustomerNo',fixed:true, editable: true,edittype:"text"},
                    { label: 'Licence Number', name: 'licenceNumber',fixed:true, editable: true,width:120,editrules: { required: true }, edittype:"text"},
                    { label: 'Customer Name', name: 'name',fixed:true, editable: true,edittype:"text"},
@@ -59,26 +60,24 @@
                    { label: 'Postal Code', name: 'postalCode',fixed:true,editable: true,width:100, edittype:"text",editoptions: {maxlength: 12} },
                    { label: 'Country', name: 'country',fixed:true,editable: true,width:80, edittype:"text",editoptions: {maxlength: 50} },
                    { label: 'Contact Name', name: 'contactName',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Phone1 Type', name: 'phone1Type',fixed:true,editable: true,edittype:"text",width:120,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} },
+                   { label: 'Phone1 Type', name: 'phone1Type',fixed:true,editable: true,edittype:"text",width:120 },
                    { label: 'Phone1', name: 'phone1',fixed:true,editable: true,edittype:"text",width:120,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} },
-                   { label: 'Phone2 Type', name: 'phone2Type',fixed:true,editable: true,edittype:"text",width:120,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} },
+                   { label: 'Phone2 Type', name: 'phone2Type',fixed:true,editable: true,edittype:"text",width:120 },
                    { label: 'Phone2', name: 'phone2',fixed:true,editable: true,edittype:"text",width:120,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} },
-                   { label: 'Phone3 Type', name: 'phone3Type',fixed:true,editable: true,edittype:"text",width:120,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} },
+                   { label: 'Phone3 Type', name: 'phone3Type',fixed:true,editable: true,edittype:"text",width:120 },
                    { label: 'Phone3', name: 'phone3',fixed:true,editable: true,edittype:"text",width:120,editrules:{custom:true, custom_func:IsPhoneNumber, number:true, required: false} },
                    { label: 'ContactEmail', name: 'contactEmail',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Deleted Flag', name: 'deletedFlag',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Deleted Date', name: 'deletedDate',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Insert UserId', name: 'insertUserId',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Insert Timestamp', name: 'insertTimestamp',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Update UserId', name: 'updateUserId',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Update Timestamp', name: 'updateTimestamp',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Call Frequency', name: 'callFrequency',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Cdos', name: 'cdos',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Customer Source', name: 'customerSource',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Customer Status Code Navigation', name: 'customerStatusCodeNavigation',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Customer Type Code Navigation', name: 'customerTypeCodeNavigation',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Segment', name: 'segment',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
-                   { label: 'Territory', name: 'territory',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} }
+                   { label: 'Call Frequency', name: 'callFrequencyId',fixed:true,editable: true, width:150, edittype:"select",formatter:'select',editrules: { required: true},editoptions: {value:getCallFrequency(),maxlength: 100} },
+                   { label: 'Cdos', name: 'cdosId',fixed:true, width:150,editable: true, edittype:"select",formatter:'select',editrules: { required: true}, editoptions: {value: getCdos(),maxlength: 100} },
+                   { label: 'Customer Source', name: 'customerSourceId',fixed:true,width:150,editable: true, edittype:"select",formatter:'select',editrules: { required: true}, editoptions: {value:getCustomerSource(),maxlength: 100} },
+                   { label: 'Customer Status Code Navigation', name: 'customerStatusCode',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
+                   { label: 'Customer Type Code Navigation', name: 'customerTypeCode',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
+                   { label: 'Segment', name: 'segmentId',fixed:true, width:150,editable: true, edittype:"select",formatter:'select',editrules: { required: true}, editoptions: {value:getSegment(),maxlength: 100} },
+                   { label: 'Territory', name: 'territoryId',fixed:true ,width:150,editable: true, edittype:"select",formatter:'select',editrules: { required: true}, editoptions: {value:getTerritory(),maxlength: 100} }
+                   //{ label: 'Insert UserId', name: 'insertUserId',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
+                   //{ label: 'Insert Timestamp', name: 'insertTimestamp',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
+                   //{ label: 'Update UserId', name: 'updateUserId',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
+                   //{ label: 'Update Timestamp', name: 'updateTimestamp',fixed:true,editable: true, width:150,edittype:"text",editoptions: {maxlength: 100} },
 
 
                ],
@@ -103,7 +102,7 @@
                    errorTextFormat: function (data) {
                        return 'Error: ' + data.responseText
                    },
-                   url: "Customer/Add"
+                   url: "Customers/Add"
                });
 
        });
@@ -147,6 +146,88 @@
              return [true,""];
                 }
       }
+                  function getCallFrequency() {
+        var callFrequency={};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('Customers/CreateCallFrequencyList', function(data) {
+        if (data != null) {
+           
+            for (var i = 0; i < data.length; i++) {
+             callFrequency[data[i].value]= data[i].text;
+                } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            console.log(callFrequency);
+           return callFrequency; 
+
+        }
+                  function getCdos() {
+        var cdosId={};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('Customers/CreateCdosList', function(data) {
+        if (data != null) {
+           
+            for (var i = 0; i < data.length; i++) {
+             cdosId[data[i].value]= data[i].text;
+                } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return cdosId; 
+
+        }
+             function getCustomerSource() {
+        var customerSourceId={};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('Customers/CreateCustomerSourceList', function(data) {
+        if (data != null) {
+           
+            for (var i = 0; i < data.length; i++) {
+             customerSourceId[data[i].value]= data[i].text;
+                } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return customerSourceId; 
+
+        }
+             function getSegment() {
+        var segmentId={};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('Customers/CreateSegmentList', function(data) {
+        if (data != null) {
+           
+            for (var i = 0; i < data.length; i++) {
+             segmentId[data[i].value]= data[i].text;
+                } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return segmentId; 
+
+        }
+                     function getTerritory() {
+        var territoryId={};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('Customers/CreateTerritoryList', function(data) {
+        if (data != null) {
+           
+            for (var i = 0; i < data.length; i++) {
+             territoryId[data[i].value]= data[i].text;
+                } 
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return territoryId; 
+
+        }
+
 
 </script>
 }

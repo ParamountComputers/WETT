@@ -23,7 +23,7 @@ namespace WETT.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var wETT_DBContext = _context.Customers;
+            var wETT_DBContext = _context.Customers.Where(w=>w.DeletedFlag==false);
             return View(await wETT_DBContext.ToListAsync());
         }
 
@@ -31,7 +31,7 @@ namespace WETT.Controllers
         {
             var wETT_DBContext = _context.Customers;
 
-            var customerData = (_context.Customers).ToList(); 
+            var customerData = (_context.Customers.Where(w => w.DeletedFlag == false)).ToList(); 
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -95,36 +95,73 @@ namespace WETT.Controllers
             return Json(true);
         }
 
-        public JsonResult Delete(int id)
+        public JsonResult Delete(long id)
         {
-            Supplier r = _context.Suppliers.Single(e => e.SupplierId == id);
-            r.ActiveFlag = "N";
+            Customer r = _context.Customers.Single(e => e.CustomerId == id);
+            r.DeletedDate= DateTime.Today;
+            r.DeletedFlag = true;
             _context.SaveChanges();
-
-            /* Supplier r = _context.Suppliers.Where(a => a.SupplierId == s.SupplierId).First();
-             if(r !=null)
-             _context.Suppliers.Remove(s);
-             _context.SaveChanges();
-
-             return Json(true);
-            */
-            //Supplier r = _context.Suppliers.Include(a => a.SupplierId).Single(a2 => a2.SupplierId == s.SupplierId);
-            /*  _context.Entry(s).State = EntityState.Modified;
-              _context.Suppliers.Remove(s);
-              _context.SaveChanges();
-
-            */
             return Json(true);
         }
 
-        public JsonResult Add(Supplier s)
+        public JsonResult Add(Customer s)
         {
-            s.ActiveFlag = "Y";
+           
 
-            _context.Suppliers.Add(s);
+            _context.Customers.Add(s);
             _context.SaveChanges();
 
-            return Json(true);
+            return Json(true); 
+        }
+        public IActionResult CreateCallFrequencyList()
+        {
+            var invAdjData = from a in _context.CallFrequencies
+                             select new
+                             {
+                                 value = a.CallFrequencyId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateCdosList()
+        {
+            var invAdjData = from a in _context.Cdos
+                             select new
+                             {
+                                 value = a.CdosId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+    public IActionResult CreateCustomerSourceList()
+        {
+            var invAdjData = from a in _context.CustomerSources
+                             select new
+                             {
+                                 value = a.CustomerSourceId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+    public IActionResult CreateSegmentList()
+        {
+            var invAdjData = from a in _context.Segments
+                             select new
+                             {
+                                 value = a.SegmentId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
+         }
+    public IActionResult CreateTerritoryList()
+        {
+            var invAdjData = from a in _context.Territories
+                             select new
+                             {
+                                 value = a.TerritoryId,
+                                 text = a.Name
+                             };
+            return Json(invAdjData);
         }
     }
 }

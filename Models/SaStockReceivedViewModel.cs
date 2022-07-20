@@ -9,6 +9,8 @@ namespace WETT.Models
 {
     public class SaStockReceivedViewModel
     {
+        public long InventoryTxId { get; set; }
+        public long InventoryTxTypeId { get; set; }
         public string SealNo { get; set; }
         public string TruckingCompany { get; set; }
         public long TruckerProbillNumber { get; set; }

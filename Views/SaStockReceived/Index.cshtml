@@ -73,6 +73,7 @@
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     $.jgrid.defaults.responsive = true;
+    var header = false;
     var curRowId = -1;
     var name="";
     $(document).ready(function() {
@@ -109,31 +110,25 @@
                    { label: 'trucker Probill Number',name: 'truckerProbillNumber',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'PO',name: 'purchaseOder',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Supplier',name: 'supplierName', editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
-                   dataInit: function (elem) {
-                    name = $(elem).val();
-                    $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku(name)} });
-                    $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName(name)} });
-                    },
-                       dataEvents: [
-                    {
-                        type: 'change',
-                        fn: function(e) {
-                       name =$('#saStockReceived').jqGrid ('getCell', curRowId, 'supplierName');
-                  $('#saStockReceived').jqGrid('setCell',curRowId,'productSku',getProductSku(name));
-                  $('select#productSku').val(getProductSku(name));
-                  $('#saStockReceived').jqGrid('setCell',curRowId,'productId',getProductName(name));
-                  $('select#productId').val(getProductName(name));
-                       console.log(name);
-                       console.log(getProductSku(name));
-                       console.log(getProductName(name));
-                       
-                        }
-                    }
-                       ]
-                    }},
-                   { label: 'Product Sku',name: 'productSku', editable: true,edittype:"select",formatter:'select',},
-                   { label: 'Product Name',name: 'productId', editable: true, edittype:"select",formatter:'select', editoptions: { value:getProductName(name)} },
+                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
+                    editoptions: { 
+                                  dataInit: function(elem) {
+
+                    curRowId = $('#saStockReceived').getGridParam('selrow');   
+                   
+                    //$(elem).val();
+                  // $('#invAdj').jqGrid('setSelection', 'productName');
+                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
+                  $('#saStockReceived').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
+                  $('input#supplierName').val(getSupplierNames(ui.item.value));
+                  $('#saStockReceived').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
+                  $('input#productSku').val(getProductSku(ui.item.value));   
+                  console.log($('#productSku').val());
+                } });   
+                                  }
+                   }},
+                   { label: 'Supplier',name: 'supplierName',fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Updated Stock',name: 'amount',editable: true, edittype:"text"},
                    { label: 'Locations',name: 'inventoryLocationId', editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocations()}},
                    { label: 'Notes',name: 'comments', editable: true, edittype:"text"}
@@ -162,6 +157,15 @@
                {
                   
                },
+              {
+              zIndex:99,
+              afterShowForm: function () {
+              var idSelector = $.jgrid.jqID(this.p.id);
+              if(header==false) {
+              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              alert("Error: Need Header");
+              }
+              }},
                {
                    closeAfterAdd: true,
                    recreateForm: true,
@@ -226,7 +230,10 @@ $(document).ready(function () {
                    $("#purchaseOrder").on('change keyup paste', function () {
            SearchByPurchaseOrder()
         });
-           function date()
+               $("#save").on('click', function () {
+           SaveHeader();
+        });
+        function date()
         {
          var date;
          var currentDate = new Date();
@@ -236,6 +243,58 @@ $(document).ready(function () {
          date = today.toString();
          return date;
         }
+    
+            function SaveHeader()
+    {
+         header = true;
+
+        var date = $("#date").val();
+        var notes = $("#comments").val();
+        var truckingCompany= $("#truckingCompanyDropdown").val();
+        var Po = $("#purchaseOrder").val();
+        var sealNumber = $("#sealNo").val();
+        var truckingNumber = $("#truckerProbillNumber").val();
+
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber, function(data) {
+ 
+        $("#saCode").val(data);
+                    });
+            $.ajaxSetup( { "async": true } );
+
+    }
+                      function IsProduct(value,colname)
+       {
+           var containsProduct = false;
+                   $.ajaxSetup( { "async": false } );
+        $.getJSON('InvAdj/CreateProductName', function(data) {
+        if (data != null) {
+
+
+            for (var i = 0; i < data.length; i++) 
+            {
+                console.log(data[i].value);
+         if(value== data[i].value)
+         {
+             
+           containsProduct = true;
+               
+         }
+            }
+                         }//if
+
+            });
+            if(containsProduct==true)
+            {
+              $.ajaxSetup( { "async": true } );
+              return [true,""];
+            }
+            else{
+            $.ajaxSetup( { "async": true } );
+            return [false,"Please Enter Valid Product"];
+            }
+
+      }
     function SearchByProductName()
     {
         //  Fetch the text from our <input> control
@@ -350,56 +409,61 @@ $(document).ready(function () {
     //End of search functions
     //
 
-            function getSupplierNames() {
-        var SupplierList= {};
+            function getSupplierNames(value) {
+        var Supplier="";
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateList', function(data) {
         if (data != null) {
             
             for (var i = 0; i < data.length; i++) {
-             SupplierList[data[i].text]=data[i].text;
-              } 
-            }//if
+              if(data[i].value == value )
+                {
+                 Supplier=data[i].text;
+                }
+            } 
+        }//if
 
             });
             $.ajaxSetup( { "async": true } );
-           return SupplierList; 
+           return Supplier; 
 
         }
 
               function getProductSku(value) {
-        var ProductSkuList= {};
+        var ProductSku= "";
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateProductSkuList', function(data) {
         if (data != null) {
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0; i < data.length; i++)
+            {
                 if(data[i].value == value|| value =="")
                 {
-             ProductSkuList[data[i].text]=data[i].text;
+                   ProductSku=data[i].text;
                 } 
-              }
-            }//if
+             }
+        }//if
 
             });
             $.ajaxSetup( { "async": true } );
-           return ProductSkuList; 
+           return ProductSku; 
 
         }
-                function getProductName(value) {
-        var ProductNameList= {};
+                function getProductName() {
+         var ProductNameList= [];
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateProductName', function(data) {
         if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                if(data[i].value == value || value =="")
-                {
-             ProductNameList[data[i].id]=data[i].text;
-                } 
-              }
-            }//if
+
+
+            for (var i = 0; i < data.length; i++) 
+            {
+                ProductNameList[i]=data[i].value;
+            }
+         }//if
 
             });
             $.ajaxSetup( { "async": true } );
+            
 
            return ProductNameList; 
 
@@ -421,6 +485,7 @@ $(document).ready(function () {
            return LocationList; 
 
         }
+        
 
 </script>
 }

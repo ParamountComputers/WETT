@@ -162,7 +162,7 @@ namespace WETT.Controllers
             InventoryTxDetail r = new InventoryTxDetail
             {
                 //comments = p.Comments,
-                // ToInventoryLocationId = p.InventoryLocationId,
+                //ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId

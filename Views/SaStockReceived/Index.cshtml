@@ -112,25 +112,28 @@
                    { label: 'Supplier',name: 'supplierName', editable: true, edittype:"select",formatter:'select', editoptions: {value:getSupplierNames(),                
                    dataInit: function (elem) {
                     name = $(elem).val();
-                    $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName()} });
+                    $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku(name)} });
+                    $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName(name)} });
                     },
                        dataEvents: [
                     {
                         type: 'change',
                         fn: function(e) {
-                       name =$('#invAdj').jqGrid ('getCell', curRowId, 'supplierName');
-                      $('#saStockReceived').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                      $('#saStockReceived').setColProp('productId', { editoptions: { value:getProductName()} });
-                       jQuery("saStockReceived").trigger('reloadGrid');
+                       name =$('#saStockReceived').jqGrid ('getCell', curRowId, 'supplierName');
+                  $('#saStockReceived').jqGrid('setCell',curRowId,'productSku',getProductSku(name));
+                  $('select#productSku').val(getProductSku(name));
+                  $('#saStockReceived').jqGrid('setCell',curRowId,'productId',getProductName(name));
+                  $('select#productId').val(getProductName(name));
                        console.log(name);
+                       console.log(getProductSku(name));
+                       console.log(getProductName(name));
                        
                         }
                     }
                        ]
                     }},
                    { label: 'Product Sku',name: 'productSku', editable: true,edittype:"select",formatter:'select',},
-                   { label: 'Product Name',name: 'productId', editable: true, edittype:"select",formatter:'select', editoptions: { value:getProductName()} },
+                   { label: 'Product Name',name: 'productId', editable: true, edittype:"select",formatter:'select', editoptions: { value:getProductName(name)} },
                    { label: 'Updated Stock',name: 'amount',editable: true, edittype:"text"},
                    { label: 'Locations',name: 'inventoryLocationId', editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocations()}},
                    { label: 'Notes',name: 'comments', editable: true, edittype:"text"}
@@ -364,13 +367,13 @@ $(document).ready(function () {
 
         }
 
-              function getProductSku() {
+              function getProductSku(value) {
         var ProductSkuList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateProductSkuList', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-                if(data[i].value == name)
+                if(data[i].value == value|| value =="")
                 {
              ProductSkuList[data[i].text]=data[i].text;
                 } 
@@ -382,16 +385,14 @@ $(document).ready(function () {
            return ProductSkuList; 
 
         }
-                function getProductName() {
+                function getProductName(value) {
         var ProductNameList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateProductName', function(data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
-                if(data[i].value == name || name =="")
+                if(data[i].value == value || value =="")
                 {
-                    console.log(data[i].id);
-                    console.log(data[i].text);
              ProductNameList[data[i].id]=data[i].text;
                 } 
               }

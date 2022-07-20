@@ -76,7 +76,7 @@
     var header = false;
     var curRowId = -1;
     var ProductNameList= [];
-    var ProductSku="";
+
     var name ="";
     $(document).ready(function() {
        $("#saOutbound").jqGrid({
@@ -120,7 +120,7 @@
                   $('#saOutbound').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
                   $('input#supplierName').val(getSupplierNames(ui.item.value));
                   $('#saOutbound').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                  $('input#productSku').val(ProductSku.toString());
+                  $('input#productSku').val(getProductSku(ui.item.value));
                     
                 } });   
             }

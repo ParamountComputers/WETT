@@ -44,7 +44,6 @@
     var header = false;
     var curRowId = -1;
     var ProductNameList= [];
-    var ProductSku="";
     var name ="";
     $(document).ready(function() {
        $("#invAdj").jqGrid({
@@ -82,12 +81,16 @@
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
                                   dataInit: function(elem) {
-                    curRowId = $('#invAdj').getGridParam('selrow');        
+
+                    curRowId = $('#invAdj').getGridParam('selrow');   
+                   
+                    //$(elem).val();
+                  // $('#invAdj').jqGrid('setSelection', 'productName');
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                   $('#invAdj').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
                   $('input#supplierName').val(getSupplierNames(ui.item.value));
                   $('#invAdj').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                  $('input#productSku').val(ProductSku.toString());   
+                  $('input#productSku').val(getProductSku(ui.item.value));   
                 } });   
                                   }
                    }},
@@ -138,6 +141,7 @@
        $(document).ready(function () {  
            $('#date').val(date());
        });
+      
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
        $("#comments").on('change keyup paste', function () {
            SearchByComments();

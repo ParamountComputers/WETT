@@ -13,6 +13,7 @@ namespace WETT.Controllers
     {
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
+        public static string CurrentSaCode;
         public static string Notes;
         public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;
@@ -21,9 +22,9 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SaCode)
         {
-
+            CurrentSaCode = SaCode;
             InventoryTxCurrentId = -1;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
@@ -51,6 +52,7 @@ namespace WETT.Controllers
                          };
             return View(result);
         }
+
 
         public JsonResult GetAll(JqGridViewModel request)
         {
@@ -81,6 +83,26 @@ namespace WETT.Controllers
                                         };
             var invAdjData = AllInvAdjData;
 
+            if (CurrentSaCode != null)
+            {
+                invAdjData = invAdjData.Where(w => w.SaCode == CurrentSaCode);
+            }
+            else
+            {
+                if (showPage == true)
+                {
+                    //this is the type of transaction id
+                    invAdjData = invAdjData.Where(w => w.InventoryTxTypeId == 1);
+                    invAdjData = invAdjData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
+
+                }
+                else
+                {
+                    //this is to hide all transactons by type
+                    invAdjData = invAdjData.Where(w => w.InventoryTxId == -1);
+                }
+            }
+
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -105,18 +127,7 @@ namespace WETT.Controllers
                             break;
                     }
                 }
-            if (showPage == true)
-            {
-                //this is the type of transaction id
-                invAdjData = invAdjData.Where(w => w.InventoryTxTypeId == 1);
-                invAdjData = invAdjData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
-            }
-            else
-            {
-                //this is to hide all transactons by type
-                invAdjData = invAdjData.Where(w => w.InventoryTxId == -1);
-            }
 
 
             int totalRecords = invAdjData.Count();

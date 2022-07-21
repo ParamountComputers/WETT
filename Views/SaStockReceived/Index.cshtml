@@ -123,7 +123,8 @@
                   $('input#supplierName').val(getSupplierNames(ui.item.value));
                   $('#saStockReceived').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
                   $('input#productSku').val(getProductSku(ui.item.value));   
-                  console.log($('#productSku').val());
+                  console.log(getProductSku(ui.item.value));
+                  console.log(ui.item.value);
                 } });   
                                   }
                    }},
@@ -165,14 +166,13 @@
               $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
               alert("Error: Need Header");
               }
-              }},
-               {
-                   closeAfterAdd: true,
-                   recreateForm: true,
-                   errorTextFormat: function (data) {
-                       return 'Error: ' + data.responseText
-                   },
-                   url: "SaStockReceived/Add"
+              },
+              closeAfterAdd: true,
+              recreateForm: true,
+              errorTextFormat: function (data) {
+              return 'Error: ' + data.responseText
+              },
+              url: "SaStockReceived/Add"
                });
 
        });
@@ -200,7 +200,8 @@ $(document).ready(function () {
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
-               $("#truckingCompanyDropdown").html(s);  
+               $("#truckingCompanyDropdown").html(s);
+               
            }  
        });  
    });
@@ -254,15 +255,29 @@ $(document).ready(function () {
         var Po = $("#purchaseOrder").val();
         var sealNumber = $("#sealNo").val();
         var truckingNumber = $("#truckerProbillNumber").val();
-
+        var locations = $("#locationsDropdown").val();
+              if(locations!=-1 && truckingCompany!=-1)
+            {
         $.ajaxSetup( { "async": false } );
-        $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber, function(data) {
+        $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber+'/'+locations, function(data) {
  
         $("#saCode").val(data);
                     });
             $.ajaxSetup( { "async": true } );
-
-    }
+            }
+            else if(truckingCompany==-1 && locations==-1)
+            {
+                alert("Error: Enter A trucking Company and Location");
+            }
+            else if(truckingCompany==-1)
+            {
+                alert("Error: Enter A Trucking Company");
+            }
+            else if(locations==-1)
+            {
+                 alert("Error: Enter A Location");
+            }
+      }
                       function IsProduct(value,colname)
        {
            var containsProduct = false;
@@ -425,6 +440,7 @@ $(document).ready(function () {
 
             });
             $.ajaxSetup( { "async": true } );
+            console.log(Supplier);
            return Supplier; 
 
         }
@@ -436,7 +452,7 @@ $(document).ready(function () {
         if (data != null) {
             for (var i = 0; i < data.length; i++)
             {
-                if(data[i].value == value|| value =="")
+                if(data[i].value == value)
                 {
                    ProductSku=data[i].text;
                 } 
@@ -445,6 +461,7 @@ $(document).ready(function () {
 
             });
             $.ajaxSetup( { "async": true } );
+            console.log(ProductSku);
            return ProductSku; 
 
         }
@@ -463,8 +480,6 @@ $(document).ready(function () {
 
             });
             $.ajaxSetup( { "async": true } );
-            
-
            return ProductNameList; 
 
         }

@@ -112,9 +112,7 @@
                // the buttons to appear on the toolbar of the grid
                { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
               
-               {
-                  
-               },
+               {},
                {
               zIndex:99,
               afterShowForm: function () {
@@ -124,12 +122,12 @@
               alert("Error: Need Header");
               }
               },
-                   closeAfterAdd: true,
-                   recreateForm: true,
-                   errorTextFormat: function (data) {
-                       return 'Error: ' + data.responseText
-                   },
-                   url: "SaDamageRecoup/Add"
+              closeAfterAdd: true,
+              recreateForm: true,
+              errorTextFormat: function (data) {
+              return 'Error: ' + data.responseText
+              },
+              url: "SaDamageRecoup/Add"
                });
 
        });

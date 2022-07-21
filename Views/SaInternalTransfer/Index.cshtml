@@ -231,12 +231,26 @@
             var notes = $("#comments").val();
             var toLocationsDropdown= $("#toLocationsDropdown").val();
             var fromLocationsDropdown= $("#fromLocationsDropdown").val();
-
+            if(fromLocationsDropdown !=-1 && toLocationsDropdown)
+            {
             $.ajaxSetup( { "async": false } );
             $.getJSON('saInternalTransfer/CreateHeader?data='+date+'/'+ toLocationsDropdown+'/'+fromLocationsDropdown+'/'+ notes, function(data) {
                 $("#saCode").val(data);
                  });
             $.ajaxSetup( { "async": true } );
+            }
+            else if(fromLocationsDropdown==-1 && toLocationsDropdown==-1)
+            {
+                alert("Error: Enter A To Location And A From Location");
+            }
+            else if(toLocationsDropdown==-1)
+            {
+                alert("Error: Enter A To Location");
+            }
+            else if(fromLocationsDropdown==-1)
+            {
+                 alert("Error: Enter A From Location");
+            }
         }
 
     function SearchByComments()

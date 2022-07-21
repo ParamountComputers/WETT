@@ -52,6 +52,7 @@
     $.jgrid.defaults.styleUI = 'Bootstrap';
      $.jgrid.defaults.responsive = true;
     var header = false;
+    var locations;
     var curRowId = -1;
     var ProductNameList= [];
     var name ="";
@@ -219,12 +220,18 @@
             var date = $("#date").val();
             var notes = $("#comments").val();
             var locationsDropdown= $("#locationsDropdown").val();
-
+            if(locationsDropdown!=-1)
+            {
             $.ajaxSetup( { "async": false } );
-            $.getJSON('SaExciseDuty/CreateHeader?data='+date+'/'+ locationsDropdown+'/'+'/'+ notes, function(data) {
+            $.getJSON('SaExciseDuty/CreateHeader?data='+date+'/'+ locationsDropdown+'/'+ notes, function(data) {
                 $("#saCode").val(data);
                  });
             $.ajaxSetup( { "async": true } );
+            }
+            else
+            {
+                alert("Error: Enter A Location");
+            }
         }
 
     function SearchByComments()

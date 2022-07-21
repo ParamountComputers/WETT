@@ -187,10 +187,11 @@ namespace WETT.Controllers
                 PurchaseOrder= li[3],
                 Seal=li[4],
                 TransactionNo=li[5],
+                FromInventoryLocationId = (long)Convert.ToDouble(li[6]),
                 InventoryTxTypeId = 1,
                 StockAdjCode = "SR"
             };
-
+            
             _context.InventoryTxes.Add(s);
             _context.SaveChanges();
             InventoryTxCurrentId = s.InventoryTxId;
@@ -210,7 +211,6 @@ namespace WETT.Controllers
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId,
-                InventoryTxReasonId = p.InventoryTxReasonsId
             };
 
             _context.InventoryTxDetails.Add(r);
@@ -222,10 +222,10 @@ namespace WETT.Controllers
         public JsonResult Update(SaStockReceivedViewModel p)
         {
 
-
+            Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = p.InventoryLocationId;
-            r.ProductId = p.ProductId;
+            r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             _context.SaveChanges();
             return Json(true);
@@ -244,9 +244,11 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     join a in _context.Products on s.SupplierId equals a.SupplierId
                      select new
                      {
                          text = s.Name,
+                         value = a.Description
 
                      };
             return Json(li);
@@ -254,11 +256,10 @@ namespace WETT.Controllers
         public IActionResult CreateProductSkuList()
         {
             var invAdjData = from a in _context.Products
-                             join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
                              {
                                  text = a.Sku,
-                                 value = b.Name
+                                 value = a.Description
 
                              };
             return Json(invAdjData);

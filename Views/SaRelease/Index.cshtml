@@ -68,7 +68,6 @@
     $.jgrid.defaults.styleUI = 'Bootstrap';
      $.jgrid.defaults.responsive = true;
     var header = false;
-    var isLocation = false;
     var curRowId = -1;
     var ProductNameList= [];
     var name ="";
@@ -149,10 +148,6 @@
                   if(header==false) {
                       $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
                       alert("Error: Need Header");
-                  }
-                  if(isLocation==false) {
-                      $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
-                      alert("Error: Enter A Location");
                   }
               },
                    closeAfterAdd: true,
@@ -245,18 +240,18 @@
             var locationsDropdown= $("#locationsDropdown").val();
             var prevTransNo= $("#prevTransNo").val();
             var transNumber= $("#transNumber").val();
-            isLocation = false;
             if(locationsDropdown!=-1)
             {
-              isLocation=true;
-            
-
             $.ajaxSetup( { "async": false } );
             $.getJSON('saRelease/CreateHeader?data='+date+'/'+purchaseOrder+'/'+ portEntry+'/'+ locationsDropdown+'/'+ prevTransNo+'/'+transNumber +'/'+ notes, function(data) {
  
             $("#saCode").val(data);
                     });
             $.ajaxSetup( { "async": true } );
+            }
+            else
+            {
+                alert("Error: Enter A Location");
             }
         }
 

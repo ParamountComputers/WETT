@@ -278,13 +278,14 @@ namespace WETT.Controllers
         }
         public IActionResult CreateDestinationList()
         {
-            var invAdjData = from a in _context.TruckingCompanies
+            var invAdjData = from a in _context.ShippingLocations
                              select new
                              {
-                                 value = a.TruckingCompanyId,
+                                 value = a.ShippingLocationId,
                                  text = a.Name
                              };
             return Json(invAdjData);
         }
+
     }
 }

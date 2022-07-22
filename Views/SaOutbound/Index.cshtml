@@ -274,13 +274,44 @@
             var truckingCompany= $("#truckingCompDD").val();
             var probillNo= $("#probill").val();
             var fromLocationDropdown= $("#fromLocationsDropdown").val();
-
+            console.log($("#fromLocationsDropdown").val());
+            if(fromLocationDropdown !=-1 && destination !=1 && truckingCompany != 1)
+            {
             $.ajaxSetup( { "async": false } );
             $.getJSON('saOutbound/CreateHeader?data='+date+'/'+destination+'/'+ truckingCompany+'/'+ probillNo+'/'+ fromLocationDropdown+'/'+ notes, function(data) {
  
             $("#saCode").val(data);
                     });
             $.ajaxSetup( { "async": true } );
+            }
+            else if(fromLocationDropdown==-1 && truckingCompany==-1 && destination==-1)
+            {
+                alert("Error: Enter A From Location, Desination And A Trucking Company");
+            }
+            else if(fromLocationDropdown==-1 && truckingCompany==-1)
+            {
+                alert("Error: Enter A From Location And A Trucking Company");
+            }
+            else if(fromLocationDropdown==-1 && destination==-1)
+            {
+                alert("Error: Enter A From Location And A Destination");
+            }
+            else if(destination==-1 && truckingCompany==-1)
+            {
+                alert("Error: Enter A Destination And A Trucking Company");
+            }
+            else if(truckingCompany==-1)
+            {
+                alert("Error: Enter A Trucking Company");
+            }
+            else if(destination==-1)
+            {
+                 alert("Error: Enter A Destination");
+            }
+            else if(fromLocationDropdown==-1)
+            {
+                 alert("Error: Enter A From Location");
+            }
         }
 
     function SearchByComments()

@@ -12,6 +12,11 @@ namespace WETT.Data
         public long? ToInventoryLocationId { get; set; }
         public long? InventoryTxReasonId { get; set; }
         public int Amount { get; set; }
+        public string Comments { get; set; }
+        public string InsertUserid { get; set; }
+        public DateTime InsertTimestamp { get; set; }
+        public string UpdateUserid { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
 
         public virtual InventoryTx InventoryTx { get; set; }
         public virtual InventoryTxReason InventoryTxReason { get; set; }

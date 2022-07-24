@@ -11,7 +11,7 @@ namespace WETT.Models
     {
         public long CustomerOrderID { get; set; }
         public DateTime OrderDate { get; set; }
-        public DateTime DelveryDate { get; set; }
+        public DateTime? DelveryDate { get; set; }
         public string OrderNumber { get; set; }
         public string Customer { get; set; }
         public string City { get; set; }

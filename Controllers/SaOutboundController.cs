@@ -16,20 +16,21 @@ namespace WETT.Controllers
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string Notes;
         public static long CurrentHeaderId;
+        public static long CurrentTxType = 0;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
         public SaOutboundController(WETT_DBContext context)
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(long InventoryTxTypeId)
         {
-
+            CurrentTxType = InventoryTxTypeId;
             InventoryTxCurrentId = -1;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                         join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                        // join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
@@ -41,7 +42,7 @@ namespace WETT.Controllers
                              SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
-                             InventoryLocationId = d.InventoryLocationId,
+                             //InventoryLocationId = d.InventoryLocationId,
                              //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
@@ -59,7 +60,7 @@ namespace WETT.Controllers
             var AllsaOutboundData = from b in _context.InventoryTxDetails
                                     join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                                     join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                    join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                                    //join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                                     join e in _context.Products on b.ProductId equals e.ProductId
                                     join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                     //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
@@ -72,7 +73,7 @@ namespace WETT.Controllers
                                         SupplierName = f.Name,
                                         ProductId = e.ProductId,
                                         ProductName = e.Description,
-                                        InventoryLocationId = d.InventoryLocationId,
+                                        //InventoryLocationId = d.InventoryLocationId,
                                         //   InventoryTxReasonsId = g.InventoryTxReasonId,
                                         Amount = b.Amount,
                                         InventoryTxTypeId = c.InventoryTxTypeId,
@@ -84,39 +85,46 @@ namespace WETT.Controllers
 
 
 
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
-                    {
-                        case "date":
+            //if (issearch)
+            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //    {
+            //        switch (rule.field)
+            //        {
+            //            case "date":
 
-                            SaOutboundData = (IQueryable<SaOutboundViewModel>)SaOutboundData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = rule.data;
-                            break;
-                        case "comments":
+            //                SaOutboundData = (IQueryable<SaOutboundViewModel>)SaOutboundData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+            //                searchDate = rule.data;
+            //                break;
+            //            case "comments":
 
-                            SaOutboundData = (IQueryable<SaOutboundViewModel>)SaOutboundData.Where(w => w.Comments.Contains(rule.data));
-                            SaOutboundData = (IQueryable<SaOutboundViewModel>)SaOutboundData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
+            //                SaOutboundData = (IQueryable<SaOutboundViewModel>)SaOutboundData.Where(w => w.Comments.Contains(rule.data));
+            //                SaOutboundData = (IQueryable<SaOutboundViewModel>)SaOutboundData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
 
 
-                            Notes = rule.data;
-                            break;
-                    }
-                }
-            if (showPage == true)
+            //                Notes = rule.data;
+            //                break;
+            //        }
+            //    }
+            if (CurrentTxType != 0)
             {
-                //this is the type of transaction id
-                SaOutboundData = SaOutboundData.Where(w => w.InventoryTxTypeId == 4);
-                SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
+                SaOutboundData = SaOutboundData.Where(w => w.InventoryTxTypeId == CurrentTxType);
             }
             else
             {
-                //this is to hide all transactons by type
-                SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == -1);
+                if (showPage == true)
+                {
+                    //this is the type of transaction id
+                    SaOutboundData = SaOutboundData.Where(w => w.InventoryTxTypeId == 3);
+                    SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
+
+                }
+                else
+                {
+                    //this is to hide all transactons by type
+                    SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == -1);
+                }
             }
 
 
@@ -162,7 +170,7 @@ namespace WETT.Controllers
             InventoryTxDetail r = new InventoryTxDetail
             {
                 //comments = p.Comments,
-                // ToInventoryLocationId = p.InventoryLocationId,
+                ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId
@@ -192,8 +200,8 @@ namespace WETT.Controllers
                 InventoryTxTypeId = 3,          //hard coded transaction type id for now
                 StockAdjCode = "OT",
                 //add in extra cols here******************************************
-                ShippingLocationId = 1,//li[1],
-                TruckingCompanyId = 1,//li[2],
+                ShippingLocationId = (long)Convert.ToDouble(li[1]),
+                TruckingCompanyId = (long)Convert.ToDouble(li[2]),
                 Probill = li[3],
                 FromInventoryLocationId = (long)Convert.ToDouble(li[4]),
                 Comments = li[5]

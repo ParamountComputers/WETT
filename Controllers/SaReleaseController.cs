@@ -16,15 +16,16 @@ namespace WETT.Controllers
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string Notes;
         public static long CurrentHeaderId;
+        public static long CurrentTxType = 0;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
         public SaReleaseController(WETT_DBContext context)
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(long InventoryTxTypeId)
         {
-
+            CurrentTxType = InventoryTxTypeId;
             InventoryTxCurrentId = -1;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
@@ -106,17 +107,24 @@ namespace WETT.Controllers
                             break;
                     }
                 }
-            if (showPage == true)
+            if (CurrentTxType != 0)
             {
-                //this is the type of transaction id
-                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == 4);
-                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
+                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == CurrentTxType);
             }
             else
             {
-                //this is to hide all transactons by type
-                SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == -1);
+                if (showPage == true)
+                {
+                    //this is the type of transaction id
+                    SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == 4);
+                    SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
+
+                }
+                else
+                {
+                    //this is to hide all transactons by type
+                    SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == -1);
+                }
             }
 
 

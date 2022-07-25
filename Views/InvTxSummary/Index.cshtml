@@ -1,0 +1,260 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "InvTxSummary";
+}
+
+<div class="text-center">
+    <h2 class="display-4">Inventory Summary Page</h2>
+</div>
+<fieldset class="scheduler-border">
+  <div class="container-flow">
+  <div class="row">
+           <div class="col-sm-3">
+          <label for="startDate"  style="font-size:10px;"> Start Date Range:</label>
+         <input type="date" value=""  style="font-size:10px;" id='startDate' name="startDate" />
+         </div>   
+           <div class="col-sm-1"></div>
+           <div class="col-sm-3">
+          <label for="endDate"  style="font-size:10px;"> End Date Range:</label>
+         <input type="date" value=""  style="font-size:10px;" id='endDate' name="endDate" />
+             </div>
+             <div class="col-md-1 ">
+                 </div>
+            <div class="col-sm-2 text-sm-right">
+              <form class="form-inline">
+                 <div class="form-group">
+                   <label style="font-size:10px;" for="InvTxSummaryDropdown" class="d-inline">Inventory Tx Type:</label>  
+                   <select style="font-size:10px;" class="form-control" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
+                 </div>
+              </form>  
+           </div>
+                <div class="col-sm-1">
+                 </div>
+            <div class="col-sm-1 text-right">
+          <button class="btn btn-outline-secondary" style="font-size:10px;" id="search" type="button">Search</button>  
+            </div>        
+</div>
+</div>
+</fieldset>
+
+<table id="invTxSummary" style="align: center"></table>
+<div id="jqGridPager"></div>
+@section scripts {
+
+<script type="text/javascript">
+
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+     $.jgrid.defaults.responsive = true;
+    var header = false;
+    var curRowId = -1;
+    var name ="";
+    $(document).ready(function() {
+       $("#invTxSummary").jqGrid({
+               url: 'InvTxSummary/GetAll',
+               mtype: "GET",
+               guiStyle: "bootstrap",
+               iconSet: "fontAwesome",
+               idPrefix: "gb1_",
+               datatype: "json",
+               ajaxSelectOptions: {
+                          type: "GET", 
+                          contentType: 'application/json; charset=utf-8',
+                          dataType: "json",
+                          cache: false,
+                      },
+               autowidth:true,
+               colModel: [
+                   {
+                        label: "Edit Actions",
+                        name: "actions",
+                        width: 100,
+                        formatter: "actions",
+                        fixed:true,
+                        formatoptions: {
+                            keys: true,
+                            editOptions: { },
+                            addOptions: { },
+                            delOptions: { url: 'InvTxSummary/Delete' }
+                        }
+                    },
+                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId', editable: true,edittype:"select",formatter:"select",editoptions: { value: getInvTxType()}},
+                   { label: 'Sa Code',name: 'saCode', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Date',name: 'date',fixed:true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text",}
+
+                 ], 
+               viewrecords: true,
+               height: 250,
+               rowNum: 10,
+               pager: "#jqGridPager",
+               editurl: 'InvTxSummary/Update',              
+
+           })
+               
+
+
+
+           $('#invTxSummary').navGrid('#jqGridPager',
+               // the buttons to appear on the toolbar of the grid
+               { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+              
+               {
+                  
+               },
+               {
+              zIndex:99,
+              afterShowForm: function () {
+              var idSelector = $.jgrid.jqID(this.p.id);
+              if(header==false) {
+              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              alert("Error: Need Header");
+              }
+              },
+                   closeAfterAdd: true,
+                   recreateForm: true,
+                   errorTextFormat: function (data) {
+                       return 'Error: ' + data.responseText
+                   },
+                   url: "InvTxSummary/Add"
+               });
+               
+       });
+       //$(document).ready(function () {  
+       //    $('#startDate').val(date());
+       //});
+      $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "InvTxSummary/CreateInvTxTypeList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '<option value="-1">Select a Transaction type</option>';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#InvTxSummaryDropdown").html(s);  
+           }  
+       });  
+   });
+       $('#invTxSummary').setGridWidth(parseInt($(window).width()) - 20);
+       
+       $("#search").on('click', function () {
+           SaveHeader();
+        });
+        function date()
+        {
+         var date;
+         var currentDate = new Date();
+         var day = ("0" + currentDate.getDate()).slice(-2);
+         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+         date = today.toString();
+         return date;
+        }
+    
+            function SaveHeader()
+    {
+        var endDate = $("#endDate").val();
+        var startDate = $("#startDate").val();
+        var invTxType = $("#InvTxSummaryDropdown").val();
+        if(invTxType!=-1 && startDate!= "" && endDate !="")
+            {
+                 header = true;
+                    $.ajaxSetup( { "async": false } );
+                    $.getJSON('InvTxSummary/CreateSearch?data='+startDate+'/'+endDate+'/'+invTxType, function(data) {
+ 
+                    $("#saCode").val(data);
+                                });
+                        $.ajaxSetup( { "async": true } );
+            }
+        else if(invTxType==-1 && startDate== "" && endDate =="")
+            {
+                alert("Error: Enter A Start Date, End Date And Type");
+            }
+        else if(invTxType==-1 && startDate== "")
+            {
+                alert("Error: Enter A Start Date And Type");
+            }
+        else if(invTxType==-1 && endDate== "")
+            {
+                alert("Error: Enter A End Date And Type");
+            }
+        else if(startDate=="" && endDate== "")
+            {
+                alert("Error: Enter A Start Date And End Date");
+            }
+        else if(invTxType==-1)
+            {
+                alert("Error: Enter A Type");
+            }
+        else if(startDate=="")
+            {
+                alert("Error: Enter A Start Date");
+            }
+        else if(endDate=="")
+            {
+                alert("Error: Enter A End Date");
+            }
+    $('#invTxSummary').trigger("reloadGrid");
+
+    }
+    //function SearchByComments()
+    //{
+    //    //  Fetch the text from our <input> control
+    //    var searchString = $("#comments").val();
+        
+    //    //  Prepare to pass a new search filter to our jqGrid
+    //    var f = { groupOp: "AND", rules: [] };
+
+    //    //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+    //    //  In this example, I'm searching through the UserName column.
+
+    //    f.rules.push({ field: "comments", op: "cn", data: searchString });
+
+    //    var grid = $('#invAdj');
+    //    grid[0].p.search = f.rules.length > 0;
+    //    $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+    //    grid.trigger("reloadGrid", [{ page: 1 }]);
+    //}
+    //    function SearchByDate()
+    //{
+    //    //  Fetch the text from our <input> control
+    //    var searchString = $("#date").val();
+        
+    //    //  Prepare to pass a new search filter to our jqGrid
+    //    var f = { groupOp: "AND", rules: [] };
+
+    //    //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+    //    //  In this example, I'm searching through the UserName column.
+
+    //    f.rules.push({ field: "date", op: "cn", data: searchString });
+
+    //    var grid = $('#invTxSummary');
+    //    grid[0].p.search = f.rules.length > 0;
+    //    $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+    //    grid.trigger("reloadGrid", [{ page: 1 }]);
+    //}
+
+                 function getInvTxType() {
+        var ReasonsList= {};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('InvTxSummary/CreateInvTxTypeList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+             ReasonsList[data[i].value]=data[i].text;
+                 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+
+           return ReasonsList; 
+
+        }
+
+</script>
+}

@@ -13,7 +13,7 @@ namespace WETT.Controllers
     {
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
-        public static string CurrentSaCode;
+        public static long CurrentTxType = 0;
         public static string Notes;
         public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;
@@ -22,9 +22,9 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string SaCode)
+        public async Task<IActionResult> Index(long InventoryTxTypeId)
         {
-            CurrentSaCode = SaCode;
+            CurrentTxType = InventoryTxTypeId;
             InventoryTxCurrentId = -1;
 
             var result = from b in _context.InventoryTxDetails
@@ -60,7 +60,7 @@ namespace WETT.Controllers
 
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.Suppliers;
+            
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
             var AllSaStockReceivedData = from b in _context.InventoryTxDetails
                                       join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
@@ -90,16 +90,16 @@ namespace WETT.Controllers
 
                                      };
             var SaStockReceivedData =AllSaStockReceivedData;
-            if (CurrentSaCode != null)
+            if (CurrentTxType != 0)
             {
-                SaStockReceivedData = SaStockReceivedData.Where(w => w.SaCode == CurrentSaCode);
+                SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == CurrentTxType);
             }
             else
             {
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == 1);
+                    SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == 7);
                     SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }
@@ -108,11 +108,11 @@ namespace WETT.Controllers
                     //this is to hide all transactons by type
                     SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxId == -1);
                 }
-            }
+        }
 
 
 
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+        bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
             if (issearch)
                 foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
@@ -188,7 +188,7 @@ namespace WETT.Controllers
                 Seal=li[4],
                 TransactionNo=li[5],
                 FromInventoryLocationId = (long)Convert.ToDouble(li[6]),
-                InventoryTxTypeId = 1,
+                InventoryTxTypeId = 7,
                 StockAdjCode = "SR"
             };
             

@@ -107,7 +107,8 @@
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
                                   dataInit: function(elem) {
-                    curRowId = $('#saRelease').getGridParam('selrow');        
+                    curRowId = $('#saRelease').getGridParam('selrow');    
+                    $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                    
                   $('#saRelease').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
@@ -230,9 +231,6 @@
     
     function SaveHeader()
         {
-            
-            header = true;
-            console.log($("#date").val());
             var date = $("#date").val();
             var notes = $("#comments").val();
             var purchaseOrder= $("#purchaseOrder").val();
@@ -242,6 +240,7 @@
             var transNumber= $("#transNumber").val();
             if(locationsDropdown!=-1)
             {
+                header = true;
             $.ajaxSetup( { "async": false } );
             $.getJSON('saRelease/CreateHeader?data='+date+'/'+purchaseOrder+'/'+ portEntry+'/'+ locationsDropdown+'/'+ prevTransNo+'/'+transNumber +'/'+ notes, function(data) {
  

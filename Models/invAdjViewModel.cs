@@ -7,7 +7,7 @@ using WETT.Data;
 
 namespace WETT.Models
 {
-    public class invAdjViewModel 
+    public class invAdjViewModel
     {
         public long InventoryTxDetailId { get; set; }
         public long InventoryTxReasonsId { get; set; }

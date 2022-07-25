@@ -161,6 +161,7 @@
                var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
                 console.log(id);
                 getDetails(id);
+                $('#'+rowid).addClass('ui-state-highlight');
                  $("#FulfillSalesDtls").trigger('reloadGrid');
 
                }

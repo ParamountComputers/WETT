@@ -15,6 +15,7 @@ namespace WETT.Controllers
         public static string searchDate= DateTime.Now.ToShortDateString();
         public static string Notes;
         public static long CurrentHeaderId;
+        public static long CurrentTxType = 0;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
 
@@ -22,9 +23,10 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(long InventoryTxTypeId)
         {
             InventoryTxCurrentId = -1;
+            CurrentTxType = InventoryTxTypeId;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -103,20 +105,25 @@ namespace WETT.Controllers
                                 break;
                         }
                     }
-
-            if (showPage == true)
+            if (CurrentTxType != 0)
             {
-                //this is the type of transaction id
-                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
-                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-               
+                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == CurrentTxType);
             }
             else
             {
-                //this is to hide all transactons by type
-                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxId == -1);
-            }
+                if (showPage == true)
+                {
+                    //this is the type of transaction id
+                    SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
+                    SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
+                }
+                else
+                {
+                    //this is to hide all transactons by type
+                    SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxId == -1);
+                }
+            }
             int totalRecords = SaDamageRecoupData.Count();
                 var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
                 int currentPageIndex = request.page - 1;

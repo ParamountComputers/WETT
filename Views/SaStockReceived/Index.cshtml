@@ -118,6 +118,7 @@
                    
                     //$(elem).val();
                   // $('#invAdj').jqGrid('setSelection', 'productName');
+                  $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                   $('#saStockReceived').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
                   $('input#supplierName').val(getSupplierNames(ui.item.value));
@@ -247,7 +248,6 @@ $(document).ready(function () {
     
             function SaveHeader()
     {
-         header = true;
 
         var date = $("#date").val();
         var notes = $("#comments").val();
@@ -258,6 +258,7 @@ $(document).ready(function () {
         var locations = $("#locationsDropdown").val();
               if(locations!=-1 && truckingCompany!=-1)
             {
+                header = true;
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber+'/'+locations, function(data) {
  

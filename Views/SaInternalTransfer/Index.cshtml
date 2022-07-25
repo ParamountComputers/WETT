@@ -101,7 +101,8 @@
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
                                   dataInit: function(elem) {
-                    curRowId = $('#saInternalTransfer').getGridParam('selrow');        
+                    curRowId = $('#saInternalTransfer').getGridParam('selrow'); 
+                    $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                    
                   $('#saInternalTransfer').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
@@ -225,14 +226,14 @@
     
     function SaveHeader()
         {
-            header = true;
             console.log($("#date").val());
             var date = $("#date").val();
             var notes = $("#comments").val();
             var toLocationsDropdown= $("#toLocationsDropdown").val();
             var fromLocationsDropdown= $("#fromLocationsDropdown").val();
-            if(fromLocationsDropdown !=-1 && toLocationsDropdown)
+            if(fromLocationsDropdown !=-1 && toLocationsDropdown !=-1)
             {
+                header = true;
             $.ajaxSetup( { "async": false } );
             $.getJSON('saInternalTransfer/CreateHeader?data='+date+'/'+ toLocationsDropdown+'/'+fromLocationsDropdown+'/'+ notes, function(data) {
                 $("#saCode").val(data);

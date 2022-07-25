@@ -266,17 +266,15 @@
     
     function SaveHeader()
         {
-            header = true;
-            console.log($("#date").val());
             var date = $("#date").val();
             var notes = $("#comments").val();
             var destination= $("#destDropdown").val();
-            var truckingCompany= $("#truckingCompDD").val();
+            var truckingCompany= $("#truckingComp").val();
             var probillNo= $("#probill").val();
             var fromLocationDropdown= $("#fromLocationsDropdown").val();
-            console.log($("#fromLocationsDropdown").val());
-            if(fromLocationDropdown !=-1 && destination !=1 && truckingCompany != 1)
+            if(fromLocationDropdown !=-1 && destination !=-1 && truckingCompany != -1)
             {
+                header = true;
             $.ajaxSetup( { "async": false } );
             $.getJSON('saOutbound/CreateHeader?data='+date+'/'+destination+'/'+ truckingCompany+'/'+ probillNo+'/'+ fromLocationDropdown+'/'+ notes, function(data) {
  

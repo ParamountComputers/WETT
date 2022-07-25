@@ -50,7 +50,7 @@ namespace WETT.Controllers
                              InventoryTxTypeId = c.InventoryTxTypeId,
                              InventoryLocation = d.Description,
                              Amount = b.Amount,
-                             Comments = a.Comments,
+                             Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = "1s2s3"
 
@@ -84,7 +84,7 @@ namespace WETT.Controllers
                                           InventoryLocation = d.Description,
                                           InventoryTxTypeId = c.InventoryTxTypeId,
                                           Amount = b.Amount,
-                                         Comments = a.Comments,
+                                         Comments = b.Comments,
                                          Date = a.Date, //.ToShortDateString(),
                                          SaCode = "1s2s3"
 
@@ -112,44 +112,44 @@ namespace WETT.Controllers
 
 
 
-        bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+        //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
-                    {
-                        case "date":
-                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = rule.data;
-                            break;
-                        case "productName":
-                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.ProductName.Contains(rule.data));
-                            break;
-                        case "saCode":
-                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.SaCode.Contains(rule.data));
-                            break;
-                        case "comments":
-                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Comments.Contains(rule.data));
-                            break;
-                        case "locationsDropdown":
-                            if (rule.data.Contains("-1"))
-                            {
+        //    if (issearch)
+        //        foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+        //        {
+        //            switch (rule.field)
+        //            {
+        //                case "date":
+        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+        //                    searchDate = rule.data;
+        //                    break;
+        //                case "productName":
+        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.ProductName.Contains(rule.data));
+        //                    break;
+        //                case "saCode":
+        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.SaCode.Contains(rule.data));
+        //                    break;
+        //                case "comments":
+        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Comments.Contains(rule.data));
+        //                    break;
+        //                case "locationsDropdown":
+        //                    if (rule.data.Contains("-1"))
+        //                    {
                                
 
-                                break; 
-                            }
-                            else
-                            {
-                                SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
-                                break;
-                            }
-                        case "purchaseOrder":
-                            SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.PurchaseOrder.Contains(rule.data));
-                            break;
+        //                        break; 
+        //                    }
+        //                    else
+        //                    {
+        //                        SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
+        //                        break;
+        //                    }
+        //                case "purchaseOrder":
+        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.PurchaseOrder.Contains(rule.data));
+        //                    break;
 
-                    }
-                }
+        //            }
+        //        }
 
             int totalRecords = SaStockReceivedData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -206,7 +206,7 @@ namespace WETT.Controllers
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
-                //comments = p.Comments,
+                Comments = p.Comments,
                 ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
@@ -227,6 +227,7 @@ namespace WETT.Controllers
             r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
+            r.Comments = p.Comments;
             _context.SaveChanges();
             return Json(true);
         }

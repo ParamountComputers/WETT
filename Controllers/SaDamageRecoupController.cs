@@ -46,7 +46,7 @@ namespace WETT.Controllers
                              InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
-                             Comments = a.Comments,
+                             Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = a.StockAdjCode
 
@@ -76,35 +76,35 @@ namespace WETT.Controllers
                                          InventoryTxReasonsId = g.InventoryTxReasonId,
                                          Amount = b.Amount,
                                          InventoryTxTypeId = c.InventoryTxTypeId,
-                                         Comments = a.Comments,
+                                         Comments = b.Comments,
                                          Date = a.Date, //.ToShortDateString(),
                                          SaCode = a.StockAdjCode
                                      };
             var SaDamageRecoupData = AllSaDamageRecoupData;
 
             
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-                if (issearch)
-                    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                    {
-                        switch (rule.field)
-                        {
-                            case "date":
+            //    if (issearch)
+            //        foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //        {
+            //            switch (rule.field)
+            //            {
+            //                case "date":
 
-                               SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                                searchDate = rule.data;
-                                break;
-                            case "comments":
+            //                   SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+            //                    searchDate = rule.data;
+            //                    break;
+            //                case "comments":
                             
-                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Comments.Contains(rule.data));
-                            SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
+            //                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Comments.Contains(rule.data));
+            //                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
                             
                            
-                                Notes = rule.data;
-                                break;
-                        }
-                    }
+            //                    Notes = rule.data;
+            //                    break;
+            //            }
+            //        }
             if (CurrentTxType != 0)
             {
                 SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == CurrentTxType);
@@ -162,8 +162,9 @@ namespace WETT.Controllers
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId,
-                InventoryTxReasonId =p.InventoryTxReasonsId
-            };
+                InventoryTxReasonId =p.InventoryTxReasonsId,
+                Comments = p.Comments
+        };
 
             _context.InventoryTxDetails.Add(r);
             _context.SaveChanges();
@@ -179,6 +180,7 @@ namespace WETT.Controllers
             r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
+            r.Comments = p.Comments;
             _context.SaveChanges();
             return Json(true);
         }

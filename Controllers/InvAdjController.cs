@@ -162,6 +162,7 @@ namespace WETT.Controllers
             r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
+            r.Comments = p.Comments;
             _context.SaveChanges();
             return Json(true);
         }
@@ -176,8 +177,9 @@ namespace WETT.Controllers
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId,
-                InventoryTxReasonId = p.InventoryTxReasonsId
-            };
+                InventoryTxReasonId = p.InventoryTxReasonsId,
+                Comments = p.Comments
+        };
 
             _context.InventoryTxDetails.Add(r);
             _context.SaveChanges();

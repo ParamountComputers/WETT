@@ -46,7 +46,7 @@ namespace WETT.Controllers
                         //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
-                             Comments = a.Comments,
+                             Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = a.StockAdjCode
 
@@ -77,7 +77,7 @@ namespace WETT.Controllers
                                  //   InventoryTxReasonsId = g.InventoryTxReasonId,
                                     Amount = b.Amount,
                                     InventoryTxTypeId = c.InventoryTxTypeId,
-                                    Comments = a.Comments,
+                                    Comments = b.Comments,
                                     Date = a.Date, //.ToShortDateString(),
                                     SaCode = a.StockAdjCode
                                 };
@@ -85,28 +85,28 @@ namespace WETT.Controllers
 
 
 
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
-                    {
-                        case "date":
+            //if (issearch)
+            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //    {
+            //        switch (rule.field)
+            //        {
+            //            case "date":
 
-                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = rule.data;
-                            break;
-                        case "comments":
+            //                SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+            //                searchDate = rule.data;
+            //                break;
+            //            case "comments":
 
-                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Comments.Contains(rule.data));
-                            SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
+            //                SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Comments.Contains(rule.data));
+            //                SaReleaseData = (IQueryable<SaReleaseViewModel>)SaReleaseData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
 
 
-                            Notes = rule.data;
-                            break;
-                    }
-                }
+            //                Notes = rule.data;
+            //                break;
+            //        }
+            //    }
             if (CurrentTxType != 0)
             {
                 SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == CurrentTxType);
@@ -160,6 +160,7 @@ namespace WETT.Controllers
             //r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
+            r.Comments = p.Comments;
             _context.SaveChanges();
             return Json(true);
         }
@@ -169,7 +170,7 @@ namespace WETT.Controllers
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
-                //comments = p.Comments,
+                Comments = p.Comments,
                // ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,

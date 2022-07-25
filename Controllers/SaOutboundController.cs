@@ -46,7 +46,7 @@ namespace WETT.Controllers
                              //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
-                             Comments = a.Comments,
+                             Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = a.StockAdjCode
 
@@ -77,7 +77,7 @@ namespace WETT.Controllers
                                         //   InventoryTxReasonsId = g.InventoryTxReasonId,
                                         Amount = b.Amount,
                                         InventoryTxTypeId = c.InventoryTxTypeId,
-                                        Comments = a.Comments,
+                                        Comments = b.Comments,
                                         Date = a.Date, //.ToShortDateString(),
                                         SaCode = a.StockAdjCode
                                     };
@@ -160,6 +160,7 @@ namespace WETT.Controllers
             //r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
+            r.Comments = p.Comments;
             _context.SaveChanges();
             return Json(true);
         }
@@ -169,7 +170,7 @@ namespace WETT.Controllers
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
-                //comments = p.Comments,
+                Comments = p.Comments,
                 ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,

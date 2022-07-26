@@ -13,7 +13,7 @@ namespace WETT.Controllers
     {
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
-        public static long CurrentTxType = 0;
+        public static string CurrentSaCode;
         public static string Notes;
         public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;
@@ -22,9 +22,9 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(long InventoryTxTypeId)
+        public async Task<IActionResult> Index(string SaCode)
         {
-            CurrentTxType = InventoryTxTypeId;
+            CurrentSaCode = SaCode;
             InventoryTxCurrentId = -1;
 
             var result = from b in _context.InventoryTxDetails
@@ -90,9 +90,9 @@ namespace WETT.Controllers
 
                                      };
             var SaStockReceivedData =AllSaStockReceivedData;
-            if (CurrentTxType != 0)
+            if (CurrentSaCode != null)
             {
-                SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == CurrentTxType);
+                SaStockReceivedData = SaStockReceivedData.Where(w => w.SaCode == CurrentSaCode);
             }
             else
             {

@@ -13,7 +13,7 @@ namespace WETT.Controllers
     {
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
-        public static long CurrentTxType=0;
+        public static string CurrentSaCode;
         public static string Notes;
         public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;
@@ -22,9 +22,9 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(long InventoryTxTypeId)
+        public async Task<IActionResult> Index(string SaCode)
         {
-            CurrentTxType = InventoryTxTypeId;
+            CurrentSaCode = SaCode;
             InventoryTxCurrentId = -1;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
@@ -45,7 +45,7 @@ namespace WETT.Controllers
                              InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
-                             Comments = a.Comments,
+                             Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = a.StockAdjCode
 
@@ -77,15 +77,15 @@ namespace WETT.Controllers
                                             InventoryTxReasonsId = g.InventoryTxReasonId,
                                             Amount = b.Amount,
                                             InventoryTxTypeId = c.InventoryTxTypeId,
-                                            Comments = a.Comments,
+                                            Comments = b.Comments,
                                             Date = a.Date, //.ToShortDateString(),
                                             SaCode = a.StockAdjCode
                                         };
             var invAdjData = AllInvAdjData;
 
-            if (CurrentTxType != 0)
+            if (CurrentSaCode != null)
             {
-                invAdjData = invAdjData.Where(w => w.InventoryTxTypeId == CurrentTxType);
+                invAdjData = invAdjData.Where(w => w.SaCode == CurrentSaCode);
             }
             else
             {
@@ -105,28 +105,28 @@ namespace WETT.Controllers
 
 
 
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
-                    {
-                        case "date":
+            //if (issearch)
+            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //    {
+            //        switch (rule.field)
+            //        {
+            //            case "date":
 
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = rule.data;
-                            break;
-                        case "comments":
+            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+            //                searchDate = rule.data;
+            //                break;
+            //            case "comments":
 
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Comments.Contains(rule.data));
-                            invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
+            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Comments.Contains(rule.data));
+            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
 
 
-                            Notes = rule.data;
-                            break;
-                    }
-                }
+            //                Notes = rule.data;
+            //                break;
+            //        }
+            //    }
 
 
 
@@ -172,13 +172,13 @@ namespace WETT.Controllers
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
-                //comments = p.Comments,
+                Comments = p.Comments,
                 ToInventoryLocationId = p.InventoryLocationId,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId,
                 InventoryTxReasonId = p.InventoryTxReasonsId,
-                Comments = p.Comments
+                
         };
 
             _context.InventoryTxDetails.Add(r);

@@ -11,6 +11,7 @@ namespace WETT.Controllers
 {
     public class InvTxSummaryController : Controller
     {
+        public static Boolean showPage;
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string startSearchDate="";
         public static string endSearchDate="";
@@ -25,6 +26,7 @@ namespace WETT.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            showPage = false;
             InventoryTxCurrentId = -1;
             var result = from a in _context.InventoryTxes 
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -44,6 +46,7 @@ namespace WETT.Controllers
         public JsonResult GetAll(JqGridViewModel request)
         {
 
+
             var AllInvTxSummaryData = from a in _context.InventoryTxes
                                 join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
                                 select new InvTxSummaryViewModel
@@ -56,14 +59,14 @@ namespace WETT.Controllers
 
                                 };
             var InvTxSummaryData = AllInvTxSummaryData;
-            if(endSearchDate !="" && startSearchDate !="" && inventoryTxType !=-1)
+            if (showPage != false)
             {
-                InvTxSummaryData = InvTxSummaryData.Where(x => x.InventoryTxId == inventoryTxType);
-                InvTxSummaryData = InvTxSummaryData.Where(x => x.Date >= DateTime.Parse(startSearchDate));
-                InvTxSummaryData = InvTxSummaryData.Where(x => x.Date <= DateTime.Parse(endSearchDate));
-
+                InvTxSummaryData = InvTxSummaryData.Where(x => x.InventoryTxTypeId == inventoryTxType && x.Date >= DateTime.Parse(startSearchDate) && x.Date <= DateTime.Parse(endSearchDate));
             }
-
+            else
+            {
+                InvTxSummaryData = InvTxSummaryData.Where(w => w.InventoryTxId == -1);
+            }
 
 
             //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -98,12 +101,12 @@ namespace WETT.Controllers
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
             if (request.sord.ToUpper() == "DESC")
             {
-                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.OrderByDescending(t => t.SaCode);
+                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.OrderByDescending(t => t.Date);
                 InvTxSummaryData = InvTxSummaryData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             else
             {
-                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.OrderBy(t => t.SaCode);
+                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.OrderBy(t => t.Date);
                 InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             var jsonData = new
@@ -116,16 +119,13 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
-        //public JsonResult Update(InvTxSummaryViewModel p)
-        //{
-        //    Product s = _context.Products.Single(a => a.Description == p.ProductName);
-        //    InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-        //    r.ToInventoryLocationId = p.InventoryLocationId;
-        //    r.ProductId = s.ProductId;
-        //    r.Amount = p.Amount;
-        //    _context.SaveChanges();
-        //    return Json(true);
-        //}
+        public JsonResult Update(InvTxSummaryViewModel p)
+        {
+            InventoryTx r = _context.InventoryTxes.Single(a => a.StockAdjCode == p.SaCode);
+            r.Comments = p.Comments;
+            _context.SaveChanges();
+            return Json(true);
+        }
         //public JsonResult Add(InvTxSummaryViewModel p)
         //{
         //    showPage = true;
@@ -157,6 +157,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateSearch(string data)
         {
+            showPage = true;
             var li = data.Split("/");
             startSearchDate = li[0];
             endSearchDate= li[1];

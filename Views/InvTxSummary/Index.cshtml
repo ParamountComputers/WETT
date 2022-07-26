@@ -6,26 +6,25 @@
 }
 
 <div class="text-center">
-    <h2 class="display-4">Inventory Summary Page</h2>
+    <h2 class="display-4">Adjustment Summary</h2>
 </div>
 <fieldset class="scheduler-border">
-  <div class="container-flow">
-  <div class="row">
+<div class="container-flow">
+<div class="row">
            <div class="col-sm-3">
-          <label for="startDate"  style="font-size:10px;"> Start Date Range:</label>
-         <input type="date" value=""  style="font-size:10px;" id='startDate' name="startDate" />
-         </div>   
+                <label for="startDate"  style="font-size:10px;"> Start Date Range:</label>
+                <input type="date" value=""  style="font-size:10px;" id='startDate' name="startDate" />
+           </div>   
            <div class="col-sm-1"></div>
            <div class="col-sm-3">
-          <label for="endDate"  style="font-size:10px;"> End Date Range:</label>
-         <input type="date" value=""  style="font-size:10px;" id='endDate' name="endDate" />
-             </div>
-             <div class="col-md-1 ">
-                 </div>
-            <div class="col-sm-2 text-sm-right">
+                <label for="endDate"  style="font-size:10px;"> End Date Range:</label>
+                <input type="date" value=""  style="font-size:10px;" id='endDate' name="endDate" />
+            </div>
+            <div class="col-md-1 "></div>
+            <div class="col-sm-2">
               <form class="form-inline">
                  <div class="form-group">
-                   <label style="font-size:10px;" for="InvTxSummaryDropdown" class="d-inline">Inventory Tx Type:</label>  
+                   <label style="font-size:10px;" for="InvTxSummaryDropdown" class="d-inline">Adjustment Type:</label>  
                    <select style="font-size:10px;" class="form-control" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
                  </div>
               </form>  
@@ -33,7 +32,7 @@
                 <div class="col-sm-1">
                  </div>
             <div class="col-sm-1 text-right">
-          <button class="btn btn-outline-secondary" style="font-size:10px;" id="search" type="button">Search</button>  
+                 <button class="btn btn-outline-secondary" style="font-size:10px;" id="search" type="button">Search</button>  
             </div>        
 </div>
 </div>
@@ -67,30 +66,66 @@
                autowidth:true,
                colModel: [
                    {
-                        label: "Edit Actions",
+                        label: "Edit",
                         name: "actions",
-                        width: 100,
+                        width: 50,
                         formatter: "actions",
                         fixed:true,
                         formatoptions: {
                             keys: true,
                             editOptions: { },
-                            addOptions: { },
-                            delOptions: { url: 'InvTxSummary/Delete' }
+                            delbutton: false
+                            //addOptions: { },
+                            //delOptions: { url: 'InvTxSummary/Delete' }
                         }
                     },
                    { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
-                   { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId', editable: true,edittype:"select",formatter:"select",editoptions: { value: getInvTxType()}},
-                   { label: 'Sa Code',name: 'saCode', editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Date',name: 'date',fixed:true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text",}
+                   { label: 'Adjustment Type',name: 'inventoryTxTypeId',width:150,fixed:true,formatter:"select",editoptions: {readonly: 'readonly',value: getInvTxType()}},
+                   { label: 'Sa Code',name: 'saCode',width:100,fixed:true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Date',name: 'date',fixed:true,width:150, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Notes',name: 'comments',fixed:true,width:658, editable: true, edittype:"text",}
 
                  ], 
                viewrecords: true,
-               height: 250,
-               rowNum: 10,
+               height: 500,
+               rowNum: 20,
                pager: "#jqGridPager",
-               editurl: 'InvTxSummary/Update',              
+               editurl: 'InvTxSummary/Update', 
+               ondblClickRow: function(rowid) {
+                var cellVal = $('#invTxSummary').jqGrid ('getCell', rowid, 'saCode');
+                var invTxType = $("#InvTxSummaryDropdown").val();
+                console.log(cellVal);
+                if(invTxType==1)
+                {
+                    window.open("InvAdj?SaCode="+cellVal);
+                }
+                else if(invTxType==2)
+                {
+                    window.open("SaDamageRecoup?SaCode="+cellVal);
+                }
+                else if(invTxType==3)
+                {
+                    window.open("saOutbound?SaCode="+cellVal);
+                }
+                else if(invTxType==4)
+                {
+                    window.open("SaRelease?SaCode="+cellVal);
+                }
+                else if(invTxType==5)
+                {
+                    window.open("SaExciseDuty?SaCode="+cellVal);
+                }
+                else if(invTxType==6)
+                {
+                    window.open("saInternalTransfer?SaCode="+cellVal);
+                }
+                else if(invTxType==7)
+                {
+                    window.open("SaStockReceived?SaCode="+cellVal);
+                }
+                
+
+               }
 
            })
                
@@ -99,27 +134,28 @@
 
            $('#invTxSummary').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
-               { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+               { edit: false,add:false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
               
-               {
+              {
                   
-               },
-               {
-              zIndex:99,
-              afterShowForm: function () {
-              var idSelector = $.jgrid.jqID(this.p.id);
-              if(header==false) {
-              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
-              alert("Error: Need Header");
-              }
               },
-                   closeAfterAdd: true,
-                   recreateForm: true,
-                   errorTextFormat: function (data) {
-                       return 'Error: ' + data.responseText
-                   },
-                   url: "InvTxSummary/Add"
-               });
+              // {
+              //zIndex:99,
+              //afterShowForm: function () {
+              //var idSelector = $.jgrid.jqID(this.p.id);
+              //if(header==false) {
+              //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              //alert("Error: Need Header");
+              //}
+              //},
+              //     closeAfterAdd: true,
+              //     recreateForm: true,
+              //     errorTextFormat: function (data) {
+              //         return 'Error: ' + data.responseText
+              //     },
+              //     url: "InvTxSummary/Add"
+              // }
+              );
                
        });
        //$(document).ready(function () {  
@@ -198,7 +234,7 @@
             {
                 alert("Error: Enter A End Date");
             }
-    $('#invTxSummary').trigger("reloadGrid");
+    $('#invTxSummary').setGridParam({ page: 1 }).trigger("reloadGrid");
 
     }
     //function SearchByComments()

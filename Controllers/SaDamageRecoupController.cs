@@ -15,7 +15,7 @@ namespace WETT.Controllers
         public static string searchDate= DateTime.Now.ToShortDateString();
         public static string Notes;
         public static long CurrentHeaderId;
-        public static long CurrentTxType = 0;
+        public static string CurrentSaCode;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
 
@@ -23,10 +23,10 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(long InventoryTxTypeId)
+        public async Task<IActionResult> Index(string SaCode)
         {
             InventoryTxCurrentId = -1;
-            CurrentTxType = InventoryTxTypeId;
+            CurrentSaCode = SaCode;
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -105,9 +105,9 @@ namespace WETT.Controllers
             //                    break;
             //            }
             //        }
-            if (CurrentTxType != 0)
+            if (CurrentSaCode != null)
             {
-                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == CurrentTxType);
+                SaDamageRecoupData = SaDamageRecoupData.Where(w => w.SaCode == CurrentSaCode);
             }
             else
             {

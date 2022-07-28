@@ -33,7 +33,8 @@ namespace WETT.Controllers
                          join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                       //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                         //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                         where c.InventoryTxTypeId == 4
                          select new SaReleaseViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -63,8 +64,8 @@ namespace WETT.Controllers
                                 join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                                 join e in _context.Products on b.ProductId equals e.ProductId
                                 join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                              //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-
+                                   //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                                where c.InventoryTxTypeId == 4
                                 select new SaReleaseViewModel
                                 {
                                     InventoryTxId = b.InventoryTxId,
@@ -116,7 +117,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == 4);
+                    //SaReleaseData = SaReleaseData.Where(w => w.InventoryTxTypeId == 4);
                     SaReleaseData = SaReleaseData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }

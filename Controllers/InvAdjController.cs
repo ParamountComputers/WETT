@@ -33,7 +33,8 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                         select new invAdjViewModel
+                         where c.InventoryTxTypeId == 1
+                         select new invAdjViewModel 
                          {
                              InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
@@ -64,7 +65,7 @@ namespace WETT.Controllers
                                         join e in _context.Products on b.ProductId equals e.ProductId
                                         join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                         join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-
+                                        where c.InventoryTxTypeId == 1
                                         select new invAdjViewModel
                                         {
                                             InventoryTxId = b.InventoryTxId,
@@ -92,7 +93,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    invAdjData = invAdjData.Where(w => w.InventoryTxTypeId == 1);
+                    //invAdjData = invAdjData.Where(w => w.InventoryTxTypeId == 1);
                     invAdjData = invAdjData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }

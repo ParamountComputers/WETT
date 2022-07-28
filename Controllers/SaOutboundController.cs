@@ -34,6 +34,7 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                         where c.InventoryTxTypeId == 3
                          select new SaOutboundViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -64,7 +65,7 @@ namespace WETT.Controllers
                                     join e in _context.Products on b.ProductId equals e.ProductId
                                     join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                     //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-
+                                    where c.InventoryTxTypeId == 3
                                     select new SaOutboundViewModel
                                     {
                                         InventoryTxId = b.InventoryTxId,
@@ -116,7 +117,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    SaOutboundData = SaOutboundData.Where(w => w.InventoryTxTypeId == 3);
+                   // SaOutboundData = SaOutboundData.Where(w => w.InventoryTxTypeId == 3);
                     SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }

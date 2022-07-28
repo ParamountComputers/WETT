@@ -159,9 +159,8 @@
                ondblClickRow: function(rowid) {
                 
                var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
-                console.log(id);
                 getDetails(id);
-                $('#'+rowid).addClass('ui-state-highlight');
+               // $('#'+rowid).addClass('ui-state-highlight');
                  $("#FulfillSalesDtls").trigger('reloadGrid');
 
                }
@@ -231,28 +230,8 @@
        });
 
 
-           $("#PendingCheckbox").on('click', function () { 
-               console.log('hi');
-            if($('#PendingCheckbox').prop('checked')== true)
-            {
-               searchByPendingCheckbox("Pending"); 
-            }
-            else
-            {
-                searchByPendingCheckbox(""); 
-            }
-       });
-                  $("#FulfilledCheckbox").on('click', function () { 
-               console.log('hi');
-            if($('#FulfilledCheckbox').prop('checked')== true)
-            {
-               searchByFulfilledCheckbox("Fulfilled"); 
-            }
-            else
-            {
-                searchByFulfilledCheckbox(""); 
-            }
-       });
+      $("#PendingCheckbox").on('click', function () { searchByPendingCheckbox("Pending"); });
+      $("#FulfilledCheckbox").on('click', function () { searchByFulfilledCheckbox("Fulfilled"); });
 
           $("#OrderDate").on('change keyup paste', function () {
            SearchByOrderDate();

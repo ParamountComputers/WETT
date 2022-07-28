@@ -34,6 +34,7 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                         where c.InventoryTxTypeId == 2
                          select new SaDamageRecoupViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -63,8 +64,8 @@ namespace WETT.Controllers
                                      join e in _context.Products on b.ProductId equals e.ProductId
                                      join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                      join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-
-                                     select new SaDamageRecoupViewModel
+                                     where c.InventoryTxTypeId == 2
+                                        select new SaDamageRecoupViewModel
                                      {
                                          InventoryTxId = b.InventoryTxId,
                                          InventoryTxDetailId = b.InventoryTxDetailId,
@@ -114,7 +115,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
+                   // SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
                     SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }

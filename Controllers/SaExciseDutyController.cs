@@ -34,6 +34,7 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                         where c.InventoryTxTypeId == 5
                          select new SaExciseDutyViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -63,9 +64,9 @@ namespace WETT.Controllers
                                    join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                                    join e in _context.Products on b.ProductId equals e.ProductId
                                    join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                   //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-
-                                   select new SaExciseDutyViewModel
+                                      //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                                   where c.InventoryTxTypeId == 5
+                                      select new SaExciseDutyViewModel
                                    {
                                        InventoryTxId = b.InventoryTxId,
                                        InventoryTxDetailId = b.InventoryTxDetailId,
@@ -116,7 +117,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxTypeId == 5);
+                   // SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxTypeId == 5);
                     SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }

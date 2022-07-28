@@ -11,6 +11,8 @@ namespace WETT.Controllers
 {
     public class FulfillSalesController : Controller
     {
+        public static Boolean pending;
+        public static Boolean fulfilled;
         private DateTime searchDate;
         private readonly WETT_DBContext _context;
         public static long CurrentHeaderId=-1;
@@ -21,18 +23,20 @@ namespace WETT.Controllers
         }
        public async Task<IActionResult> Index()
         {
-            /*
-             select * 
-                from	[Customer Order] a,
-		                [Customer] b,
-		                [Customer Order Status] c,
-		                [Carrier] d
-                where	a.[Customer Id] = b.[Customer Id]
-                  and	a.[Customer Order Status Id] = c.[Customer Order Status Id]
-                  and   a.[Carrier Id] = d.[Carrier Id]
+        pending = false;
+        fulfilled = false;
+        /*
+         select * 
+            from	[Customer Order] a,
+                    [Customer] b,
+                    [Customer Order Status] c,
+                    [Carrier] d
+            where	a.[Customer Id] = b.[Customer Id]
+              and	a.[Customer Order Status Id] = c.[Customer Order Status Id]
+              and   a.[Carrier Id] = d.[Carrier Id]
 
-             */
-            var result = from a in _context.CustomerOrders
+         */
+        var result = from a in _context.CustomerOrders
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
                          join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
                          join d in _context.Carriers on a.CarrierId equals d.CarrierId
@@ -76,7 +80,7 @@ namespace WETT.Controllers
                                        Status = c.Description
 
                                    };
-
+            var FulfillSalesDataTemp = FulfillSalesData;
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -98,10 +102,48 @@ namespace WETT.Controllers
                       //      FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.ProductName.Contains(rule.data));
                       //      break;
                         case "Pending":
-                            FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                            if (pending == false)
+                            {
+                                pending = true;
+                            }
+                            else
+                            {
+                                pending = false;
+                            }
+                            if (fulfilled == false && pending == true)
+                            {
+                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                            }
+                            else if (pending == false && fulfilled == true)
+                            {
+                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                            }
+                            else
+                            {
+                                FulfillSalesData = FulfillSalesDataTemp;
+                            }
                             break;
                         case "Fulfilled":
-                            FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                            if (fulfilled == false)
+                            {
+                                fulfilled = true;
+                            }
+                            else
+                            {
+                                fulfilled = false;
+                            }
+                            if (pending == false && fulfilled == true)
+                            {
+                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                            }
+                            else if(pending ==true && fulfilled == false)
+                            {
+                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                            }
+                            else
+                            {
+                                FulfillSalesData = FulfillSalesDataTemp;
+                            }
                             break;
                     /*    case "locationsDropdown":
                             if (rule.data.Contains("-1"))

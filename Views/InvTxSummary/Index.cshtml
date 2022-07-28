@@ -24,7 +24,7 @@
             <div class="col-sm-2">
               <form class="form-inline">
                  <div class="form-group">
-                   <label style="font-size:10px;" for="InvTxSummaryDropdown" class="d-inline">Adjustment Type:</label>  
+                   <label style="font-size:10px;" for="InvTxSummaryDropdown" class="d-inline">Transaction Type:</label>  
                    <select style="font-size:10px;" class="form-control" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
                  </div>
               </form>  
@@ -80,7 +80,7 @@
                         }
                     },
                    { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
-                   { label: 'Adjustment Type',name: 'inventoryTxTypeId',width:150,fixed:true,formatter:"select",editoptions: {readonly: 'readonly',value: getInvTxType()}},
+                   { label: 'Transaction Type',name: 'inventoryTxTypeId',width:150,fixed:true,formatter:"select",editoptions: {readonly: 'readonly',value: getInvTxType()}},
                    { label: 'Sa Code',name: 'saCode',width:100,fixed:true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,width:150, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Notes',name: 'comments',fixed:true,width:658, editable: true, edittype:"text",}

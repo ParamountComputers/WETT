@@ -101,8 +101,8 @@
 
                  ], 
                viewrecords: true,
-               height: 250,
-               rowNum: 10,
+               height: 500,
+               rowNum: 20,
                pager: "#jqGridPager",
                editurl: 'InvAdj/Update',              
 
@@ -209,42 +209,42 @@
             $.ajaxSetup( { "async": true } );
 
     }
-    function SearchByComments()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#comments").val();
+    ////function SearchByComments()
+    ////{
+    ////    //  Fetch the text from our <input> control
+    ////    var searchString = $("#comments").val();
         
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+    ////    //  Prepare to pass a new search filter to our jqGrid
+    ////    var f = { groupOp: "AND", rules: [] };
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
+    ////    //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+    ////    //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "comments", op: "cn", data: searchString });
+    ////    f.rules.push({ field: "comments", op: "cn", data: searchString });
 
-        var grid = $('#invAdj');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-        function SearchByDate()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#date").val();
+    ////    var grid = $('#invAdj');
+    ////    grid[0].p.search = f.rules.length > 0;
+    ////    $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+    ////    grid.trigger("reloadGrid", [{ page: 1 }]);
+    ////}
+    ////    function SearchByDate()
+    ////{
+    ////    //  Fetch the text from our <input> control
+    ////    var searchString = $("#date").val();
         
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+    ////    //  Prepare to pass a new search filter to our jqGrid
+    ////    var f = { groupOp: "AND", rules: [] };
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
+    ////    //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+    ////    //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "date", op: "cn", data: searchString });
+    ////    f.rules.push({ field: "date", op: "cn", data: searchString });
 
-        var grid = $('#invAdj');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
+    ////    var grid = $('#invAdj');
+    ////    grid[0].p.search = f.rules.length > 0;
+    ////    $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+    ////    grid.trigger("reloadGrid", [{ page: 1 }]);
+    ////}
 
             function getSupplierNames(value) {
         var Supplier="";

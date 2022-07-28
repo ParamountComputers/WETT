@@ -34,6 +34,7 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
+                         where c.InventoryTxTypeId == 7
                          select new SaStockReceivedViewModel
                          {
                              SealNo = "1ww1",
@@ -68,6 +69,7 @@ namespace WETT.Controllers
                                       join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
                                       join e in _context.Products on b.ProductId equals e.ProductId
                                       join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                      where c.InventoryTxTypeId == 7
                                       select new SaStockReceivedViewModel
                                       {
                                          SealNo = "1ww1",
@@ -99,7 +101,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == 7);
+                    //SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == 7);
                     SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }

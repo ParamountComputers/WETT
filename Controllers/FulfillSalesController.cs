@@ -301,6 +301,25 @@ namespace WETT.Controllers
             //_context.SaveChanges();
             return Json(true);
         }
+        public JsonResult UpdateDtls(FulfillSalesDtlsViewModel p)
+        {
+
+
+            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
+            r.QtyFulfilled = p.QtyFulfilled;
+            _context.SaveChanges();
+            return Json(true);
+        }
+        
+        public JsonResult DeleteDtls(long id)
+        {
+            //InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
+            //_context.InventoryTxDetails.Remove(r);
+            //_context.SaveChanges();
+
+
+            return Json(true);
+        }
         public JsonResult Delete(long id)
         {
             //InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);

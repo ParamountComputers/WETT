@@ -47,7 +47,7 @@ namespace WETT.Controllers
                              //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
-                             Comments = a.Comments,
+                             Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
                              SaCode = a.StockAdjCode
 
@@ -78,7 +78,7 @@ namespace WETT.Controllers
                                        //   InventoryTxReasonsId = g.InventoryTxReasonId,
                                        Amount = b.Amount,
                                        InventoryTxTypeId = c.InventoryTxTypeId,
-                                       Comments = a.Comments,
+                                       Comments = b.Comments,
                                        Date = a.Date, //.ToShortDateString(),
                                        SaCode = a.StockAdjCode
                                    };

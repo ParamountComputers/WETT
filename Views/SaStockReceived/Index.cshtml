@@ -278,6 +278,7 @@ $(document).ready(function () {
             {
                  alert("Error: Enter A Location");
             }
+            $('#saStockReceived').setGridParam({ page: 1 }).trigger("reloadGrid");
       }
                       function IsProduct(value,colname)
        {

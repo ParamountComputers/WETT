@@ -211,7 +211,7 @@
         $("#saCode").val(data);
                     });
             $.ajaxSetup( { "async": true } );
-
+     $('#saDamageRecoup').setGridParam({ page: 1 }).trigger("reloadGrid");
     }
     function SearchByComments()
     {

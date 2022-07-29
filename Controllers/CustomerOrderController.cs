@@ -13,39 +13,42 @@ namespace WETT.Controllers
     {
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
-        public static string CurrentSaCode;
+        public static long CurrentOrderId;
         public static string Notes;
-        public static long CurrentHeaderId;
-        public static long InventoryTxCurrentId;
+        public static long CurrentCustomerOrderId;
         private readonly WETT_DBContext _context;
         public CustomerOrderController(WETT_DBContext context)
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string SaCode)
+        public async Task<IActionResult> Index(string CustomerOrderID)
         {
-            CurrentSaCode = SaCode;
-            InventoryTxCurrentId = -1;
+            if (CustomerOrderID != null)
+            {
+                CurrentOrderId = (long)Convert.ToDouble(CustomerOrderID);
+            }
+            else
+            {
+                CurrentOrderId = -1;
+            }
+            CurrentCustomerOrderId = -1;
 
-        var result = from a in _context.CustomerOrders
-                         join b in _context.Customers on a.CustomerId equals b.CustomerId
-                         join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                         join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         select new CustomerOrder
-                         {
-                            CustomerOrderId = a.CustomerOrderId,
-                            CustomerId = b.CustomerId,
-                            CustomerOrderStatusId = c.CustomerOrderStatusId,
-                            CarrierId = d.CarrierId,
-                            OrderNumber = a.OrderNumber,
-                            DateOrdered = a.DateOrdered,
-                            Driver = a.Driver,
-                            DsSlipNumber = a.DsSlipNumber,
-                            DeliveryReqDate = (DateTime)a.DeliveryReqDate,
-                            SpecialInstructions = a.SpecialInstructions,
-                           
-
-                         };
+            var result = from a in _context.CustomerOrders
+                                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+                                          join c in _context.Products on b.ProductId equals c.ProductId
+                                          where a.CustomerOrderId == CurrentCustomerOrderId
+                         select new CustomerOrderViewModel
+                                          {
+                                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                              CustomerOrderID = a.CustomerOrderId,
+                                              ProductID = c.ProductId,
+                                              ProductSku = c.Sku,
+                                              ProductDesc = c.Description,
+                                              StockQty = 0,
+                                              QtyOrdered = b.QtyOrdered,
+                                              QtyFulfilled = b.QtyFulfilled,
+                                              Notes = b.Notes
+                                          };
             return View(result);
         }
 
@@ -53,67 +56,68 @@ namespace WETT.Controllers
         public JsonResult GetAll(JqGridViewModel request)
         {
             var AllCustomerOrderData = from a in _context.CustomerOrders
-                         join b in _context.Customers on a.CustomerId equals b.CustomerId
-                         join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                         join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         select new CustomerOrder
-                         {
-                             CustomerOrderId = a.CustomerOrderId,
-                             CustomerId = b.CustomerId,
-                             CustomerOrderStatusId = c.CustomerOrderStatusId,
-                             CarrierId = d.CarrierId,
-                             OrderNumber = a.OrderNumber,
-                             DateOrdered = a.DateOrdered,
-                             Driver = a.Driver,
-                             DsSlipNumber = a.DsSlipNumber,
-                             DeliveryReqDate = (DateTime)a.DeliveryReqDate,
-                             SpecialInstructions = a.SpecialInstructions,
-
-
-                         };
+                                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+                                          join c in _context.Products on b.ProductId equals c.ProductId
+                                          where a.CustomerOrderId == CurrentCustomerOrderId
+                                       select new CustomerOrderViewModel
+                                          {
+                                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                              CustomerOrderID = a.CustomerOrderId,
+                                              ProductID = c.ProductId,
+                                              ProductSku = c.Sku,
+                                              ProductDesc = c.Description,
+                                              StockQty = 0,
+                                              QtyOrdered = b.QtyOrdered,
+                                              QtyFulfilled = b.QtyFulfilled,
+                                              Notes = b.Notes
+                                          };
             var CustomerOrderData = AllCustomerOrderData;
+            if (CurrentOrderId != -1)
+            {
+                CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentOrderId);
+            }
+            
+
+
+                //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+
+                //if (issearch)
+                //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+                //    {
+                //        switch (rule.field)
+                //        {
+                //            case "date":
+
+                //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+                //                searchDate = rule.data;
+                //                break;
+                //            case "comments":
+
+                //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Comments.Contains(rule.data));
+                //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
+
+
+                //                Notes = rule.data;
+                //                break;
+                //        }
+                //    }
 
 
 
-            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-            //if (issearch)
-            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-            //    {
-            //        switch (rule.field)
-            //        {
-            //            case "date":
-
-            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-            //                searchDate = rule.data;
-            //                break;
-            //            case "comments":
-
-            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Comments.Contains(rule.data));
-            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
-
-
-            //                Notes = rule.data;
-            //                break;
-            //        }
-            //    }
-
-
-
-            int totalRecords = CustomerOrderData.Count();
+                int totalRecords = CustomerOrderData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
 
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
             if (request.sord.ToUpper() == "DESC")
             {
-                CustomerOrderData = (IQueryable<CustomerOrder>)CustomerOrderData.OrderByDescending(t => t.OrderNumber);
+                CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.OrderByDescending(t => t.ProductDesc);
                 CustomerOrderData = CustomerOrderData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             else
             {
-                CustomerOrderData = (IQueryable<CustomerOrder>)CustomerOrderData.OrderBy(t => t.OrderNumber);
-                CustomerOrderData = (IQueryable<CustomerOrder>)CustomerOrderData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.OrderBy(t => t.ProductDesc);
+                CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             var jsonData = new
             {
@@ -125,25 +129,31 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
-        public JsonResult Update(CustomerOrder p)
+        public JsonResult Update(CustomerOrderViewModel p)
         {
-            CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerOrderId == p.CustomerOrderId);
-            r.CustomerId = p.CustomerId;
-            r.CustomerOrderStatusId = p.CustomerOrderStatusId;
-            r.CarrierId = p.CarrierId;
-            r.OrderNumber = p.OrderNumber;
-            r.DateOrdered = p.DateOrdered;
-            r.Driver = p.Driver;
-            r.DsSlipNumber = p.DsSlipNumber;
-            r.DeliveryReqDate = p.DeliveryReqDate;
-            r.SpecialInstructions = p.SpecialInstructions;
+            Product s = _context.Products.Single(a => a.Description == p.ProductDesc);
+            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
+                r.ProductId = s.ProductId;
+                r.QtyOrdered = p.QtyOrdered;
+                r.QtyFulfilled = p.QtyFulfilled;
+                r.Notes = p.Notes;
             _context.SaveChanges();
             return Json(true);
         }
-        public JsonResult Add(CustomerOrder p)
+        public JsonResult Add(CustomerOrderViewModel p)
         {
-            showPage = true;
-            _context.CustomerOrders.Add(p);
+            Product s = _context.Products.Single(a => a.Description == p.ProductDesc);
+            CustomerOrderDetail r = new CustomerOrderDetail
+            {
+                CustomerOrderId= CurrentCustomerOrderId,
+                ProductId = s.ProductId,
+                QtyOrdered = p.QtyOrdered,
+                QtyFulfilled = p.QtyFulfilled,
+                Notes = p.Notes
+
+            };
+
+            _context.CustomerOrderDetails.Add(r);
             _context.SaveChanges();
 
 
@@ -151,34 +161,37 @@ namespace WETT.Controllers
         }
         public JsonResult Delete(long id)
         {
-            InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
+            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
+            _context.CustomerOrderDetails.Remove(r);
             _context.SaveChanges();
 
 
             return Json(true);
         }
-        //public IActionResult CreateHeader(string data)
-        //{
-        //    var li = data.Split("/");
-        //    InventoryTx s = new InventoryTx
-        //    {
-        //        Date = DateTime.Parse(li[0]),
-        //        Comments = li[1],
-        //        InventoryTxTypeId = 1,
-        //        StockAdjCode = "IA"
-        //    };
+        public IActionResult CreateHeader(string data)
+        {
+            var li = data.Split("/");
+            CustomerOrder s = new CustomerOrder
+            {
+              CustomerId = (long)Convert.ToDouble(li[0]),
+              OrderNumber = li[1],
+              DateOrdered =  DateTime.Parse(li[2]),
+              CustomerOrderStatusId = (long)Convert.ToDouble(li[3]),
+              CarrierId = (long)Convert.ToDouble(li[4]),
+              Driver = li[5],
+              DsSlipNumber = li[6],
+              DeliveryReqDate = DateTime.Parse(li[7]),
+              SpecialInstructions = li[8],
 
-        //    _context.InventoryTxes.Add(s);
-        //    _context.SaveChanges();
-        //    InventoryTxCurrentId = s.InventoryTxId;
-        //    s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
-        //    _context.SaveChanges();
-        //    CurrentHeaderId = s.InventoryTxId;
-        //    return Json(s.StockAdjCode);
-        //}
+            };
 
-        public IActionResult CreatetCustomerList()
+            _context.CustomerOrders.Add(s);
+            _context.SaveChanges();
+            CurrentCustomerOrderId = s.CustomerOrderId;
+            return Json(true);
+        }
+
+        public IActionResult CreateCustomerList()
         {
             var invAdjData = from a in _context.Customers
                              select new
@@ -205,6 +218,30 @@ namespace WETT.Controllers
                              {
                                  value = a.CustomerOrderStatusId,
                                  text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateProductName()
+        {
+            var invAdjData = from a in _context.Products
+                             join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             select new
+                             {
+                                 label = a.ProductId,
+                                 value = a.Description
+
+
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateProductSkuList()
+        {
+            var invAdjData = from a in _context.Products
+                             select new
+                             {
+                                 text = a.Sku,
+                                 value = a.Description
+
                              };
             return Json(invAdjData);
         }

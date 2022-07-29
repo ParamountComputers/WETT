@@ -207,6 +207,7 @@
         $("#saCode").val(data);
                     });
             $.ajaxSetup( { "async": true } );
+      $('#invAdj').setGridParam({ page: 1 }).trigger("reloadGrid");
 
     }
     ////function SearchByComments()
@@ -268,6 +269,7 @@
         }
 
               function getProductSku(value) {
+        var ProductSku ="";
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateProductSkuList', function(data) {
         if (data != null) {

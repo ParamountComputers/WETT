@@ -28,8 +28,10 @@ namespace WETT.Controllers
         {
             showPage = false;
             InventoryTxCurrentId = -1;
+            inventoryTxType = -1;
             var result = from a in _context.InventoryTxes 
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                         where c.InventoryTxTypeId == inventoryTxType
                          select new InvTxSummaryViewModel
                          {
                              InventoryTxId = a.InventoryTxId,
@@ -49,7 +51,8 @@ namespace WETT.Controllers
 
             var AllInvTxSummaryData = from a in _context.InventoryTxes
                                 join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                select new InvTxSummaryViewModel
+                                where c.InventoryTxTypeId== inventoryTxType
+                                      select new InvTxSummaryViewModel
                                 {
                                     InventoryTxId = a.InventoryTxId,
                                     InventoryTxTypeId = c.InventoryTxTypeId,
@@ -61,12 +64,9 @@ namespace WETT.Controllers
             var InvTxSummaryData = AllInvTxSummaryData;
             if (showPage != false)
             {
-                InvTxSummaryData = InvTxSummaryData.Where(x => x.InventoryTxTypeId == inventoryTxType && x.Date >= DateTime.Parse(startSearchDate) && x.Date <= DateTime.Parse(endSearchDate));
+                InvTxSummaryData = InvTxSummaryData.Where(x => x.Date >= DateTime.Parse(startSearchDate) && x.Date <= DateTime.Parse(endSearchDate));
             }
-            else
-            {
-                InvTxSummaryData = InvTxSummaryData.Where(w => w.InventoryTxId == -1);
-            }
+
 
 
             //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));

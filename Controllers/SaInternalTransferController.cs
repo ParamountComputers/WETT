@@ -90,28 +90,28 @@ namespace WETT.Controllers
 
 
 
-            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
-                    {
-                        case "date":
+            //if (issearch)
+            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //    {
+            //        switch (rule.field)
+            //        {
+            //            case "date":
 
-                            SaInternalTransferData = (IQueryable<SaInternalTransferViewModel>)SaInternalTransferData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                            searchDate = rule.data;
-                            break;
-                        case "comments":
+            //                SaInternalTransferData = (IQueryable<SaInternalTransferViewModel>)SaInternalTransferData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
+            //                searchDate = rule.data;
+            //                break;
+            //            case "comments":
 
-                            SaInternalTransferData = (IQueryable<SaInternalTransferViewModel>)SaInternalTransferData.Where(w => w.Comments.Contains(rule.data));
-                            SaInternalTransferData = (IQueryable<SaInternalTransferViewModel>)SaInternalTransferData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
+            //                SaInternalTransferData = (IQueryable<SaInternalTransferViewModel>)SaInternalTransferData.Where(w => w.Comments.Contains(rule.data));
+            //                SaInternalTransferData = (IQueryable<SaInternalTransferViewModel>)SaInternalTransferData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
 
 
-                            Notes = rule.data;
-                            break;
-                    }
-                }
+            //                Notes = rule.data;
+            //                break;
+            //        }
+            //    }
             if (CurrentSaCode != null)
             {
                 SaInternalTransferData = SaInternalTransferData.Where(w => w.SaCode == CurrentSaCode);

@@ -12,13 +12,12 @@ namespace WETT.Controllers
     public class InvTxSummaryController : Controller
     {
         public static Boolean showPage;
-        public static string searchDate = DateTime.Today.ToShortDateString();
+        //public static string searchDate = DateTime.Today.ToShortDateString();
         public static string startSearchDate="";
         public static string endSearchDate="";
         public static long inventoryTxType;
-        public static string Notes;
-        public static long CurrentHeaderId;
-        public static long InventoryTxCurrentId;
+        //public static string Notes;
+        //public static long CurrentHeaderId;
         private readonly WETT_DBContext _context;
         public InvTxSummaryController(WETT_DBContext context)
         {
@@ -27,7 +26,6 @@ namespace WETT.Controllers
         public async Task<IActionResult> Index()
         {
             showPage = false;
-            InventoryTxCurrentId = -1;
             inventoryTxType = -1;
             var result = from a in _context.InventoryTxes 
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId

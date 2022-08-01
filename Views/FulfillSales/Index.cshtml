@@ -151,7 +151,7 @@
                rowNum: 20,
                pager: "#jqGridPager",
                editurl: 'FulfillSales/UpdateHdr',
-               multiselect: true,
+              // multiselect: true,
                onSelectRow: function(rowid) {
                 curRowId=rowid;
 
@@ -178,18 +178,18 @@
 
         $('#FulfillSalesHdr').navGrid('#jqGridPager',
             // the buttons to appear on the toolbar of the grid
-            { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            { edit: false, add: false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
             // options for the Add Dialog
             {
                   
             },
             {
-                closeAfterAdd: true,
-                recreateForm: true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                },
-                url: "FulfillSales/AddHdr"
+                //closeAfterAdd: true,
+                //recreateForm: true,
+                //errorTextFormat: function (data) {
+                //    return 'Error: ' + data.responseText
+                //},
+                //url: "FulfillSales/AddHdr"
             }
          );
          $(document).ready(function () {  
@@ -408,18 +408,18 @@
 
         $('#FulfillSalesDtls').navGrid('#jqGridPager2',
             // the buttons to appear on the toolbar of the grid
-            { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            { edit: false, add: false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
             // options for the Add Dialog
             {
                   
             },
             {
-                closeAfterAdd: true,
-                recreateForm: true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                },
-                url: "FulfillSales/AddDtls"
+                //closeAfterAdd: true,
+                //recreateForm: true,
+                //errorTextFormat: function (data) {
+                //    return 'Error: ' + data.responseText
+                //},
+                //url: "FulfillSales/AddDtls"
             }
          );
 

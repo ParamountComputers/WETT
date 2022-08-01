@@ -98,9 +98,9 @@ namespace WETT.Controllers
                             FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data)));
                             searchDate = DateTime.Parse(rule.data);
                             break;
-                       // case "Supplier":
-                      //      FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.ProductName.Contains(rule.data));
-                      //      break;
+                        //case "Supplier":
+                        //    FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.ProductName.Contains(rule.data));
+                        //    break;
                         case "Pending":
                             if (pending == false)
                             {
@@ -313,18 +313,18 @@ namespace WETT.Controllers
         
         public JsonResult DeleteDtls(long id)
         {
-            //InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            //_context.InventoryTxDetails.Remove(r);
-            //_context.SaveChanges();
+            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
+            _context.CustomerOrderDetails.Remove(r);
+            _context.SaveChanges();
 
 
             return Json(true);
         }
         public JsonResult Delete(long id)
         {
-            //InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            //_context.InventoryTxDetails.Remove(r);
-            //_context.SaveChanges();
+            CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == id);
+            _context.CustomerOrders.Remove(r);
+            _context.SaveChanges();
 
 
             return Json(true);

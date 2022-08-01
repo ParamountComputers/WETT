@@ -26,12 +26,14 @@ namespace WETT.Controllers
             if (CustomerOrderID != null)
             {
                 CurrentOrderId = (long)Convert.ToDouble(CustomerOrderID);
+                CurrentCustomerOrderId = CurrentOrderId;
             }
             else
             {
-                CurrentOrderId = -1;
+                //CurrentOrderId = -1;
+                CurrentCustomerOrderId = -1;
             }
-            CurrentCustomerOrderId = -1;
+        
 
             var result = from a in _context.CustomerOrders
                                           join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId

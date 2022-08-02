@@ -75,19 +75,19 @@
                             keys: true,
                             editOptions: { },
                             //addOptions: { },
-                            //delbutton: false
-                            delOptions: { url: 'CustomerSummary/Delete' }
+                            delbutton: false
+                            //delOptions: { url: 'CustomerSummary/Delete' }
                         }
                     },
                    { label: 'Customer Order Id',name: 'customerOrderID',hidden:true, editable: true,key: true},
-                   { label: 'Order Date',name: 'orderDate',fixed:true,width:120, editable: true,edittype:'text'},
-                   { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editable: true,edittype:'text'},
-                   { label: 'Order Number',name: 'orderNumber',fixed:true,width:100, editable: true,edittype:'text'},
-                   { label: 'Customer',name: 'customer',fixed:true,width:150, editable: true,edittype:'text'},
-                   { label: 'City',name: 'city',fixed:true,width:100, editable: true, edittype:"text"},
-                   { label: 'Carrier',name: 'carrierID',fixed:true,width:100, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getCarrier()}},
-                   { label: 'Instructions',name: 'instructions',fixed:true,width:280, editable: true},
-                   { label: 'Status',name: 'status',fixed:true,width:100, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getStatusList()}}
+                   { label: 'Order Date',name: 'orderDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
+                   { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
+                   { label: 'Order Number',name: 'orderNumber',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
+                   { label: 'Customer',name: 'customer',fixed:true,width:150,editoptions: { readonly: 'readonly'}},
+                   { label: 'City',name: 'city',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
+                   { label: 'Carrier',name: 'carrier',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
+                   { label: 'Instructions',name: 'instructions',fixed:true,width:280,edittype:'text', editable: true},
+                   { label: 'Status',name: 'status',fixed:true,width:100,editoptions: { readonly: 'readonly'}}
 
 
                  ],  
@@ -164,9 +164,10 @@
               );
                
        });
-       //$(document).ready(function () {  
-       //    $('#startDate').val(date());
-       //});
+       $(document).ready(function () {  
+           $('#startDate').val(date());
+            $('#endDate').val(date());
+       });
       $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
@@ -240,41 +241,7 @@
     $('#customerSummary').setGridParam({ page: 1 }).trigger("reloadGrid");
 
     }
-    
-                 function getStatusList() {
-        var statusList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('CustomerSummary/CreateStatusList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             statusList[data[i].value]=data[i].text;
-                 
-              }
-            }//if
 
-            });
-            $.ajaxSetup( { "async": true } );
-
-           return statusList; 
-
-        }
-            function getCarrier() {
-            var CarrierList= {};
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('CustomerSummary/CreateCarrierList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             CarrierList[data[i].value]=data[i].text;
-                 
-              }
-         }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-            console.log(CarrierList);
-           return CarrierList; 
-
-        }
     //function SearchByComments()
     //{
     //    //  Fetch the text from our <input> control

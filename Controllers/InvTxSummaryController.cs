@@ -144,15 +144,15 @@ namespace WETT.Controllers
 
         //    return Json(true);
         //}
-        public JsonResult Delete(long id)
-        {
-            InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
-            _context.SaveChanges();
+        //public JsonResult Delete(long id)
+        //{
+        //    InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
+        //    _context.InventoryTxDetails.Remove(r);
+        //    _context.SaveChanges();
 
 
-            return Json(true);
-        }
+        //    return Json(true);
+        //}
         public IActionResult CreateSearch(string data)
         {
             showPage = true;

@@ -136,7 +136,7 @@
                                             } });   
                                      }
                    }},
-                   { label: 'Product ID(Sku)',name: 'productSku',fixed:true,width:120,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Product ID(Sku)',name: 'productSku',fixed:true,width:120,edittype:'text', editoptions: {readonly: 'readonly'}},
                    { label: 'Stoc Qty',name: 'stockQty',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
                    { label: 'Qty Ordered',name: 'qtyOrdered',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
                    { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
@@ -255,7 +255,6 @@
 
             for (var i = 0; i < data.length; i++) 
             {
-               // console.log(data[i].value);
          if(value== data[i].value)
          {
              
@@ -281,15 +280,6 @@
             function SaveHeader()
     {
          header = true;
-              //CustomerId = (long)Convert.ToDouble(li[0]),
-              //OrderNumber = li[1],
-              //DateOrdered =  DateTime.Parse(li[2]),
-              //CustomerOrderStatusId = (long)Convert.ToDouble(li[3]),
-              //CarrierId = (long)Convert.ToDouble(li[4]),
-              //Driver = li[5],
-              //DsSlipNumber = li[6],
-              //DeliveryReqDate = DateTime.Parse(li[7]),
-              //SpecialInstructions = li[8],
          var CustomerId =$("#customer").val();
          var OrderNumber=$('#orderNumber').val();
          var DateOrdered=$('#dateOrdered').val();

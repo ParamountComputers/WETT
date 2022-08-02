@@ -10,10 +10,10 @@ namespace WETT.Models
         public string OrderNumber { get; set; }
         public string Customer { get; set; }
         public string City { get; set; }
-        public long CarrierID { get; set; }
+        public string Carrier { get; set; }
         public string CarrierDesc { get; set; }
         public string Instructions { get; set; }
-        public long Status { get; set; }
+        public string Status { get; set; }
 
     }
 }

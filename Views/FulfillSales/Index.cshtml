@@ -20,8 +20,8 @@
         <div class="col-sm-3">
             <form class="form-inline">
             <div class="form-group">
-            <label for="supplierDropdown">Supplier:</label>  
-            <select class="form-control " id="supplierDropdown" name="supplierDropdown"></select>
+            <label for="carrierDropdown">Carrier:</label>  
+            <select class="form-control " id="carrierDropdown" name="carrierDropdown"></select>
             </div>
             </form>
        </div>
@@ -103,7 +103,8 @@
                         formatter: "actions",
                         formatoptions: {
                             keys: true,
-                            editOptions: { },
+                            //editOptions: { },
+                            editbutton: false,
                             addOptions: { },
                             delOptions: { url: 'FulfillSales/DeleteHdr' }
                         }
@@ -209,14 +210,14 @@
       $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
-           url: "FulfillSales/CreateSupplierList",  
+           url: "FulfillSales/CreateCarrierList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Supplier</option>';  
+               var s = '<option value="-1">Select a Carrier</option>';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
-               $("#supplierDropdown").html(s);  
+               $("#carrierDropdown").html(s);  
            }  
        });  
    });
@@ -243,8 +244,12 @@
            SearchByOrderDate();
            
        }); 
-                 $("#DeliveryDate").on('change keyup paste', function () {
+           $("#DeliveryDate").on('change keyup paste', function () {
            SearchByDeliveryDate();
+           
+       }); 
+        $("#carrierDropdown").on('change keyup paste', function () {
+           SearchByCarrier();
            
        }); 
                function date()
@@ -289,6 +294,24 @@
         //  In this example, I'm searching through the UserName column.
 
         f.rules.push({ field: "Fulfilled", op: "cn", data: searchString });
+
+        var grid = $('#FulfillSalesHdr');
+        grid[0].p.search = f.rules.length > 0;
+        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+        grid.trigger("reloadGrid", [{ page: 1 }]);
+    }
+                   function SearchByCarrier()
+    {
+        //  Fetch the text from our <input> control
+        var searchString = $("#carrierDropdown").val();
+        
+        //  Prepare to pass a new search filter to our jqGrid
+        var f = { groupOp: "AND", rules: [] };
+
+        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+        //  In this example, I'm searching through the UserName column.
+
+        f.rules.push({ field: "Carrier", op: "cn", data: searchString });
 
         var grid = $('#FulfillSalesHdr');
         grid[0].p.search = f.rules.length > 0;
@@ -382,7 +405,7 @@
                    { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Product ID(Sku)',name: 'productSku',editoptions: { readonly: 'readonly'}},
                    { label: 'Product Desc',name: 'productDesc',editoptions: { readonly: 'readonly'}},
-                   { label: 'Stoc kQty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
+                   //{ label: 'Stock Qty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
                    { label: 'Qty Ordered',name: 'qtyOrdered',editoptions: { readonly: 'readonly'}},
                    { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {number:true}},
                    { label: 'Notes',name: 'notes', editable: true,edittype:'text'}

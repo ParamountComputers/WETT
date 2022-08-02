@@ -29,7 +29,7 @@ namespace WETT.Controllers
             StatusOrderId = -1;
             var result = from a in _context.CustomerOrders
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
-                       //  join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
+                        join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
                          join d in _context.Carriers on a.CarrierId equals d.CarrierId
                          where a.CustomerOrderStatusId == StatusOrderId
                          select new CustomerSummaryViewModel
@@ -40,10 +40,10 @@ namespace WETT.Controllers
                              OrderNumber = a.OrderNumber,
                              Customer = b.Name,
                              City = b.City,
-                             CarrierID = d.CarrierId,
+                             Carrier = d.Name,
                              CarrierDesc = d.Name,
                              Instructions = a.SpecialInstructions,
-                             Status = a.CustomerOrderStatusId
+                             Status = c.Description
 
 
                          };
@@ -57,7 +57,7 @@ namespace WETT.Controllers
 
             var AllCustomerSummaryData = from a in _context.CustomerOrders
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
-                        // join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
+                         join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
                          join d in _context.Carriers on a.CarrierId equals d.CarrierId
                          where a.CustomerOrderStatusId == StatusOrderId
                          select new CustomerSummaryViewModel
@@ -68,10 +68,10 @@ namespace WETT.Controllers
                              OrderNumber = a.OrderNumber,
                              Customer = b.Name,
                              City = b.City,
-                             CarrierID = d.CarrierId,
+                             Carrier = d.Name,
                              CarrierDesc = d.Name,
                              Instructions = a.SpecialInstructions,
-                             Status = a.CustomerOrderStatusId
+                             Status = c.Description
 
 
                          };
@@ -135,15 +135,15 @@ namespace WETT.Controllers
         }
         public JsonResult Update(CustomerSummaryViewModel p)
         {
-            Customer s = _context.Customers.Single(a => a.Name == p.Customer);
+            //Customer s = _context.Customers.Single(a => a.Name == p.Customer);
             CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerId == p.CustomerOrderID);
-            r.DateOrdered = p.OrderDate;
-            r.DeliveryReqDate = p.DelveryDate;
-            r.OrderNumber = p.OrderNumber;
-            r.CustomerId = s.CustomerId;
-            r.CarrierId = p.CarrierID;
+            //r.DateOrdered = p.OrderDate;
+            //r.DeliveryReqDate = p.DelveryDate;
+            //r.OrderNumber = p.OrderNumber;
+            //r.CustomerId = s.CustomerId;
+            //r.CarrierId = p.CarrierID;
             r.SpecialInstructions = p.Instructions;
-            r.CustomerOrderStatusId = p.Status;
+            //r.CustomerOrderStatusId = p.Status;
 
             _context.SaveChanges();
             return Json(true);
@@ -168,15 +168,15 @@ namespace WETT.Controllers
 
         //    return Json(true);
         //}
-        public JsonResult Delete(long id)
-        {
-            InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
-            _context.SaveChanges();
+        //public JsonResult Delete(long id)
+        //{
+        //    InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
+        //    _context.InventoryTxDetails.Remove(r);
+        //    _context.SaveChanges();
 
 
-            return Json(true);
-        }
+        //    return Json(true);
+        //}
         public IActionResult CreateSearch(string data)
         {
             showPage = true;
@@ -187,17 +187,7 @@ namespace WETT.Controllers
 
             return Json(true);
         }
-        public IActionResult CreateCarrierList()
-        {
-            var invAdjData = from a in _context.Carriers
-                             select new
-                             {
-                                 value = a.CarrierId,
-                                 text = a.Name
 
-                             };
-            return Json(invAdjData);
-        }
 
         public IActionResult CreateStatusList()
         {

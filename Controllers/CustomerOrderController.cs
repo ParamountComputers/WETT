@@ -13,7 +13,6 @@ namespace WETT.Controllers
     {
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
-        public static long CurrentOrderId;
         public static string Notes;
         public static long CurrentCustomerOrderId;
         private readonly WETT_DBContext _context;
@@ -25,20 +24,18 @@ namespace WETT.Controllers
         {
             if (CustomerOrderID != null)
             {
-                CurrentOrderId = (long)Convert.ToDouble(CustomerOrderID);
-                CurrentCustomerOrderId = CurrentOrderId;
+                CurrentCustomerOrderId = (long)Convert.ToDouble(CustomerOrderID);
             }
             else
             {
-                //CurrentOrderId = -1;
                 CurrentCustomerOrderId = -1;
             }
         
 
             var result = from a in _context.CustomerOrders
-                                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+                         join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                           join c in _context.Products on b.ProductId equals c.ProductId
-                                          where a.CustomerOrderId == CurrentCustomerOrderId
+                                         where a.CustomerOrderId == CurrentCustomerOrderId
                          select new CustomerOrderViewModel
                                           {
                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -58,9 +55,9 @@ namespace WETT.Controllers
         public JsonResult GetAll(JqGridViewModel request)
         {
             var AllCustomerOrderData = from a in _context.CustomerOrders
-                                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
-                                          join c in _context.Products on b.ProductId equals c.ProductId
-                                          where a.CustomerOrderId == CurrentCustomerOrderId
+                                       join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+                                       join c in _context.Products on b.ProductId equals c.ProductId
+                                       where a.CustomerOrderId == CurrentCustomerOrderId
                                        select new CustomerOrderViewModel
                                           {
                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -74,9 +71,9 @@ namespace WETT.Controllers
                                               Notes = b.Notes
                                           };
             var CustomerOrderData = AllCustomerOrderData;
-            if (CurrentOrderId != -1)
+            if (CurrentCustomerOrderId != -1)
             {
-                CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentOrderId);
+                CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentCustomerOrderId);
             }
             
 
@@ -149,6 +146,7 @@ namespace WETT.Controllers
             {
                 CustomerOrderId= CurrentCustomerOrderId,
                 ProductId = s.ProductId,
+                
                 QtyOrdered = p.QtyOrdered,
                 QtyFulfilled = p.QtyFulfilled,
                 Notes = p.Notes

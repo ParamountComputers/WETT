@@ -36,8 +36,13 @@
 </div>
 <div class="row">
   <div class="col-sm-3">
-        <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Supplier:" aria-label="Supplier:" aria-describedby="basic-addon2" id="Supplier:"/>
+      <form class="form-inline">
+            <div class="form-group">
+        <label style="font-size:10px;" for="supplierDropdown" class="d-inline">Suppliers:</label>  
+        <select style="font-size:10px;" class="form-control" id="supplierDropdown" name="supplierDropdown"></select> 
             </div>
+            </form>
+   </div>
           <div class="col-sm-3">
         <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder"/>
             </div>
@@ -96,6 +101,7 @@
                         label: "Edit Actions",
                         name: "actions",
                         width: 100,
+                        fixed: true,
                         formatter: "actions",
                         formatoptions: {
                             keys: true,
@@ -105,12 +111,8 @@
                         }
                     },
                    { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
-                   { label: 'Seal No',name: 'sealNo',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'trucker Probill Number',name: 'truckerProbillNumber',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'PO',name: 'purchaseOder',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date', editable: true, edittype:"text", hidden:true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
+                   { label: 'Product Name',name: 'productName',fixed:true,width:170,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
                                   dataInit: function(elem) {
 
@@ -129,11 +131,11 @@
                 } });   
                                   }
                    }},
-                   { label: 'Supplier',name: 'supplierName',fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Supplier',name: 'supplierName',width:170,fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
-                   { label: 'Updated Stock',name: 'amount',editable: true, edittype:"text"},
-                   { label: 'Locations',name: 'inventoryLocationId', editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocations()}},
-                   { label: 'Notes',name: 'comments', editable: true, edittype:"text"}
+                   { label: 'Updated Stock',name: 'amount',fixed:true, width:95,editable: true, edittype:"text"},
+                   { label: 'Locations',name: 'inventoryLocationId', fixed:true,width:100, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocations()}},
+                   { label: 'Notes',name: 'comments',fixed:true,width:500, editable: true, edittype:"text"}
 
                  ], 
                viewrecords: true,
@@ -206,6 +208,20 @@ $(document).ready(function () {
            }  
        });  
    });
+                 $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "SaStockReceived/CreateSupplierList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '<option value="-1">Select a Supplier</option>';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#supplierDropdown").html(s);    
+           }  
+       });  
+   });
           $(document).ready(function () {  
            $('#date').val(date());
        });
@@ -256,6 +272,7 @@ $(document).ready(function () {
         var sealNumber = $("#sealNo").val();
         var truckingNumber = $("#truckerProbillNumber").val();
         var locations = $("#locationsDropdown").val();
+        //var supplier = $("").val();
               if(locations!=-1 && truckingCompany!=-1)
             {
                 header = true;

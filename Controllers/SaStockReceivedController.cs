@@ -37,10 +37,6 @@ namespace WETT.Controllers
                          where c.InventoryTxTypeId == 7
                          select new SaStockReceivedViewModel
                          {
-                             SealNo = "1ww1",
-                             TruckingCompany = g.Name,
-                             TruckerProbillNumber = 123,
-                             PurchaseOrder = "1ss2",
                              InventoryTxDetailId = b.InventoryTxDetailId,
                              ProductSku = e.Sku,
                              SupplierName = f.Name,
@@ -53,7 +49,7 @@ namespace WETT.Controllers
                              Amount = b.Amount,
                              Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
-                             SaCode = "1s2s3"
+                             SaCode = a.StockAdjCode
 
                          };
             return View(result);
@@ -72,10 +68,6 @@ namespace WETT.Controllers
                                       where c.InventoryTxTypeId == 7
                                       select new SaStockReceivedViewModel
                                       {
-                                         SealNo = "1ww1",
-                                         TruckingCompany = "ken",
-                                         TruckerProbillNumber = 123,
-                                         PurchaseOrder = "1ss2",
                                           InventoryTxId = b.InventoryTxId,
                                           InventoryTxDetailId = b.InventoryTxDetailId,
                                          ProductSku = e.Sku,
@@ -88,7 +80,7 @@ namespace WETT.Controllers
                                           Amount = b.Amount,
                                          Comments = b.Comments,
                                          Date = a.Date, //.ToShortDateString(),
-                                         SaCode = "1s2s3"
+                                         SaCode = a.StockAdjCode
 
                                      };
             var SaStockReceivedData =AllSaStockReceivedData;

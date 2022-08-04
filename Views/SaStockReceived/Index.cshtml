@@ -6,64 +6,56 @@
     ViewData["Title"] = "saStockReceived";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Stock Received</h1>
-</div>
+  <div class="text-center">
+    <h4 class="display-5">Stock Received</h4>
+  </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
- <div class="container-flow">
- <div class="row">
-  <div class="col-sm-3">
-        <label style="font-size:10px;" for="date">Transaction Date:</label>
+    <div class="container-flow">
+  <div class="row p-1">
+  <div class="col-lg-2">
+        <label style="font-size:8px;" for="date">Transaction Date:</label>
         <input style="font-size:10px;" type="date" id="date" name="date">
   </div>
-  <div class="col-sm-3">
-            <form class="form-inline">
-            <div class="form-group">
-        <label style="font-size:10px;" for="truckingCompanyDropdown"class="d-inline">Trucking company:</label>  
-        <select style="font-size:10px;" class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
-               </div>
-            </form>
-  </div>
-                    <div class="col-sm-1"></div>
-  <div class="col-sm-3">
-            <form class="form-inline">
-            <div class="form-group">
-        <label style="font-size:10px;" for="locationsDropdown" class="d-inline">Locations:</label>  
+   <div class="col-lg-1"></div>
+           <div class="col-lg-2 form-group p-lg-0">
+          <select style="font-size:10px;" class="form-control" id="truckingCompanyDropdown" name="truckingCompanyDropdown"></select>
+    </div>
+                   
+</div>
+
+
+<div class="row p-1">
+    <div class="col-lg-2 form-group">
+        <select style="font-size:10px;" class="form-control" id="supplierDropdown" name="supplierDropdown"></select> 
+   </div>
+   <div class="col-lg-1"></div>
+      <div class="col-lg-2 p-lg-0">
+      <input style="font-size:10px;" type="text" class="form-control" placeholder="Seal No:" aria-label="Seal No:" aria-describedby="basic-addon2" id="sealNo"/>
+         </div>
+         <div class="col-lg-1"></div>
+             <div class="col-lg-2 p-lg-0">
+               <input style="font-size:10px;" type="text" class="form-control" placeholder="Trucker/Probill Number:" aria-label="Trucker/Probill Number:" aria-describedby="basic-addon2" id="truckerProbillNumber"/>
+             </div>
+   </div>
+
+
+<div class="row p-1">
+     <div class="col-lg-2 form-group">
         <select style="font-size:10px;" class="form-control" id="locationsDropdown" name="locationsDropdown"></select> 
             </div>
-            </form>
-    </div>
-</div>
-<div class="row">
-  <div class="col-sm-3">
-      <form class="form-inline">
-            <div class="form-group">
-        <label style="font-size:10px;" for="supplierDropdown" class="d-inline">Suppliers:</label>  
-        <select style="font-size:10px;" class="form-control" id="supplierDropdown" name="supplierDropdown"></select> 
+            <div class="col-lg-1 p-lg-0"></div>
+             <div class="col-lg-2 p-lg-0">
+             <input style="font-size:10px;" type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder"/>
             </div>
-            </form>
-   </div>
-          <div class="col-sm-3">
-        <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder"/>
-            </div>
-            <div class="col-sm-1"></div>
-  <div class="col-sm-2">
-      <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Seal No:" aria-label="Seal No:" aria-describedby="basic-addon2" id="sealNo"/>
-         </div>
-         </div>
-<div class="row">
-  <div class="col-sm-3">
-         <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Trucker/Probill Number:" aria-label="Trucker/Probill Number:" aria-describedby="basic-addon2" id="truckerProbillNumber"/>
+             <div class="col-lg-1  p-lg-0"></div>
+  <div class="col-lg-2  p-lg-0">
+         <input style="font-size:10px;" type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments"/>
              </div>
-  <div class="col-sm-3">
-         <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments"/>
-             </div>
-             <div class="col-sm-1"></div>
-  <div class="col-sm-2">
+        <div class="col-lg-1  p-lg-0"></div>
+        <div class="col-lg-2">
          <input style="font-size:10px; border-radius: 0 !important" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
         </div>
-        <div class="col-sm-2"></div>
-           <div class="col-sm-1 text-right">
+           <div class="col-lg-1 text-right">
           <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
             </div> 
     </div>
@@ -199,7 +191,7 @@ $(document).ready(function () {
            url: "SaStockReceived/CreateTruckingList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Trcuking company</option>';  
+               var s = '<option value="-1">Select a Trcuking Company</option>';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
@@ -211,7 +203,7 @@ $(document).ready(function () {
                  $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
-           url: "SaStockReceived/CreateSupplierList",  
+           url: "SaStockReceived/CreateList",  
            data: "{}",  
            success: function (data) {  
                var s = '<option value="-1">Select a Supplier</option>';  

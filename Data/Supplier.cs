@@ -27,10 +27,10 @@ namespace WETT.Data
         public string Contact2Name { get; set; }
         public string Contact2Phone1 { get; set; }
         public string Contact2Phone2 { get; set; }
-        //public string InsertUserId { get; set; }
-        //public DateTime InsertTimestamp { get; set; }
-        //public string UpdateUserId { get; set; }
-        //public DateTime UpdateTimestamp { get; set; }
+        public string InsertUserId { get; set; }
+        public DateTime InsertTimestamp { get; set; }
+        public string UpdateUserId { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
         public string ActiveFlag { get; set; }
 
         public virtual ICollection<InventoryTx> InventoryTxes { get; set; }

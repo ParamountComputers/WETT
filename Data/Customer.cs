@@ -36,10 +36,10 @@ namespace WETT.Data
         public string ContactEmail { get; set; }
         public bool DeletedFlag { get; set; }
         public DateTime? DeletedDate { get; set; }
-        //public string InsertUserId { get; set; }
-        //public DateTime InsertTimestamp { get; set; }
-        //public string UpdateUserId { get; set; }
-        //public DateTime UpdateTimestamp { get; set; }
+        public string InsertUserId { get; set; }
+        public DateTime InsertTimestamp { get; set; }
+        public string UpdateUserId { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
 
         public virtual CallFrequency CallFrequency { get; set; }
         public virtual Cdo Cdos { get; set; }

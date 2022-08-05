@@ -15,7 +15,7 @@ namespace WETT.Data
         public string Province { get; set; }
         public string PostalCode { get; set; }
         public string Phone { get; set; }
-        //public string InsertUserId { get; set; }
-        //public DateTime? InsertTimestamp { get; set; }
+        public string InsertUserId { get; set; }
+        public DateTime? InsertTimestamp { get; set; }
     }
 }

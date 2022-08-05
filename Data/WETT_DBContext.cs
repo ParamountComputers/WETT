@@ -34,6 +34,7 @@ namespace WETT.Data
         public virtual DbSet<InventoryTxType> InventoryTxTypes { get; set; }
         public virtual DbSet<MbllCustomer> MbllCustomers { get; set; }
         public virtual DbSet<MbllSalesOrder> MbllSalesOrders { get; set; }
+        public virtual DbSet<OrderSource> OrderSources { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Segment> Segments { get; set; }
         public virtual DbSet<ShippingLocation> ShippingLocations { get; set; }
@@ -86,14 +87,14 @@ namespace WETT.Data
 
                 entity.Property(e => e.Country).HasMaxLength(50);
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -105,14 +106,14 @@ namespace WETT.Data
 
                 entity.Property(e => e.Province).HasMaxLength(50);
 
-                //entity.Property(e => e.UpdateTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update UserId");
+                entity.Property(e => e.UpdateUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update UserId");
             });
 
             modelBuilder.Entity<Cdo>(entity =>
@@ -173,14 +174,14 @@ namespace WETT.Data
 
                 entity.Property(e => e.DeletedFlag).HasColumnName("Deleted Flag");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.LicenceNumber)
                     .HasMaxLength(10)
@@ -229,14 +230,14 @@ namespace WETT.Data
 
                 entity.Property(e => e.TerritoryId).HasColumnName("Territory Id");
 
-                //entity.Property(e => e.UpdateTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update UserId");
+                entity.Property(e => e.UpdateUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update UserId");
 
                 entity.HasOne(d => d.CallFrequency)
                     .WithMany(p => p.Customers)
@@ -302,30 +303,32 @@ namespace WETT.Data
                     .HasMaxLength(50)
                     .HasColumnName("DS Slip Number");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.OrderNumber)
                     .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("Order Number");
 
+                entity.Property(e => e.OrderSourceId).HasColumnName("Order Source Id");
+
                 entity.Property(e => e.SpecialInstructions).HasColumnName("Special Instructions");
 
-                //entity.Property(e => e.UpdateTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update UserId");
+                entity.Property(e => e.UpdateUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update UserId");
 
                 entity.HasOne(d => d.Carrier)
                     .WithMany(p => p.CustomerOrders)
@@ -344,6 +347,12 @@ namespace WETT.Data
                     .HasForeignKey(d => d.CustomerOrderStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Customer Order_Customer Order Status");
+
+                entity.HasOne(d => d.OrderSource)
+                    .WithMany(p => p.CustomerOrders)
+                    .HasForeignKey(d => d.OrderSourceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Customer Order_Order Source");
             });
 
             modelBuilder.Entity<CustomerOrderDetail>(entity =>
@@ -354,12 +363,12 @@ namespace WETT.Data
 
                 entity.Property(e => e.CustomerOrderId).HasColumnName("Customer Order Id");
 
-                //entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Notes).HasMaxLength(100);
 
@@ -369,15 +378,15 @@ namespace WETT.Data
 
                 entity.Property(e => e.QtyOrdered).HasColumnName("Qty Ordered");
 
-                //entity.Property(e => e.UpdateTimestamkp)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update Timestamkp");
+                entity.Property(e => e.UpdateTimestamkp)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Timestamkp");
 
-                //entity.Property(e => e.UpdateUserid)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update Userid");
+                entity.Property(e => e.UpdateUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
 
                 entity.HasOne(d => d.CustomerOrder)
                     .WithMany(p => p.CustomerOrderDetails)
@@ -464,24 +473,30 @@ namespace WETT.Data
     }
 ));
 
-                entity.Property(e => e.ProductId)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("Product Id");
+                entity.Property(e => e.ProductId).HasColumnName("Product Id");
 
                 entity.Property(e => e.InventoryLocationId).HasColumnName("Inventory Location Id");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
+
+                entity.Property(e => e.InventoryTxDetailId).HasColumnName("Inventory Tx Detail Id");
 
                 entity.HasOne(d => d.InventoryLocation)
                     .WithMany(p => p.Inventories)
                     .HasForeignKey(d => d.InventoryLocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Inventory_Inventory Location");
+
+                entity.HasOne(d => d.InventoryTxDetail)
+                    .WithMany(p => p.Inventories)
+                    .HasForeignKey(d => d.InventoryTxDetailId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Inventory_Tx");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Inventories)
@@ -510,18 +525,18 @@ namespace WETT.Data
 
                 entity.Property(e => e.InventoryTxId).HasColumnName("Inventory Tx Id");
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.Date).HasPrecision(0);
 
                 entity.Property(e => e.FromInventoryLocationId).HasColumnName("From Inventory Location Id");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.InventoryTxTypeId).HasColumnName("Inventory Tx Type Id");
 
@@ -563,12 +578,14 @@ namespace WETT.Data
                     .HasColumnName("Trucking Company Id")
                     .IsSparse();
 
-                //entity.Property(e => e.UpdateTimestamp).HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update UserId");
+                entity.Property(e => e.UpdateUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update UserId");
 
                 entity.HasOne(d => d.FromInventoryLocation)
                     .WithMany(p => p.InventoryTxFromInventoryLocations)
@@ -610,14 +627,14 @@ namespace WETT.Data
 
                 entity.Property(e => e.FromInventoryLocationId).HasColumnName("From Inventory Location Id");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserid)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert Userid");
+                entity.Property(e => e.InsertUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert Userid");
 
                 entity.Property(e => e.InventoryTxId).HasColumnName("Inventory Tx Id");
 
@@ -627,14 +644,14 @@ namespace WETT.Data
 
                 entity.Property(e => e.ToInventoryLocationId).HasColumnName("To Inventory Location Id");
 
-                //entity.Property(e => e.UpdateTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserid)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update Userid");
+                entity.Property(e => e.UpdateUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
 
                 entity.HasOne(d => d.InventoryTx)
                     .WithMany(p => p.InventoryTxDetails)
@@ -708,11 +725,11 @@ namespace WETT.Data
                     .HasColumnName("Customer Status")
                     .IsFixedLength();
 
-                //entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Municipality).HasMaxLength(25);
 
@@ -773,13 +790,13 @@ namespace WETT.Data
                     .HasMaxLength(6)
                     .HasColumnName("Delivery Time");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.ItemNumber)
                     .IsRequired()
@@ -809,6 +826,34 @@ namespace WETT.Data
                     .IsRequired()
                     .HasMaxLength(14)
                     .HasColumnName("UPC");
+            });
+
+            modelBuilder.Entity<OrderSource>(entity =>
+            {
+                entity.ToTable("Order Source");
+
+                entity.Property(e => e.OrderSourceId).HasColumnName("Order Source Id");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
+
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
+
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
+
+                entity.Property(e => e.UpdateUserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("Update UserId");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -899,24 +944,24 @@ namespace WETT.Data
 
                 entity.Property(e => e.ShippingLocationId).HasColumnName("Shipping Location Id");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserid)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert Userid");
+                entity.Property(e => e.InsertUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert Userid");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                //entity.Property(e => e.UpdateTimestamp).HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp).HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserid)
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update Userid");
+                entity.Property(e => e.UpdateUserid)
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
             });
 
             modelBuilder.Entity<Supplier>(entity =>
@@ -972,14 +1017,14 @@ namespace WETT.Data
                     .HasMaxLength(20)
                     .HasColumnName("General Phone");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert UserId");
+                entity.Property(e => e.InsertUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert UserId");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -996,14 +1041,14 @@ namespace WETT.Data
                     .HasMaxLength(15)
                     .HasColumnName("Supplier Code");
 
-                //entity.Property(e => e.UpdateTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserId)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update UserId");
+                entity.Property(e => e.UpdateUserId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Update UserId");
             });
 
             modelBuilder.Entity<Territory>(entity =>
@@ -1023,26 +1068,26 @@ namespace WETT.Data
 
                 entity.Property(e => e.TruckingCompanyId).HasColumnName("Trucking Company Id");
 
-                //entity.Property(e => e.InsertTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Insert Timestamp");
+                entity.Property(e => e.InsertTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Insert Timestamp");
 
-                //entity.Property(e => e.InsertUserid)
-                //    .IsRequired()
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Insert Userid");
+                entity.Property(e => e.InsertUserid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Insert Userid");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                //entity.Property(e => e.UpdateTimestamp)
-                //    .HasPrecision(0)
-                //    .HasColumnName("Update Timestamp");
+                entity.Property(e => e.UpdateTimestamp)
+                    .HasPrecision(0)
+                    .HasColumnName("Update Timestamp");
 
-                //entity.Property(e => e.UpdateUserid)
-                //    .HasMaxLength(50)
-                //    .HasColumnName("Update Userid");
+                entity.Property(e => e.UpdateUserid)
+                    .HasMaxLength(50)
+                    .HasColumnName("Update Userid");
             });
 
             OnModelCreatingPartial(modelBuilder);

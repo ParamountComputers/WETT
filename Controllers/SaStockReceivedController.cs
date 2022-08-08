@@ -181,7 +181,7 @@ namespace WETT.Controllers
                 PurchaseOrder= li[3],
                 Seal=li[4],
                 TransactionNo=li[5],
-                FromInventoryLocationId = (long)Convert.ToDouble(li[6]),
+                ToInventoryLocationId = (long)Convert.ToDouble(li[6]),
                 InventoryTxTypeId = 7,
                 StockAdjCode = "SR"
             };

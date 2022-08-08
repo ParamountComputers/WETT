@@ -6,32 +6,26 @@
 }
 
 <div class="text-center">
-    <h2 class="display-4">Customer Summary</h2>
+    <h4 class="display-5">Customer Summary</h4>
 </div>
 <fieldset class="scheduler-border">
 <div class="container-flow">
-<div class="row">
-           <div class="col-sm-3">
-                <label for="startDate"  style="font-size:10px;"> Start Order Date:</label>
+<div class="row p-1">
+           <div class="col-lg-2 form-group">
+                <label for="startDate"  style="font-size:8px;"> Start Order Date:</label>
                 <input type="date" value=""  style="font-size:10px;" id='startDate' name="startDate" />
            </div>   
-           <div class="col-sm-1"></div>
-           <div class="col-sm-3">
-                <label for="endDate"  style="font-size:10px;"> End Order Date:</label>
+           <div class="col-lg-1"></div>
+           <div class="col-lg-2 form-group">
+                <label for="endDate"  style="font-size:8px;"> End Order Date:</label>
                 <input type="date" value=""  style="font-size:10px;" id='endDate' name="endDate" />
             </div>
-            <div class="col-md-1 "></div>
-            <div class="col-sm-2">
-              <form class="form-inline">
-                 <div class="form-group">
-                   <label style="font-size:10px;" for="StatusDropdown" class="d-inline">Status:</label>  
-                   <select style="font-size:10px;" class="form-control" id="StatusDropdown" name="StatusDropdown"></select> 
-                 </div>
-              </form>  
-           </div>
-                <div class="col-sm-1">
-                 </div>
-            <div class="col-sm-1 text-right">
+            <div class="col-lg-1 "></div>
+            <div class="col-lg-2 form-group">
+                <select style="font-size:10px;" class="form-control" id="StatusDropdown" name="StatusDropdown"></select> 
+            </div>
+                <div class="col-lg-3"></div>
+            <div class="col-lg-1 text-right">
                  <button class="btn btn-outline-secondary" style="font-size:10px;" id="search" type="button">Search</button>  
             </div>        
 </div>

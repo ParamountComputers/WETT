@@ -6,16 +6,20 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Maintain Suppliers</h1>
+    <h4 class="display-5">Maintain Suppliers</h4>
 </div>
 <fieldset class="scheduler-border">
-    <legend class="scheduler-border">Search</legend>
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Supplier Name" aria-label="Supplier Name" aria-describedby="basic-addon2" id="supplierName">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Search</button>
+  <div class="container-flow">
+   <div class="row  p-1">
+        <div class="col-lg-8 form-group">
+           <input type="text"  style="font-size:10px;" class="form-control" placeholder="Supplier Name:" aria-label="Supplier Name:" aria-describedby="basic-addon2" id="supplierName">
         </div>
-    </div>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-1 form-group text-right">
+            <button class="btn btn-outline-secondary"  style="font-size:10px;" type="button">Search</button>
+        </div>
+   </div>
+ </div>
 </fieldset>
 
 <table id="supplier" style="align: center"></table>

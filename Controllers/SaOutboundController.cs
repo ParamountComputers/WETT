@@ -18,6 +18,7 @@ namespace WETT.Controllers
         public static long CurrentHeaderId;
         public static string CurrentSaCode;
         public static long InventoryTxCurrentId;
+        public static long CurrentFromLocation;
         private readonly WETT_DBContext _context;
         public SaOutboundController(WETT_DBContext context)
         {
@@ -158,7 +159,7 @@ namespace WETT.Controllers
         {
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-            //r.ToInventoryLocationId = p.InventoryLocationId;
+            r.FromInventoryLocationId = CurrentFromLocation;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             r.Comments = p.Comments;
@@ -172,7 +173,7 @@ namespace WETT.Controllers
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
-                ToInventoryLocationId = p.InventoryLocationId,
+                FromInventoryLocationId = CurrentFromLocation,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = CurrentHeaderId
@@ -215,6 +216,7 @@ namespace WETT.Controllers
             InventoryTxCurrentId = s.InventoryTxId;
             s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
             _context.SaveChanges();
+            CurrentFromLocation = (long)s.FromInventoryLocationId;
             CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
         }

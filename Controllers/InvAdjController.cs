@@ -97,7 +97,6 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                    //invAdjData = invAdjData.Where(w => w.InventoryTxTypeId == 1);
                     invAdjData = invAdjData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }
@@ -189,7 +188,7 @@ namespace WETT.Controllers
                 return Json(headerInfo);
             }
             return Json(null);
-            }
+        }
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");

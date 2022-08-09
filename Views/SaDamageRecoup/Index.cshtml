@@ -131,9 +131,8 @@
        });
        $(document).ready(function () {  
            $('#date').val(date());
-       
-
        });
+
        $('#saDamageRecoup').setGridWidth(parseInt($(window).width()) - 20);
        $("#comments").on('change keyup paste', function () {
            SearchByComments();
@@ -145,199 +144,210 @@
        $("#save").on('click', function () {
            SaveHeader();
         });
-                      function IsProduct(value,colname)
-       {
-           var containsProduct = false;
-                   $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductName', function(data) {
-        if (data != null) {
-
-
-            for (var i = 0; i < data.length; i++) 
+        $(document).ready(function () 
+        {  
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/SaCode', function(data) 
             {
-                console.log(data[i].value);
-         if(value== data[i].value)
-         {
-             
-           containsProduct = true;
-               
-         }
-            }
-                         }//if
+                if(data!=null)
+                {
+                    header= true;
+                    $("#saCode").val(data.sacode);
+                    $("#date").val(data.date);
+                    $("#comments").val(data.comments);
+                }
+            });
+            $.ajaxSetup( { "async": true } );
+        });
+                      
+        function IsProduct(value,colname)
+        {
+           var containsProduct = false;
+           $.ajaxSetup( { "async": false } );
+           $.getJSON('SaDamageRecoup/CreateProductName', function(data) 
+           {
+                if (data != null)
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(value== data[i].value)
+                        {
+                            containsProduct = true;
+                        }
+                    }
+                }//if
 
             });
             if(containsProduct==true)
             {
-              $.ajaxSetup( { "async": true } );
-              return [true,""];
+                $.ajaxSetup( { "async": true } );
+                return [true,""];
             }
-            else{
-            $.ajaxSetup( { "async": true } );
-            return [false,"Please Enter Valid Product"];
+            else
+            {
+                $.ajaxSetup( { "async": true } );
+                return [false,"Please Enter Valid Product"];
             }
 
-      }
+        }
+
         function date()
         {
-         var date;
-         var currentDate = new Date();
-         var day = ("0" + currentDate.getDate()).slice(-2);
-         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
-         date = today.toString();
-         console.log(date);
-         return date;
+             var date;
+             var currentDate = new Date();
+             var day = ("0" + currentDate.getDate()).slice(-2);
+             var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+             var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+             date = today.toString();
+             console.log(date);
+             return date;
         }
     
-            function SaveHeader()
-    {
-         header = true;
-        var date = $("#date").val();
-        var notes = $("#comments").val();
-        if(date=="")
+        function SaveHeader()
         {
-         var currentDate = new Date();
-         var day = ("0" + currentDate.getDate()).slice(-2);
-         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
-         date = today;
-        }
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateHeader?data='+date+'/'+notes, function(data) {
- 
-        $("#saCode").val(data);
-                    });
-            $.ajaxSetup( { "async": true } );
-     $('#saDamageRecoup').setGridParam({ page: 1 }).trigger("reloadGrid");
-    }
-    function SearchByComments()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#comments").val();
-        
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
-
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
-
-        f.rules.push({ field: "comments", op: "cn", data: searchString });
-
-        var grid = $('#saDamageRecoup');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-        function SearchByDate()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#date").val();
-        
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
-
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
-
-        f.rules.push({ field: "date", op: "cn", data: searchString });
-
-        var grid = $('#saDamageRecoup');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-
-            function getSupplierNames(value) {
-        var Supplier="";
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateList', function(data) {
-        if (data != null) {
-           
-            for (var i = 0; i < data.length; i++) {
-                if(value == data[i].value)
-                {
-             Supplier= data[i].text;
-                }
-                } 
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-           return Supplier; 
-
-        }
-
-              function getProductSku(value) {
-        var ProductSku= "";
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateProductSkuList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                if(data[i].value == value)
-                {
-             ProductSku=data[i].text;
-                } 
-              }
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-           return ProductSku; 
-
-        }
-                function getProductName() {
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateProductName', function(data) {
-        if (data != null) {
-
-
-            for (var i = 0; i < data.length; i++) 
+            header = true;
+            var date = $("#date").val();
+            var notes = $("#comments").val();
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/CreateHeader?data='+date+'/'+notes, function(data) 
             {
-                ProductNameList[i]=data[i].value;
-            }
-         }//if
+                $("#saCode").val(data);
+            });
+                $.ajaxSetup( { "async": true } );
+            $('#saDamageRecoup').setGridParam({ page: 1 }).trigger("reloadGrid");
+        }
+
+        function SearchByComments()
+        {
+            //  Fetch the text from our <input> control
+            var searchString = $("#comments").val();
+        
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
+
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
+
+            f.rules.push({ field: "comments", op: "cn", data: searchString });
+
+            var grid = $('#saDamageRecoup');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
+        }
+
+        function SearchByDate()
+        {
+            //  Fetch the text from our <input> control
+            var searchString = $("#date").val();
+        
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
+
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
+
+            f.rules.push({ field: "date", op: "cn", data: searchString });
+
+            var grid = $('#saDamageRecoup');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
+        }
+
+        function getSupplierNames(value) 
+        {
+            var Supplier="";
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/CreateList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(value == data[i].value)
+                        {
+                            Supplier= data[i].text;
+                        }
+                    } 
+                }//if
+            });
+            $.ajaxSetup( { "async": true } );
+            return Supplier; 
+        }
+
+        function getProductSku(value) 
+        {
+            var ProductSku= "";
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/CreateProductSkuList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(data[i].value == value)
+                        {
+                            ProductSku=data[i].text;
+                        } 
+                    }
+                }//if
+           });
+           $.ajaxSetup( { "async": true } );
+           return ProductSku; 
+        }
+        function getProductName() 
+        {
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/CreateProductName', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        ProductNameList[i]=data[i].value;
+                    }
+                }//if
 
             });
             $.ajaxSetup( { "async": true } );
-            
-            console.log(ProductNameList);
-           return ProductNameList; 
-
+            return ProductNameList; 
         }
-         function getLocation() {
-        var LocationList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateLocationList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             LocationList[data[i].value]=data[i].text;
-                 
-              }
-            }//if
 
+        function getLocation() 
+        {
+            var LocationList= {};
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/CreateLocationList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        LocationList[data[i].value]=data[i].text;
+                    }
+                }//if
             });
             $.ajaxSetup( { "async": true } );
-
-           return LocationList; 
-
+            return LocationList;
         }
-                 function getReasons() {
-        var ReasonsList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaDamageRecoup/CreateReasonsList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             ReasonsList[data[i].value]=data[i].text;
-                 
-              }
-            }//if
 
+        function getReasons() 
+        {
+            var ReasonsList= {};
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaDamageRecoup/CreateReasonsList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        ReasonsList[data[i].value]=data[i].text;
+                    }
+                }//if
             });
             $.ajaxSetup( { "async": true } );
-
-           return ReasonsList; 
-
+            return ReasonsList;
         }
-
 </script>
 }

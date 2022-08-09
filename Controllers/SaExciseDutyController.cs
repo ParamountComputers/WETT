@@ -86,40 +86,18 @@ namespace WETT.Controllers
             var SaExciseDutyData = AllSaExciseDutyData;
 
 
-
-            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-            //if (issearch)
-            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-            //    {
-            //        switch (rule.field)
-            //        {
-            //            case "date":
-
-            //                SaExciseDutyData = (IQueryable<SaExciseDutyViewModel>)SaExciseDutyData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-            //                searchDate = rule.data;
-            //                break;
-            //            case "comments":
-
-            //                SaExciseDutyData = (IQueryable<SaExciseDutyViewModel>)SaExciseDutyData.Where(w => w.Comments.Contains(rule.data));
-            //                SaExciseDutyData = (IQueryable<SaExciseDutyViewModel>)SaExciseDutyData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
-
-
-            //                Notes = rule.data;
-            //                break;
-            //        }
-            //    }
             if (CurrentSaCode != null)
             {
                 SaExciseDutyData = SaExciseDutyData.Where(w => w.SaCode == CurrentSaCode);
+                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+                InventoryTxCurrentId = r.InventoryTxId;
             }
             else
             {
                 if (showPage == true)
                 {
-                    //this is the type of transaction id
-                   // SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxTypeId == 5);
-                    SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
+                   //this is the type of transaction id
+                   SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }
                 else
@@ -217,6 +195,21 @@ namespace WETT.Controllers
             CurrentToLocation = (long)s.ToInventoryLocationId;
             CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
+        }
+        public JsonResult SaCode()
+        {
+            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+            var headerInfo = new
+            {
+                comments = r.Comments,
+                sacode = CurrentSaCode,
+                date = r.Date.ToShortDateString()
+            };
+            if (CurrentSaCode != null)
+            {
+                return Json(headerInfo);
+            }
+            return Json(null);
         }
 
         public IActionResult CreateList()

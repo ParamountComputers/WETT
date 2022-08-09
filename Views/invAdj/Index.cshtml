@@ -163,197 +163,166 @@
        }); 
        $("#save").on('click', function () {
            SaveHeader();
-        });
+       });
        function IsProduct(value,colname)
        {
            var containsProduct = false;
-                   $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductName', function(data) {
-        if (data != null) {
-
-
-            for (var i = 0; i < data.length; i++) 
-            {
-               // console.log(data[i].value);
-         if(value== data[i].value)
-         {
+           $.ajaxSetup( { "async": false } );
+           $.getJSON('InvAdj/CreateProductName', function(data) {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(value== data[i].value)
+                        {
              
-           containsProduct = true;
+                            containsProduct = true;
                
-         }
-            }
-                         }//if
+                        }
+                    }
+                }//if
 
             });
             if(containsProduct==true)
             {
-              $.ajaxSetup( { "async": true } );
-              return [true,""];
+               $.ajaxSetup( { "async": true } );
+               return [true,""];
             }
-            else{
-            $.ajaxSetup( { "async": true } );
-            return [false,"Please Enter Valid Product"];
-            }
-
-      }
-        function date()
-        {
-         var date;
-         var currentDate = new Date();
-         var day = ("0" + currentDate.getDate()).slice(-2);
-         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
-         date = today.toString();
-         return date;
-        }
-    
-        function SaveHeader()
-        {
-         header = true;
-         console.log($("#date").val());
-        var date = $("#date").val();
-        var notes = $("#comments").val();
-
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateHeader?data='+date+'/'+notes, function(data) {
- 
-        $("#saCode").val(data);
-                    });
-            $.ajaxSetup( { "async": true } );
-      $('#invAdj').setGridParam({ page: 1 }).trigger("reloadGrid");
-
-    }
-    ////function SearchByComments()
-    ////{
-    ////    //  Fetch the text from our <input> control
-    ////    var searchString = $("#comments").val();
-        
-    ////    //  Prepare to pass a new search filter to our jqGrid
-    ////    var f = { groupOp: "AND", rules: [] };
-
-    ////    //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-    ////    //  In this example, I'm searching through the UserName column.
-
-    ////    f.rules.push({ field: "comments", op: "cn", data: searchString });
-
-    ////    var grid = $('#invAdj');
-    ////    grid[0].p.search = f.rules.length > 0;
-    ////    $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-    ////    grid.trigger("reloadGrid", [{ page: 1 }]);
-    ////}
-    ////    function SearchByDate()
-    ////{
-    ////    //  Fetch the text from our <input> control
-    ////    var searchString = $("#date").val();
-        
-    ////    //  Prepare to pass a new search filter to our jqGrid
-    ////    var f = { groupOp: "AND", rules: [] };
-
-    ////    //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-    ////    //  In this example, I'm searching through the UserName column.
-
-    ////    f.rules.push({ field: "date", op: "cn", data: searchString });
-
-    ////    var grid = $('#invAdj');
-    ////    grid[0].p.search = f.rules.length > 0;
-    ////    $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-    ////    grid.trigger("reloadGrid", [{ page: 1 }]);
-    ////}
-
-       function getSupplierNames(value) {
-        var Supplier="";
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateList', function(data) {
-        if (data != null) {
-           
-            for (var i = 0; i < data.length; i++) {
-                if(value === data[i].value)
-                {
-
-             Supplier= data[i].text;
-                }
-                } 
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-           return Supplier; 
-
-        }
-
-        function getProductSku(value) {
-        var ProductSku ="";
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductSkuList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                if(data[i].value== value)
-                {
-
-             ProductSku=data[i].text;
-                } 
-              }
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-           return ProductSku.toString(); 
-
-        }
-    function getProductName() {
-         var ProductNameList= [];
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductName', function(data) {
-        if (data != null) {
-
-
-            for (var i = 0; i < data.length; i++) 
+            else
             {
-                ProductNameList[i]=data[i].value;
+                $.ajaxSetup( { "async": true } );
+                return [false,"Please Enter Valid Product"];
             }
-         }//if
+
+       }
+       function date()
+       {
+            var date;
+            var currentDate = new Date();
+            var day = ("0" + currentDate.getDate()).slice(-2);
+            var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+            var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+            date = today.toString();
+            return date;
+       }
+    
+       function SaveHeader()
+       {
+            header = true;
+            console.log($("#date").val());
+            var date = $("#date").val();
+            var notes = $("#comments").val();
+
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('InvAdj/CreateHeader?data='+date+'/'+notes, function(data) 
+            {
+                $("#saCode").val(data);
+            });
+            $.ajaxSetup( { "async": true } );
+            $('#invAdj').setGridParam({ page: 1 }).trigger("reloadGrid");
+       }
+
+       function getSupplierNames(value) 
+       {
+            var Supplier="";
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('InvAdj/CreateList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(value === data[i].value)
+                        {
+                            Supplier= data[i].text;
+                        }
+                    } 
+                }//if
 
             });
             $.ajaxSetup( { "async": true } );
-            
+            return Supplier; 
+       }
 
-           return ProductNameList; 
+       function getProductSku(value) 
+       {
+            var ProductSku ="";
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('InvAdj/CreateProductSkuList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(data[i].value== value)
+                        {
+                            ProductSku=data[i].text;
+                        } 
+                    }
+                }//if
 
-        }
-    function getLocation() {
-        var LocationList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateLocationList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             LocationList[data[i].value]=data[i].text;
+            });
+            $.ajaxSetup( { "async": true } );
+            return ProductSku.toString(); 
+       }
+
+       function getProductName() 
+       {
+            var ProductNameList= [];
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('InvAdj/CreateProductName', function(data) 
+            {
+                 if (data != null) 
+                 {
+                     for (var i = 0; i < data.length; i++) 
+                     {
+                        ProductNameList[i]=data[i].value;
+                     }
+                 }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            return ProductNameList; 
+
+       }
+
+       function getLocation() 
+       {
+            var LocationList= {};
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('InvAdj/CreateLocationList', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        LocationList[data[i].value]=data[i].text;
+                    }
+                }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            return LocationList; 
+       }
+
+       function getReasons() 
+       {
+            var ReasonsList= {};
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('InvAdj/CreateReasonsList', function(data) 
+            {
+                if (data != null)
+                {
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        ReasonsList[data[i].value]=data[i].text;
                  
-              }
-            }//if
+                    }
+                }//if
 
             });
             $.ajaxSetup( { "async": true } );
-
-           return LocationList; 
-
+            return ReasonsList; 
         }
-    function getReasons() {
-        var ReasonsList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateReasonsList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             ReasonsList[data[i].value]=data[i].text;
-                 
-              }
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-
-           return ReasonsList; 
-
-        }
-
 </script>
 }

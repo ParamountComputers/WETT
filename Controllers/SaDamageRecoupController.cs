@@ -83,41 +83,18 @@ namespace WETT.Controllers
                                      };
             var SaDamageRecoupData = AllSaDamageRecoupData;
 
-            
-            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-            //    if (issearch)
-            //        foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-            //        {
-            //            switch (rule.field)
-            //            {
-            //                case "date":
-
-            //                   SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-            //                    searchDate = rule.data;
-            //                    break;
-            //                case "comments":
-                            
-            //                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Comments.Contains(rule.data));
-            //                SaDamageRecoupData = (IQueryable<SaDamageRecoupViewModel>)SaDamageRecoupData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
-                            
-                           
-            //                    Notes = rule.data;
-            //                    break;
-            //            }
-            //        }
             if (CurrentSaCode != null)
             {
                 SaDamageRecoupData = SaDamageRecoupData.Where(w => w.SaCode == CurrentSaCode);
+                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+                InventoryTxCurrentId = r.InventoryTxId;
             }
             else
             {
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                   // SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxTypeId == 2);
                     SaDamageRecoupData = SaDamageRecoupData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
                 }
                 else
                 {
@@ -215,6 +192,22 @@ namespace WETT.Controllers
             CurrentSaCode = null;
             CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
+        }
+
+        public JsonResult SaCode()
+        {
+            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+            var headerInfo = new
+            {
+                comments = r.Comments,
+                sacode = CurrentSaCode,
+                date = r.Date.ToShortDateString()
+            };
+            if (CurrentSaCode != null)
+            {
+                return Json(headerInfo);
+            }
+            return Json(null);
         }
 
         public IActionResult CreateList()

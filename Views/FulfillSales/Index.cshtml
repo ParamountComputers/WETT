@@ -85,7 +85,7 @@
     //var lastSel;
     var name="";
     $(document).ready(function() {
-       $("#FulfillSalesHdr").jqGrid({
+        $("#FulfillSalesHdr").jqGrid({
                url: 'FulfillSales/GetAllHdr',
                mtype: "GET",
                guiStyle: "bootstrap",
@@ -158,24 +158,21 @@
                editurl: 'FulfillSales/UpdateHdr',
               // multiselect: true,
                onSelectRow: function(rowid) {
-                curRowId=rowid;
-
-
+                    curRowId=rowid;
                },
-               ondblClickRow: function(rowid) {
+              ondblClickRow: function(rowid) {
                 
-               var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
-                getDetails(id);
-                //if(lastSel!=null)
-                //{
-                //    $('#'+lastSel).removeClass('ui-state-highlight');
-                //}
-                //lastSel =$('#'+rowid);
-                //$('#'+rowid).addClass('ui-state-highlight');
-                 $("#FulfillSalesDtls").trigger('reloadGrid');
+              var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
+                    getDetails(id);
+                    //if(lastSel!=null)
+                    //{
+                    //    $('#'+lastSel).removeClass('ui-state-highlight');
+                    //}
+                    //lastSel =$('#'+rowid);
+                    //$('#'+rowid).addClass('ui-state-highlight');
+                     $("#FulfillSalesDtls").trigger('reloadGrid');
 
-               }
-
+              }
            }
         )
                
@@ -196,239 +193,232 @@
                 //},
                 //url: "FulfillSales/AddHdr"
             }
-         );
-         $(document).ready(function () {  
-       $.ajax({  
-           type: "GET",  
-           url: "FulfillSales/CreateLocationsList",  
-           data: "{}",  
-           success: function (data) {  
-               var s = '<option value="-1">Select a Location</option>';  
-               for (var i = 0; i < data.length; i++) {  
-                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+        );
+        $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "FulfillSales/CreateLocationsList",  
+               data: "{}",  
+               success: function (data) {  
+                   var s = '<option value="-1">Select a Location</option>';  
+                   for (var i = 0; i < data.length; i++) {  
+                       s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+                   }  
+                   $("#locationsDropdown").html(s);  
                }  
-               $("#locationsDropdown").html(s);  
-           }  
-       });  
-   });
-      $(document).ready(function () {  
-       $.ajax({  
-           type: "GET",  
-           url: "FulfillSales/CreateCarrierList",  
-           data: "{}",  
-           success: function (data) {  
-               var s = '<option value="-1">Select a Carrier</option>';  
-               for (var i = 0; i < data.length; i++) {  
-                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+           });  
+        });
+        $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "FulfillSales/CreateCarrierList",  
+               data: "{}",  
+               success: function (data) {  
+                   var s = '<option value="-1">Select a Carrier</option>';  
+                   for (var i = 0; i < data.length; i++) {  
+                       s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+                   }  
+                   $("#carrierDropdown").html(s);  
                }  
-               $("#carrierDropdown").html(s);  
-           }  
-       });  
-   });
-         $(document).ready(function () {  
-             var limit = 10;
-             var s = '<option value="-1">Select a Limit</option>'; 
-               for (var i = 0; i < 4; i++) {  
-                   s += '<option value="' + i + '">' + limit + '</option>';  
-                   limit = limit*10;
-               }  
-               $("#RecordLimitDropdown").html(s); 
+           });  
+        });
+        $(document).ready(function () {  
+                 var limit = 10;
+                 var s = '<option value="-1">Select a Limit</option>'; 
+                   for (var i = 0; i < 4; i++) {  
+                       s += '<option value="' + i + '">' + limit + '</option>';  
+                       limit = limit*10;
+                   }  
+                   $("#RecordLimitDropdown").html(s); 
 
-   });
-       //    $(document).ready(function () {  
-       //    $('#OrderDate').val(date());
-       //    $('#DeliveryDate').val(date());
-       //});
+        });
+           //    $(document).ready(function () {  
+           //    $('#OrderDate').val(date());
+           //    $('#DeliveryDate').val(date());
+           //});
 
 
-      $("#PendingCheckbox").on('click', function () { searchByPendingCheckbox("Pending"); });
-      $("#FulfilledCheckbox").on('click', function () { searchByFulfilledCheckbox("Fulfilled"); });
-
-          $("#OrderDate").on('change keyup paste', function () {
-           SearchByOrderDate();
-           
-       }); 
-           $("#DeliveryDate").on('change keyup paste', function () {
-           SearchByDeliveryDate();
-           
-       }); 
+        $("#PendingCheckbox").on('click', function () { searchByPendingCheckbox("Pending"); });
+        $("#FulfilledCheckbox").on('click', function () { searchByFulfilledCheckbox("Fulfilled"); });
+        $("#OrderDate").on('change keyup paste', function () {
+               SearchByOrderDate();
+        }); 
+        $("#DeliveryDate").on('change keyup paste', function () {
+               SearchByDeliveryDate();
+        }); 
         $("#carrierDropdown").on('change keyup paste', function () {
-           SearchByCarrier();
-           
-       }); 
-               function date()
+               SearchByCarrier();
+        }); 
+
+        function date()
+            {
+             var date;
+             var currentDate = new Date();
+             var day = ("0" + currentDate.getDate()).slice(-2);
+             var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+             var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+             date = today.toString();
+             console.log(date);
+             return date;
+            }
+
+        function searchByPendingCheckbox(value)
         {
-         var date;
-         var currentDate = new Date();
-         var day = ("0" + currentDate.getDate()).slice(-2);
-         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
-         date = today.toString();
-         console.log(date);
-         return date;
+            //  Fetch the text from our <input> control
+            var searchString = value;
+        
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
+
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
+
+            f.rules.push({ field: "Pending", op: "cn", data: searchString });
+
+            var grid = $('#FulfillSalesHdr');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
         }
-
-               function searchByPendingCheckbox(value)
-    {
-        //  Fetch the text from our <input> control
-        var searchString = value;
+                   
+        function searchByFulfilledCheckbox(value)
+        {
+            //  Fetch the text from our <input> control
+            var searchString = value;
         
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "Pending", op: "cn", data: searchString });
+            f.rules.push({ field: "Fulfilled", op: "cn", data: searchString });
 
-        var grid = $('#FulfillSalesHdr');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-                   function searchByFulfilledCheckbox(value)
-    {
-        //  Fetch the text from our <input> control
-        var searchString = value;
+            var grid = $('#FulfillSalesHdr');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
+        }
+                   
+        function SearchByCarrier()
+        {
+            //  Fetch the text from our <input> control
+            var searchString = $("#carrierDropdown").val();
         
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "Fulfilled", op: "cn", data: searchString });
+            f.rules.push({ field: "Carrier", op: "cn", data: searchString });
 
-        var grid = $('#FulfillSalesHdr');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-                   function SearchByCarrier()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#carrierDropdown").val();
+            var grid = $('#FulfillSalesHdr');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
+        }
+               
+        function SearchByOrderDate()
+        {
+            //  Fetch the text from our <input> control
+            var searchString = $("#OrderDate").val();
         
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "Carrier", op: "cn", data: searchString });
+            f.rules.push({ field: "OrderDate", op: "cn", data: searchString });
 
-        var grid = $('#FulfillSalesHdr');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-               function SearchByOrderDate()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#OrderDate").val();
+            var grid = $('#FulfillSalesHdr');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
+        }
+        function SearchByDeliveryDate()
+        {
+            //  Fetch the text from our <input> control
+            var searchString = $("#DeliveryDate").val();
         
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
+            //  Prepare to pass a new search filter to our jqGrid
+            var f = { groupOp: "AND", rules: [] };
 
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
+            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
+            //  In this example, I'm searching through the UserName column.
 
-        f.rules.push({ field: "OrderDate", op: "cn", data: searchString });
+            f.rules.push({ field: "DeliveryDate", op: "cn", data: searchString });
 
-        var grid = $('#FulfillSalesHdr');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
-     function SearchByDeliveryDate()
-    {
-        //  Fetch the text from our <input> control
-        var searchString = $("#DeliveryDate").val();
-        
-        //  Prepare to pass a new search filter to our jqGrid
-        var f = { groupOp: "AND", rules: [] };
-
-        //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-        //  In this example, I'm searching through the UserName column.
-
-        f.rules.push({ field: "DeliveryDate", op: "cn", data: searchString });
-
-        var grid = $('#FulfillSalesHdr');
-        grid[0].p.search = f.rules.length > 0;
-        $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-        grid.trigger("reloadGrid", [{ page: 1 }]);
-    }
+            var grid = $('#FulfillSalesHdr');
+            grid[0].p.search = f.rules.length > 0;
+            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
+            grid.trigger("reloadGrid", [{ page: 1 }]);
+        }
               
-        function getCarrier() {
-        var CarrierList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('FulfillSales/CreateCarrierList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             CarrierList[data[i].value]=data[i].text;
+        function getCarrier() 
+        {
+            var CarrierList= {};
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('FulfillSales/CreateCarrierList', function(data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        CarrierList[data[i].value]=data[i].text;
                  
-              }
-            }//if
-
+                     }
+                }//if
             });
             $.ajaxSetup( { "async": true } );
             console.log(CarrierList);
-           return CarrierList; 
-
+            return CarrierList; 
         }
 
 
-         $("#FulfillSalesDtls").jqGrid({
-               url: 'FulfillSales/GetAllDtls',
-               mtype: "GET",
-               guiStyle: "bootstrap",
-               iconSet: "fontAwesome",
-               idPrefix: "gb1_",
-               datatype: "json",
-               ajaxSelectOptions: {
-                          type: "GET", 
-                          contentType: 'application/json; charset=utf-8',
-                          dataType: "json",
-                          cache: false,
-                          },
-               autowidth:true,
-               colModel: [
-                   {
-                        label: "Edit Actions",
-                        name: "actions",
-                        width: 100,
-                        formatter: "actions",
-                        formatoptions: {
-                            keys: true,
-                            editOptions: { },
-                            addOptions: { },
-                            delOptions: { url: 'FulfillSales/DeleteDtls' }
-                        }
-                    },
-                   { label: 'Customer Order Detail Id',name: 'customerOrderDtlsID',hidden:true,editoptions: { readonly: 'readonly'},key: true},
-                   { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Product ID(Sku)',name: 'productSku',editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Desc',name: 'productDesc',editoptions: { readonly: 'readonly'}},
-                   //{ label: 'Stock Qty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
-                   { label: 'Qty Ordered',name: 'qtyOrdered',editoptions: { readonly: 'readonly'}},
-                   { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {number:true}},
-                   { label: 'Notes',name: 'notes', editable: true,edittype:'text'}
-
-
-                 ], 
-               viewrecords: true,
-               height: 250,
-               rowNum: 20,
-               pager: "#jqGridPager2",
-               editurl: 'FulfillSales/UpdateDtls',
-               onSelectRow: function(rowid) {
+        $("#FulfillSalesDtls").jqGrid({
+            url: 'FulfillSales/GetAllDtls',
+            mtype: "GET",
+            guiStyle: "bootstrap",
+            iconSet: "fontAwesome",
+            idPrefix: "gb1_",
+            datatype: "json",
+            ajaxSelectOptions: {
+                        type: "GET", 
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: "json",
+                        cache: false,
+                        },
+            autowidth:true,
+            colModel: [
+                {
+                    label: "Edit Actions",
+                    name: "actions",
+                    width: 100,
+                    formatter: "actions",
+                    formatoptions: {
+                        keys: true,
+                        editOptions: { },
+                        addOptions: { },
+                        delOptions: { url: 'FulfillSales/DeleteDtls' }
+                    }
+                },
+                { label: 'Customer Order Detail Id',name: 'customerOrderDtlsID',hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
+                { label: 'Product ID(Sku)',name: 'productSku',editoptions: { readonly: 'readonly'}},
+                { label: 'Product Desc',name: 'productDesc',editoptions: { readonly: 'readonly'}},
+                //{ label: 'Stock Qty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
+                { label: 'Qty Ordered',name: 'qtyOrdered',editoptions: { readonly: 'readonly'}},
+                { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {number:true}},
+                { label: 'Notes',name: 'notes', editable: true,edittype:'text'}
+            ], 
+            viewrecords: true,
+            height: 250,
+            rowNum: 20,
+            pager: "#jqGridPager2",
+            editurl: 'FulfillSales/UpdateDtls',
+            onSelectRow: function(rowid) {
                 curRowId=rowid;
-
-
-               }
-
-           }
-        )
+            }
+        })
                
 
 
@@ -448,21 +438,17 @@
                 //},
                 //url: "FulfillSales/AddDtls"
             }
-         );
+        );
 
-     });
+    });
 
-            function getDetails(value) {
-        
+    function getDetails(value) {    
         $.ajaxSetup( { "async": false } );
         $.getJSON('FulfillSales/CreateDetails?data='+value, function(data) {
 
-
             });
             $.ajaxSetup( { "async": true } );
-          
-
-        }
+     }
 
 
 

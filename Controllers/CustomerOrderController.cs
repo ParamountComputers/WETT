@@ -74,6 +74,7 @@ namespace WETT.Controllers
             if (CurrentCustomerOrderId != -1)
             {
                 CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentCustomerOrderId);
+
             }
             
 
@@ -187,6 +188,7 @@ namespace WETT.Controllers
 
             _context.CustomerOrders.Add(s);
             _context.SaveChanges();
+            CurrentCustomerOrderId = -1;
             CurrentCustomerOrderId = s.CustomerOrderId;
             return Json(true);
         }

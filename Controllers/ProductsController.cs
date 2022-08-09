@@ -116,7 +116,7 @@ namespace WETT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,SupplierId,Sku,Description,SingleWeight,ContainerWeight,CaseWeight,PackSize,HlSingle,HlContainer,HlCase,InsertUserId,InsertTimestamp,UpdateUserId,UpdateTimestamp")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,SupplierId,Sku,Description,SingleWeight,ContainerWeight,CaseWeight,PackSize,HlSingle,HlContainer,HlCase")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -150,7 +150,7 @@ namespace WETT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("ProductId,SupplierId,Sku,Description,SingleWeight,ContainerWeight,CaseWeight,PackSize,HlSingle,HlContainer,HlCase,InsertUserId,InsertTimestamp,UpdateUserId,UpdateTimestamp")] Product product)
+        public async Task<IActionResult> Edit(long id, [Bind("ProductId,SupplierId,Sku,Description,SingleWeight,ContainerWeight,CaseWeight,PackSize,HlSingle,HlContainer,HlCase")] Product product)
         {
             if (id != product.ProductId)
             {

@@ -11,6 +11,7 @@ namespace WETT.Controllers
 {
     public class invAdjController : Controller
     {
+        //classs variables
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string CurrentSaCode;
@@ -18,10 +19,12 @@ namespace WETT.Controllers
         public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
+        
         public invAdjController(WETT_DBContext context)
         {
             _context = context;
         }
+        //references to database 
         public async Task<IActionResult> Index(string SaCode)
         {
             CurrentSaCode = SaCode;
@@ -53,11 +56,9 @@ namespace WETT.Controllers
                          };
             return View(result);
         }
-
-
         public JsonResult GetAll(JqGridViewModel request)
         {
-
+            //sets up grid with proper data
             var AllInvAdjData = from b in _context.InventoryTxDetails
                                         join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                                         join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -83,13 +84,16 @@ namespace WETT.Controllers
                                             SaCode = a.StockAdjCode
                                         };
             var invAdjData = AllInvAdjData;
-
+            //checks if sent a specific code from invTxSummary if not show everything else
             if (CurrentSaCode != null)
             {
                 invAdjData = invAdjData.Where(w => w.SaCode == CurrentSaCode);
+                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+                InventoryTxCurrentId = r.InventoryTxId;
             }
             else
             {
+                //checks to see if grid should be displayed or not
                 if (showPage == true)
                 {
                     //this is the type of transaction id
@@ -103,32 +107,6 @@ namespace WETT.Controllers
                     invAdjData = invAdjData.Where(w => w.InventoryTxId == -1);
                 }
             }
-
-
-
-            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-            //if (issearch)
-            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-            //    {
-            //        switch (rule.field)
-            //        {
-            //            case "date":
-
-            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-            //                searchDate = rule.data;
-            //                break;
-            //            case "comments":
-
-            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Comments.Contains(rule.data));
-            //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
-
-
-            //                Notes = rule.data;
-            //                break;
-            //        }
-            //    }
-
 
 
             int totalRecords = invAdjData.Count();
@@ -158,6 +136,7 @@ namespace WETT.Controllers
         }
         public JsonResult Update(invAdjViewModel p)
         {
+            //updates the Inventory details to new entries 
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = p.InventoryLocationId;
@@ -169,6 +148,7 @@ namespace WETT.Controllers
         }
         public JsonResult Add(invAdjViewModel p)
         {
+            //changes it to allow page to be shown
             showPage = true;
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
@@ -185,7 +165,6 @@ namespace WETT.Controllers
             _context.InventoryTxDetails.Add(r);
             _context.SaveChanges();
 
-
             return Json(true);
         }
         public JsonResult Delete(long id)
@@ -194,9 +173,23 @@ namespace WETT.Controllers
             _context.InventoryTxDetails.Remove(r);
             _context.SaveChanges();
 
-
             return Json(true);
         }
+        public JsonResult SaCode()
+        {
+            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+            var headerInfo= new 
+            {
+                comments = r.Comments,
+                sacode = CurrentSaCode,
+                date = r.Date.ToShortDateString()
+            };
+            if (CurrentSaCode != null)
+            {
+                return Json(headerInfo);
+            }
+            return Json(null);
+            }
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
@@ -214,6 +207,7 @@ namespace WETT.Controllers
             s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
             _context.SaveChanges();
             CurrentHeaderId = s.InventoryTxId;
+            CurrentSaCode = null;
             return Json(s.StockAdjCode);
         }
 
@@ -226,7 +220,6 @@ namespace WETT.Controllers
                      {
                          text = s.Name,
                          value = b.Description
-
                      };
             return Json(li);
         }
@@ -237,7 +230,6 @@ namespace WETT.Controllers
                              {
                                  text = a.Sku,
                                  value = a.Description
-
                              };
             return Json(invAdjData);
         }
@@ -249,8 +241,6 @@ namespace WETT.Controllers
                              {
                                  label = a.ProductId,
                                  value = a.Description
-
-
                              };
             return Json(invAdjData);
         }
@@ -275,4 +265,4 @@ namespace WETT.Controllers
             return Json(invAdjData);
         }
     }
-    }
+}

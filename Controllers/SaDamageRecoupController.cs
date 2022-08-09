@@ -212,6 +212,7 @@ namespace WETT.Controllers
             InventoryTxCurrentId = s.InventoryTxId;
             s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
             _context.SaveChanges();
+            CurrentSaCode = null;
             CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
         }

@@ -31,7 +31,7 @@
   </div>
 </fieldset>
 
-<table id="invAdj" style="align: center"></table>
+<table id="invAdj"></table>
 <div id="jqGridPager"></div>
 @section scripts {
 
@@ -75,7 +75,7 @@
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
+                   { label: 'Product Name',name: 'productName',fixed:true,editable:true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
                                   dataInit: function(elem) {
                     
@@ -137,6 +137,21 @@
        $(document).ready(function () {  
            $('#date').val(date());
        });
+       $(document).ready(function () {  
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('InvAdj/SaCode', function(data) {
+        console.log(data);
+         if(data!=null)
+         {
+             console.log(data.date);
+             header= true;
+              $("#saCode").val(data.sacode);
+              $("#date").val(data.date);
+              $("#comments").val(data.comments);
+         }
+        });
+        $.ajaxSetup( { "async": true } );
+       });
       
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
        $("#comments").on('change keyup paste', function () {
@@ -149,7 +164,7 @@
        $("#save").on('click', function () {
            SaveHeader();
         });
-              function IsProduct(value,colname)
+       function IsProduct(value,colname)
        {
            var containsProduct = false;
                    $.ajaxSetup( { "async": false } );
@@ -192,8 +207,8 @@
          return date;
         }
     
-            function SaveHeader()
-    {
+        function SaveHeader()
+        {
          header = true;
          console.log($("#date").val());
         var date = $("#date").val();
@@ -245,7 +260,7 @@
     ////    grid.trigger("reloadGrid", [{ page: 1 }]);
     ////}
 
-            function getSupplierNames(value) {
+       function getSupplierNames(value) {
         var Supplier="";
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateList', function(data) {
@@ -266,7 +281,7 @@
 
         }
 
-              function getProductSku(value) {
+        function getProductSku(value) {
         var ProductSku ="";
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateProductSkuList', function(data) {
@@ -285,7 +300,7 @@
            return ProductSku.toString(); 
 
         }
-                function getProductName() {
+    function getProductName() {
          var ProductNameList= [];
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateProductName', function(data) {
@@ -305,7 +320,7 @@
            return ProductNameList; 
 
         }
-         function getLocation() {
+    function getLocation() {
         var LocationList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateLocationList', function(data) {
@@ -322,7 +337,7 @@
            return LocationList; 
 
         }
-                 function getReasons() {
+    function getReasons() {
         var ReasonsList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvAdj/CreateReasonsList', function(data) {

@@ -182,27 +182,29 @@
                    for (var i = 0; i < data.length; i++) {  
                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                    }  
-                   $("#toLocationsDropdown").html(s);   
+                   $("#toLocationsDropdown").html(s); 
+               }  
+           });  
+       });
+       $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "SaInternalTransfer/SaCode",  
+               data: "{}",  
+               success: function (data) {  
+                   if(data!=null)
+                   {
+                      header= true;
+                      $("#saCode").val(data.sacode);
+                      $("#date").val(data.date);
+                      $("#comments").val(data.comments);
+                      $("#fromLocationsDropdown").val(data.fromLocation);
+                      $("#toLocationsDropdown").val(data.toLocation);
+                   }
                }  
            });  
        });
 
-       $(document).ready(function () {  
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('saInternalTransfer/SaCode', function(data) {
-         if(data!=null)
-         {
-              header= true;
-              $("#saCode").val(data.sacode);
-              $("#date").val(data.date);
-              $("#comments").val(data.comments);
-              $("#fromLocationsDropdown").val(data.fromLocation);
-              $("#toLocationsDropdown").val(data.toLocation);
-              console.log($("#fromLocationsDropdown").val());
-         }
-        });
-        $.ajaxSetup( { "async": true } );
-        });
               
        function IsProduct(value,colname)
        {

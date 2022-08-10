@@ -15,7 +15,6 @@ namespace WETT.Controllers
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string Notes;
-        public static long CurrentHeaderId;
         public static string CurrentSaCode;
         public static long InventoryTxCurrentId;
         public static long CurrentToLocation;
@@ -166,7 +165,7 @@ namespace WETT.Controllers
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxReasonId = p.InventoryTxReasonsId,
-                InventoryTxId = CurrentHeaderId
+                InventoryTxId = InventoryTxCurrentId
             };
 
             _context.InventoryTxDetails.Add(r);
@@ -207,7 +206,6 @@ namespace WETT.Controllers
             CurrentSaCode = null;
             CurrentToLocation = (long)s.ToInventoryLocationId; 
             CurrentFromLocation = (long)s.FromInventoryLocationId;
-            CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
         }
         public JsonResult SaCode()

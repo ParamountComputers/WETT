@@ -205,8 +205,28 @@
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
-               $("#destDropdown").html(s);  
+               $("#destDropdown").html(s); 
            }  
+       });  
+   });
+                      $(document).ready(function () {  
+      $.ajax({  
+            type: "GET",  
+            url: "saOutbound/SaCode",  
+            data: "{}",  
+            success: function (data) {  
+                 if(data!=null)
+                 {
+                  header= true;
+                  $("#saCode").val(data.sacode);
+                  $("#date").val(data.date);
+                  $("#comments").val(data.comments);
+                  $("#fromLocationsDropdown").val(data.fromLocation);
+                  $("#truckingComp").val(data.truckingCompany);
+                  $("#destDropdown").val(data.destination);
+                  $("#probill").val(data.probill);
+            }
+          }  
        });  
    });
               

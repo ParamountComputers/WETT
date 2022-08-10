@@ -138,19 +138,20 @@
            $('#date').val(date());
        });
        $(document).ready(function () {  
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/SaCode', function(data) {
-        console.log(data);
-         if(data!=null)
-         {
-             console.log(data.date);
-             header= true;
-              $("#saCode").val(data.sacode);
-              $("#date").val(data.date);
-              $("#comments").val(data.comments);
-         }
-        });
-        $.ajaxSetup( { "async": true } );
+           $.ajax({  
+               type: "GET",  
+               url: "invAdj/SaCode",  
+               data: "{}",  
+               success: function (data) {  
+                   if(data!=null)
+                   {
+                      header= true;
+                      $("#saCode").val(data.sacode);
+                      $("#date").val(data.date);
+                      $("#comments").val(data.comments);
+                   }
+               }  
+           });  
        });
       
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);

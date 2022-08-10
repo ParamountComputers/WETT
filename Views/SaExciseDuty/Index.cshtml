@@ -152,20 +152,21 @@
            SaveHeader();
        });
 
-       $(document).ready(function () 
-       {  
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('SaExciseDuty/SaCode', function(data) 
-            {
-                if(data!=null)
-                {
-                    header= true;
-                    $("#saCode").val(data.sacode);
-                    $("#date").val(data.date);
-                    $("#comments").val(data.comments);
-                }
-            });
-            $.ajaxSetup( { "async": true } );
+       $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "SaExciseDuty/SaCode",  
+               data: "{}",  
+               success: function (data) {  
+                   if(data!=null)
+                   {
+                      header= true;
+                      $("#saCode").val(data.sacode);
+                      $("#date").val(data.date);
+                      $("#comments").val(data.comments);
+                   }
+               }  
+           });  
        });
 
        $(document).ready(function () {  

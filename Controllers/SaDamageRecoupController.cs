@@ -33,7 +33,7 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                         where c.InventoryTxTypeId == 2
+                         where a.InventoryTxId == InventoryTxCurrentId
                          select new SaDamageRecoupViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -63,7 +63,7 @@ namespace WETT.Controllers
                                      join e in _context.Products on b.ProductId equals e.ProductId
                                      join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                      join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                     where c.InventoryTxTypeId == 2
+                                     where a.InventoryTxId == InventoryTxCurrentId
                                         select new SaDamageRecoupViewModel
                                      {
                                          InventoryTxId = b.InventoryTxId,

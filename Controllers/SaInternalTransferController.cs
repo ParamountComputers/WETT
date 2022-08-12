@@ -31,12 +31,12 @@ namespace WETT.Controllers
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                        // join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
-                        // join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
+                         join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                         join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                         where c.InventoryTxTypeId == 6
+                         where a.InventoryTxId == InventoryTxCurrentId
                          select new SaInternalTransferViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -69,8 +69,8 @@ namespace WETT.Controllers
                                    join e in _context.Products on b.ProductId equals e.ProductId
                                    join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                    join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                   where c.InventoryTxTypeId == 6
-                                   select new SaInternalTransferViewModel
+                                   where a.InventoryTxId == InventoryTxCurrentId
+                                            select new SaInternalTransferViewModel
                                    {
                                        InventoryTxId = b.InventoryTxId,
                                        InventoryTxDetailId = b.InventoryTxDetailId,

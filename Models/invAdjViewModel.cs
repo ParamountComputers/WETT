@@ -13,7 +13,7 @@ namespace WETT.Models
         public long InventoryTxReasonsId { get; set; }
         public string ProductSku { get; set; }
 
-        public string SupplierName { get; set; }
+        public long SupplierId { get; set; }
 
         public long ProductId { get; set; }
 

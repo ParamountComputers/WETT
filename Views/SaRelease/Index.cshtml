@@ -173,19 +173,42 @@
         });
                 $(document).ready(function () {  
        $.ajax({  
-           type: "GET",  
-           url: "SaRelease/CreateLocationList",  
-           data: "{}",  
-           success: function (data) {  
-               var s = '<option value="-1">Select a Location</option>';  
-               for (var i = 0; i < data.length; i++) {  
-                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               type: "GET",  
+               url: "SaRelease/CreateLocationList",  
+               data: "{}",  
+               success: function (data) {  
+                   var s = '<option value="-1">Select a Location</option>';  
+                   for (var i = 0; i < data.length; i++) {  
+                       s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+                   }  
+                   $("#locationsDropdown").html(s);  
                }  
-               $("#locationsDropdown").html(s);  
-           }  
-       });  
-   });
-              
+           });  
+
+       });
+
+      $(document).ready(function () {  
+          $.ajax({  
+                type: "GET",  
+                url: "SaRelease/SaCode",  
+                data: "{}",  
+                success: function (data) {  
+                     if(data!=null)
+                     {
+                      header= true;
+                      $("#saCode").val(data.sacode);
+                      $("#date").val(data.date);
+                      $("#comments").val(data.comments);
+                      $("#transNumber").val(data.transNumber);
+                      $("#prevTransNo").val(data.prevTransNo);
+                      $("#purchaseOrder").val(data.purchaseOrder);
+                      $("#portEntry").val(data.portEntry);
+                      $("#probill").val(data.probill);
+                      $("#locationsDropdown").val(data.locations);
+                }
+              }  
+           });  
+       });   
     function IsProduct(value,colname)
         {
             var containsProduct = false;

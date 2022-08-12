@@ -30,11 +30,9 @@ namespace WETT.Controllers
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                        // join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                         //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                         where c.InventoryTxTypeId == 3
+                         where a.InventoryTxId == InventoryTxCurrentId
                          select new SaOutboundViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -43,8 +41,6 @@ namespace WETT.Controllers
                              SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
-                             //InventoryLocationId = d.InventoryLocationId,
-                             //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
                              Comments = b.Comments,
@@ -61,11 +57,9 @@ namespace WETT.Controllers
             var AllsaOutboundData = from b in _context.InventoryTxDetails
                                     join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                                     join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                    //join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                                     join e in _context.Products on b.ProductId equals e.ProductId
                                     join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                    //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                    where c.InventoryTxTypeId == 3
+                                    where a.InventoryTxId == InventoryTxCurrentId
                                     select new SaOutboundViewModel
                                     {
                                         InventoryTxId = b.InventoryTxId,
@@ -74,8 +68,6 @@ namespace WETT.Controllers
                                         SupplierName = f.Name,
                                         ProductId = e.ProductId,
                                         ProductName = e.Description,
-                                        //InventoryLocationId = d.InventoryLocationId,
-                                        //   InventoryTxReasonsId = g.InventoryTxReasonId,
                                         Amount = b.Amount,
                                         InventoryTxTypeId = c.InventoryTxTypeId,
                                         Comments = b.Comments,

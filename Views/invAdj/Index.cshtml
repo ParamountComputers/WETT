@@ -41,7 +41,7 @@
      $.jgrid.defaults.responsive = true;
     var header = false;
     var curRowId = -1;
-    var name ="";
+    var name;
     $(document).ready(function() {
        $("#invAdj").jqGrid({
                url: 'InvAdj/GetAll',
@@ -75,22 +75,22 @@
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
+                   { label: 'Supplier',name: 'supplierId',fixed:true,editable: true, edittype:"select",formatter:'select', editoptions: { value:getSupplierNames(),
+                   dataInit: function(elem) { name=$(elem).val();curRowId = $('#invAdj').getGridParam('selrow'); },
+                   dataEvents: [{ type: 'change', fn:function (elem) { name = $(elem.target).val(); fieldfunctions(curRowId);   } }]
+                   }},
                    { label: 'Product Name',name: 'productName',fixed:true,editable:true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
-                                  dataInit: function(elem) {
-                    
-                    curRowId = $('#invAdj').getGridParam('selrow');   
-                    $(elem).select();
-                    //$(elem).val();
-                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
-                  $('#invAdj').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
-                  $('input#supplierName').val(getSupplierNames(ui.item.value));
-                  $('#invAdj').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                  $('input#productSku').val(getProductSku(ui.item.value));   
-                } });   
-                                  }
+                   // dataInit: function(elem) {
+                   // curRowId = $('#invAdj').getGridParam('selrow');   
+                   // //$(elem).select();
+                   // console.log( getProductName(name));
+                   // $(elem).autocomplete({source: getProductName(name),autoFocus: true,minLength: 0, select:function (event, ui) {
+                   // $('#invAdj').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
+                   // $('input#productSku').val(getProductSku(ui.item.value));   
+                   // }});   
+                   //}
                    }},
-                   { label: 'Supplier',name: 'supplierName',fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
                    { label: 'Updated Stock',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
@@ -102,7 +102,8 @@
                height: 500,
                rowNum: 20,
                pager: "#jqGridPager",
-               editurl: 'InvAdj/Update',              
+               editurl: 'InvAdj/Update', 
+               
 
            })
                
@@ -155,13 +156,11 @@
        });
       
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
-       $("#comments").on('change keyup paste', function () {
-           SearchByComments();
+
+       $("#Supplier").on('change', function () {
+          console.log('hi');
        });
-       $("#date").on('change keyup paste', function () {
-           SearchByDate();
-           
-       }); 
+
        $("#save").on('click', function () {
            SaveHeader();
        });
@@ -196,6 +195,17 @@
             }
 
        }
+function fieldfunctions(id){
+    $( "#"+id+"_productName").autocomplete({
+        source: getProductName(name),
+        minLength: 2,
+        select: function(event, ui) {
+           $('#invAdj').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
+           $('input#productSku').val(getProductSku(ui.item.value));   
+        }
+    });
+}
+
        function date()
        {
             var date;
@@ -223,9 +233,9 @@
             $('#invAdj').setGridParam({ page: 1 }).trigger("reloadGrid");
        }
 
-       function getSupplierNames(value) 
+       function getSupplierNames() 
        {
-            var Supplier="";
+            var Supplier={};
             $.ajaxSetup( { "async": false } );
             $.getJSON('InvAdj/CreateList', function(data) 
             {
@@ -233,10 +243,7 @@
                 {
                     for (var i = 0; i < data.length; i++) 
                     {
-                        if(value === data[i].value)
-                        {
-                            Supplier= data[i].text;
-                        }
+                            Supplier[data[i].value]= data[i].text;
                     } 
                 }//if
 
@@ -267,7 +274,7 @@
             return ProductSku.toString(); 
        }
 
-       function getProductName() 
+       function getProductName(value) 
        {
             var ProductNameList= [];
             $.ajaxSetup( { "async": false } );
@@ -275,9 +282,14 @@
             {
                  if (data != null) 
                  {
+                     var count=0;
                      for (var i = 0; i < data.length; i++) 
                      {
-                        ProductNameList[i]=data[i].value;
+                         if(value == data[i].value)
+                         {
+                            ProductNameList[count]=data[i].text;
+                            count+=1;
+                         }
                      }
                  }//if
 

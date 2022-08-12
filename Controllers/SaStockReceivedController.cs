@@ -15,8 +15,8 @@ namespace WETT.Controllers
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string CurrentSaCode;
         public static string Notes;
-        public static long CurrentHeaderId;
         public static long InventoryTxCurrentId;
+        public static long CurrentToLocation;
         private readonly WETT_DBContext _context;
         public SaStockReceivedController(WETT_DBContext context)
         {
@@ -44,8 +44,6 @@ namespace WETT.Controllers
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
-                             InventoryTxTypeId = c.InventoryTxTypeId,
-                             InventoryLocation = d.Description,
                              Amount = b.Amount,
                              Comments = b.Comments,
                              Date = a.Date, //.ToShortDateString(),
@@ -74,9 +72,7 @@ namespace WETT.Controllers
                                          SupplierName = f.Name,
                                          ProductId = e.ProductId,
                                          ProductName = e.Description,
-                                         InventoryLocationId = d.InventoryLocationId,
-                                          InventoryLocation = d.Description,
-                                          InventoryTxTypeId = c.InventoryTxTypeId,
+                                         InventoryTxTypeId = c.InventoryTxTypeId,
                                           Amount = b.Amount,
                                          Comments = b.Comments,
                                          Date = a.Date, //.ToShortDateString(),
@@ -87,6 +83,9 @@ namespace WETT.Controllers
             if (CurrentSaCode != null)
             {
                 SaStockReceivedData = SaStockReceivedData.Where(w => w.SaCode == CurrentSaCode);
+                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+                InventoryTxCurrentId = r.InventoryTxId;
+                CurrentToLocation = (long)r.ToInventoryLocationId;
             }
             else
             {
@@ -95,8 +94,7 @@ namespace WETT.Controllers
                     //this is the type of transaction id
                     //SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxTypeId == 7);
                     SaStockReceivedData = SaStockReceivedData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
-                }
+                                    }
                 else
                 {
                     //this is to hide all transactons by type
@@ -104,46 +102,6 @@ namespace WETT.Controllers
                 }
         }
 
-
-
-        //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-        //    if (issearch)
-        //        foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-        //        {
-        //            switch (rule.field)
-        //            {
-        //                case "date":
-        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-        //                    searchDate = rule.data;
-        //                    break;
-        //                case "productName":
-        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.ProductName.Contains(rule.data));
-        //                    break;
-        //                case "saCode":
-        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.SaCode.Contains(rule.data));
-        //                    break;
-        //                case "comments":
-        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.Comments.Contains(rule.data));
-        //                    break;
-        //                case "locationsDropdown":
-        //                    if (rule.data.Contains("-1"))
-        //                    {
-                               
-
-        //                        break; 
-        //                    }
-        //                    else
-        //                    {
-        //                        SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
-        //                        break;
-        //                    }
-        //                case "purchaseOrder":
-        //                    SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Where(w => w.PurchaseOrder.Contains(rule.data));
-        //                    break;
-
-        //            }
-        //        }
 
             int totalRecords = SaStockReceivedData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -182,6 +140,7 @@ namespace WETT.Controllers
                 Seal=li[4],
                 TransactionNo=li[5],
                 ToInventoryLocationId = (long)Convert.ToDouble(li[6]),
+                SupplierId = (long)Convert.ToDouble(li[7]),
                 InventoryTxTypeId = 7,
                 StockAdjCode = "SR"
             };
@@ -191,21 +150,43 @@ namespace WETT.Controllers
             InventoryTxCurrentId = s.InventoryTxId;
             s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
             _context.SaveChanges();
+            CurrentToLocation = (long)s.ToInventoryLocationId;
             CurrentSaCode = null;
-            CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
         }
-        public JsonResult Add(invAdjViewModel p)
+        public JsonResult SaCode()
+        {
+            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+            var headerInfo = new
+            {
+                comments = r.Comments,
+                sacode = CurrentSaCode,
+                date = r.Date.ToShortDateString(),
+                truckingCompanyDropdown = r.TruckingCompanyId,
+                sealNo = r.Seal,
+                locations = r.ToInventoryLocationId,
+                truckerProbillNumber = r.Probill,
+                purchaseOrder = r.PurchaseOrder,
+                supplier = r.SupplierId
+                
+            };
+            if (CurrentSaCode != null)
+            {
+                return Json(headerInfo);
+            }
+            return Json(null);
+        }
+        public JsonResult Add(SaStockReceivedViewModel p)
         {
             showPage = true;
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
-                ToInventoryLocationId = p.InventoryLocationId,
+                ToInventoryLocationId = CurrentToLocation,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
-                InventoryTxId = CurrentHeaderId,
+                InventoryTxId = InventoryTxCurrentId,
             };
 
             _context.InventoryTxDetails.Add(r);
@@ -219,7 +200,7 @@ namespace WETT.Controllers
 
             Product s = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-            r.ToInventoryLocationId = p.InventoryLocationId;
+            r.ToInventoryLocationId = CurrentToLocation;
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             r.Comments = p.Comments;
@@ -240,11 +221,10 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join a in _context.Products on s.SupplierId equals a.SupplierId
                      select new
                      {
                          text = s.Name,
-                         value = a.Description
+                         value = s.SupplierId
 
                      };
             return Json(li);
@@ -263,12 +243,10 @@ namespace WETT.Controllers
         public IActionResult CreateProductName()
         {
             var invAdjData = from a in _context.Products
-                             join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
                              {
-                                 text =b.Name,
-                                 value = a.Description,
-                                 id = a.ProductId
+                                 value =a.SupplierId,
+                                 text = a.Description,
 
                              };
             return Json(invAdjData);

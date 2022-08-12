@@ -71,7 +71,7 @@
     $.jgrid.defaults.responsive = true;
     var header = false;
     var curRowId = -1;
-    var name="";
+    var name;
     $(document).ready(function() {
        $("#saStockReceived").jqGrid({
                url: 'SaStockReceived/GetAll',
@@ -112,9 +112,11 @@
                     //$(elem).val();
                   // $('#invAdj').jqGrid('setSelection', 'productName');
                   $(elem).select();
-                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
-                  $('#saStockReceived').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
-                  $('input#supplierName').val(getSupplierNames(ui.item.value));
+                  name=$("#supplierDropdown").val();
+                  console.log(name);
+                    $(elem).autocomplete({source: getProductName(name),autoFocus: true,minLength: 0, select:function (event, ui) {
+                 // $('#saStockReceived').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
+                  //$('input#supplierName').val(getSupplierNames(ui.item.value));
                   $('#saStockReceived').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
                   $('input#productSku').val(getProductSku(ui.item.value));   
                   console.log(getProductSku(ui.item.value));
@@ -122,11 +124,10 @@
                 } });   
                                   }
                    }},
-                   { label: 'Supplier',name: 'supplierName',width:170,fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
-                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
-                   { label: 'Updated Stock',name: 'amount',fixed:true, width:95,editable: true, edittype:"text"},
-                   { label: 'Locations',name: 'inventoryLocationId', fixed:true,width:100, editable: true, edittype:"select",formatter:'select', editoptions:{value:getLocations()}},
-                   { label: 'Notes',name: 'comments',fixed:true,width:500, editable: true, edittype:"text"}
+                   //{ label: 'Supplier',name: 'supplierName',width:170,fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Product Sku',name: 'productSku',fixed:true,width:100,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'Updated Stock',name: 'amount',fixed:true, width:100,editable: true, edittype:"text"},
+                   { label: 'Notes',name: 'comments',fixed:true,width:650, editable: true, edittype:"text"}
 
                  ], 
                viewrecords: true,
@@ -252,6 +253,29 @@ $(document).ready(function () {
          date = today.toString();
          return date;
         }
+
+        $(document).ready(function () {  
+          $.ajax({  
+                type: "GET",  
+                url: "SaStockReceived/SaCode",  
+                data: "{}",  
+                success: function (data) {  
+                     if(data!=null)
+                     {
+                      header= true;
+                      $("#saCode").val(data.sacode);
+                      $("#date").val(data.date);
+                      $("#comments").val(data.comments);
+                      $("#truckingCompanyDropdown").val(data.truckingCompanyDropdown);
+                      $("#sealNo").val(data.sealNo);
+                      $("#purchaseOrder").val(data.purchaseOrder);
+                      $("#truckerProbillNumber").val(data.truckerProbillNumber);
+                      $("#locationsDropdown").val(data.locations);
+                      $("#supplierDropdown").val(data.supplier);
+                }
+              }  
+           });  
+       }); 
     
             function SaveHeader()
     {
@@ -263,16 +287,27 @@ $(document).ready(function () {
         var sealNumber = $("#sealNo").val();
         var truckingNumber = $("#truckerProbillNumber").val();
         var locations = $("#locationsDropdown").val();
-        //var supplier = $("").val();
-              if(locations!=-1 && truckingCompany!=-1)
+        var supplier = $("#supplierDropdown").val();
+              if(locations!=-1 && truckingCompany!=-1 && supplier !=-1)
             {
                 header = true;
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber+'/'+locations, function(data) {
- 
-        $("#saCode").val(data);
-                    });
-            $.ajaxSetup( { "async": true } );
+                $.ajaxSetup( { "async": false } );
+                $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber+'/'+locations+'/'+supplier, function(data) {
+                $("#saCode").val(data);
+                });
+                $.ajaxSetup( { "async": true } );
+            }
+             else if(truckingCompany==-1 && locations==-1 && supplier ==-1)
+            {
+                alert("Error: Enter A trucking Company, Supplier and Location");
+            }
+             else if(truckingCompany==-1 && supplier==-1)
+            {
+                alert("Error: Enter A trucking Company and A Supplier");
+            }
+             else if(supplier==-1 && locations==-1)
+            {
+                alert("Error: Enter A Supplier and Location");
             }
             else if(truckingCompany==-1 && locations==-1)
             {
@@ -286,38 +321,40 @@ $(document).ready(function () {
             {
                  alert("Error: Enter A Location");
             }
+            else if(supplier==-1)
+            {
+                 alert("Error: Enter A Supplier");
+            }
             $('#saStockReceived').setGridParam({ page: 1 }).trigger("reloadGrid");
       }
-                      function IsProduct(value,colname)
+
+       function IsProduct(value,colname)
        {
-           var containsProduct = false;
-                   $.ajaxSetup( { "async": false } );
-        $.getJSON('InvAdj/CreateProductName', function(data) {
-        if (data != null) {
+            var containsProduct = false;
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('SaStockReceived/CreateProductName', function(data) {
+            if (data != null) {
 
 
-            for (var i = 0; i < data.length; i++) 
-            {
-                console.log(data[i].value);
-         if(value== data[i].value)
-         {
-             
-           containsProduct = true;
-               
-         }
-            }
-                         }//if
+                for (var i = 0; i < data.length; i++) 
+                {
+                 if(value== data[i].text && name == data[i].value)
+                 {
+                    containsProduct = true;
+                 }
+                }
+             }//if
 
-            });
-            if(containsProduct==true)
-            {
-              $.ajaxSetup( { "async": true } );
-              return [true,""];
-            }
-            else{
-            $.ajaxSetup( { "async": true } );
-            return [false,"Please Enter Valid Product"];
-            }
+                });
+                if(containsProduct==true)
+                {
+                  $.ajaxSetup( { "async": true } );
+                  return [true,""];
+                }
+                else{
+                $.ajaxSetup( { "async": true } );
+                return [false,"Please Enter Valid Product"];
+                }
 
       }
     function SearchByProductName()
@@ -475,42 +512,26 @@ $(document).ready(function () {
            return ProductSku; 
 
         }
-                function getProductName() {
+               function getProductName(value) {
          var ProductNameList= [];
         $.ajaxSetup( { "async": false } );
         $.getJSON('SaStockReceived/CreateProductName', function(data) {
-        if (data != null) {
+          if (data != null) {
+              var count=0;
+                for (var i = 0; i < data.length; i++) 
+                {
+                    if(value == data[i].value)
+                    {
+                    ProductNameList[count]=data[i].text;
+                    count+=1;
+                    }
+                }
+          }//if
 
+         });
+         $.ajaxSetup( { "async": true } );
+         return ProductNameList; 
 
-            for (var i = 0; i < data.length; i++) 
-            {
-                ProductNameList[i]=data[i].value;
-            }
-         }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-           return ProductNameList; 
-
-        }
-                 function getLocations() {
-        var LocationList= {};
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaStockReceived/CreateLocationsList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             LocationList[data[i].value]=data[i].text;
-                 
-              }
-            }//if
-
-            });
-            $.ajaxSetup( { "async": true } );
-            console.log(LocationList);
-           return LocationList; 
-
-        }
-        
-
-</script>
+        }      
+ </script>
 }

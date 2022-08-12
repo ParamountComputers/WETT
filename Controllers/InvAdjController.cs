@@ -35,13 +35,13 @@ namespace WETT.Controllers
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                         where c.InventoryTxTypeId == 1
+                         where a.InventoryTxId == InventoryTxCurrentId
                          select new invAdjViewModel 
                          {
                              InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
                              ProductSku = e.Sku,
-                             SupplierName = f.Name,
+                             SupplierId = f.SupplierId,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
@@ -65,13 +65,13 @@ namespace WETT.Controllers
                                         join e in _context.Products on b.ProductId equals e.ProductId
                                         join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                         join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                        where c.InventoryTxTypeId == 1
+                                        where a.InventoryTxId == InventoryTxCurrentId
                                         select new invAdjViewModel
                                         {
                                             InventoryTxId = b.InventoryTxId,
                                             InventoryTxDetailId = b.InventoryTxDetailId,
                                             ProductSku = e.Sku,
-                                            SupplierName = f.Name,
+                                            SupplierId = f.SupplierId,
                                             ProductId = e.ProductId,
                                             ProductName = e.Description,
                                             InventoryLocationId = d.InventoryLocationId,
@@ -212,11 +212,10 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join b in _context.Products on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
-                         value = b.Description
+                         value = s.SupplierId
                      };
             return Json(li);
         }
@@ -233,11 +232,10 @@ namespace WETT.Controllers
         public IActionResult CreateProductName()
         {
             var invAdjData = from a in _context.Products
-                             join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
                              {
-                                 label = a.ProductId,
-                                 value = a.Description
+                                 value = a.SupplierId,
+                                 text = a.Description
                              };
             return Json(invAdjData);
         }

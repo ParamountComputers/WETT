@@ -15,7 +15,6 @@ namespace WETT.Controllers
         public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string Notes;
-        public static long CurrentHeaderId;
         public static string CurrentSaCode;
         public static long InventoryTxCurrentId;
         public static long CurrentToLocation;
@@ -91,6 +90,7 @@ namespace WETT.Controllers
                 SaExciseDutyData = SaExciseDutyData.Where(w => w.SaCode == CurrentSaCode);
                 InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
                 InventoryTxCurrentId = r.InventoryTxId;
+                CurrentToLocation = (long)r.ToInventoryLocationId;
             }
             else
             {
@@ -154,7 +154,7 @@ namespace WETT.Controllers
                 ToInventoryLocationId = CurrentToLocation,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
-                InventoryTxId = CurrentHeaderId
+                InventoryTxId = InventoryTxCurrentId
             };
 
             _context.InventoryTxDetails.Add(r);
@@ -193,7 +193,6 @@ namespace WETT.Controllers
             _context.SaveChanges();
             CurrentSaCode = null;
             CurrentToLocation = (long)s.ToInventoryLocationId;
-            CurrentHeaderId = s.InventoryTxId;
             return Json(s.StockAdjCode);
         }
         public JsonResult SaCode()
@@ -203,7 +202,8 @@ namespace WETT.Controllers
             {
                 comments = r.Comments,
                 sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString()
+                date = r.Date.ToShortDateString(),
+                toLocation = r.ToInventoryLocationId,
             };
             if (CurrentSaCode != null)
             {

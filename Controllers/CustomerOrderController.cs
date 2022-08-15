@@ -79,31 +79,6 @@ namespace WETT.Controllers
             
 
 
-                //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-                //if (issearch)
-                //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                //    {
-                //        switch (rule.field)
-                //        {
-                //            case "date":
-
-                //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-                //                searchDate = rule.data;
-                //                break;
-                //            case "comments":
-
-                //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Comments.Contains(rule.data));
-                //                invAdjData = (IQueryable<invAdjViewModel>)invAdjData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
-
-
-                //                Notes = rule.data;
-                //                break;
-                //        }
-                //    }
-
-
-
                 int totalRecords = CustomerOrderData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
@@ -183,14 +158,36 @@ namespace WETT.Controllers
               DsSlipNumber = li[6],
               DeliveryReqDate = DateTime.Parse(li[7]),
               SpecialInstructions = li[8],
+              //hard coded for now
+              OrderSourceId =1
 
             };
 
             _context.CustomerOrders.Add(s);
             _context.SaveChanges();
-            CurrentCustomerOrderId = -1;
             CurrentCustomerOrderId = s.CustomerOrderId;
             return Json(true);
+        }
+        public JsonResult SaCode()
+        {
+            if (CurrentCustomerOrderId != -1)
+            {
+                CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
+                var headerInfo = new
+                {
+                    customer = r.CustomerId,
+                    orderNumber = r.OrderNumber,
+                    dateOrdered = r.DateOrdered.ToShortDateString(),
+                    customerOrderStatus = r.CustomerOrderStatusId,
+                    carrier = r.CarrierId,
+                    driver = r.Driver,
+                    dsSlipNumber = r.DsSlipNumber,
+                    deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
+                    specialInstructions = r.SpecialInstructions,
+                };
+                return Json(headerInfo);
+            }
+            return Json(null);
         }
 
         public IActionResult CreateCustomerList()

@@ -164,6 +164,7 @@
                       $("#saCode").val(data.sacode);
                       $("#date").val(data.date);
                       $("#comments").val(data.comments);
+                      $("#locationsDropdown").val(data.toLocation);
                    }
                }  
            });  
@@ -290,7 +291,7 @@
        {
             var Supplier="";
             $.ajaxSetup( { "async": false } );
-            $.getJSON('InvAdj/CreateList', function(data) 
+            $.getJSON('SaExciseDuty/CreateList', function(data) 
             {
                 if (data != null) 
                 {

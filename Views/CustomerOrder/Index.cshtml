@@ -218,6 +218,29 @@
            }  
        });  
    });
+       $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "CustomerOrder/SaCode",  
+               data: "{}",  
+               success: function (data) {  
+                   if(data!=null)
+                   {
+                      header= true;
+
+                      $("#customer").val(data.customer);
+                      $('#orderNumber').val(data.orderNumber);
+                      $('#dateOrdered').val(data.dateOrdered);
+                      $('#customerOrderStatus').val(data.customerOrderStatus);
+                      $('#carrier').val(data.carrier);
+                      $('#driver').val(data.driver);
+                      $('#dsSlipNumber').val(data.dsSlipNumber);
+                      $('#deliveryReqDate').val(data.deliveryReqDate);
+                      $('#specialInstructions').val(data.specialInstructions);
+                   }
+               }  
+           });  
+       });
         function date()
         {
          var date;

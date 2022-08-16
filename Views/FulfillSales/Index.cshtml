@@ -12,56 +12,38 @@
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
   <div class="container-flow">
   <div class="row">
-        <div class="col-sm-2">
-            <label for="OrderDate" style="font-size:10px;">Order Date:</label>
-            <input type="date" id="OrderDate" name="OrderDate" style="font-size:10px;">
-        </div>
-        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
-            <form class="form-inline">
-            <div class="form-group">
-            <label for="carrierDropdown">Carrier:</label>  
-            <select class="form-control " id="carrierDropdown" name="carrierDropdown"></select>
+        <div class="col-lg-2 form-group">
+                <label for="OrderDate" style="font-size:8px;">Order Date:</label>
+            <div class="pull-right">
+                <input type="date" id="OrderDate" name="OrderDate" style="font-size:10px;">
             </div>
-            </form>
-       </div>
-       <div class="col-sm-1"></div>
-        <div class="col-sm-2">
-            <form class="form-inline">
-            <div class="form-group">
-            <label for="RecordLimitDropdown">Record Limits:</label>  
-            <select class="form-control"  id="RecordLimitDropdown" name="RecordLimitDropdown"></select> 
+        </div>
+        <div class="col-lg-2 form-group">
+                <label for="DeliveryDate" style="font-size:8px;">Delivery Date:</label>
+            <div class="pull-right">
+                <input type="date" style="font-size:10px;" id="DeliveryDate" name="DeliveryDate">
             </div>
-            </form>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <label for="DeliveryDate" style="font-size:10px;">Delivery Date:</label>
-            <input type="date" style="font-size:10px;" id="DeliveryDate" name="DeliveryDate">
+        <div class="col-lg-2 form-group">
+                <select class="form-control" style="font-size:10px;" id="carrierDropdown" name="carrierDropdown"></select>
         </div>
-        <div class="col-sm-3">
-                <label class="checkbox-inline">
-      <input id="PendingCheckbox" type="checkbox" value="PendingCheckbox">:Pending</label>
-            
+        <div class="col-lg-2 form-group">
+            <select class="form-control" style="font-size:10px;" id="orderSourceDropdown" name="orderSourceDropdown"></select>
         </div>
-        <div class="col-sm-2">
-       <label class="checkbox-inline">
-      <input id="FulfilledCheckbox" type="checkbox" value="FulfilledCheckbox">:Fulfilled</label>
+        <div class="col-lg-1 form-group">
+       <label for="FulfilledCheckbox"class="checkbox-inline" style="font-size:10px;">Fulfilled:</label>
+      <input id="FulfilledCheckbox" type="checkbox" value="FulfilledCheckbox">
         </div>
-        <div class="col-sm-2">
-            <form class="form-inline">
-            <div class="form-group">
-            <label for="locationsDropdown">Order Source:</label>  
-            <select class="form-control" id="locationsDropdown" name="locationsDropdown"></select>
-            </div>
-            </form>
+        <div class="col-lg-1 form-group">
+                <label for="PendingCheckbox" class="checkbox-inline" style="font-size:10px;">Pending:</label> 
+                <input id="PendingCheckbox"type="checkbox" value="PendingCheckbox">
         </div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-1 text-right">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-1 text-right">
           <button class="btn btn-outline-secondary" style="font-size:10px;" id="fulfill" type="button">Fulfill</button>  
         </div>  
-      </div>
+
+    </div>
     </div>
    
 </fieldset>
@@ -200,11 +182,11 @@
                url: "FulfillSales/CreateLocationsList",  
                data: "{}",  
                success: function (data) {  
-                   var s = '<option value="-1">Select a Location</option>';  
+                   var s = '<option value="-1">Order Source</option>';  
                    for (var i = 0; i < data.length; i++) {  
                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                    }  
-                   $("#locationsDropdown").html(s);  
+                   $("#orderSourceDropdown").html(s);  
                }  
            });  
         });
@@ -214,7 +196,7 @@
                url: "FulfillSales/CreateCarrierList",  
                data: "{}",  
                success: function (data) {  
-                   var s = '<option value="-1">Select a Carrier</option>';  
+                   var s = '<option value="-1">Carrier</option>';  
                    for (var i = 0; i < data.length; i++) {  
                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                    }  
@@ -222,16 +204,16 @@
                }  
            });  
         });
-        $(document).ready(function () {  
-                 var limit = 10;
-                 var s = '<option value="-1">Select a Limit</option>'; 
-                   for (var i = 0; i < 4; i++) {  
-                       s += '<option value="' + i + '">' + limit + '</option>';  
-                       limit = limit*10;
-                   }  
-                   $("#RecordLimitDropdown").html(s); 
+        //$(document).ready(function () {  
+        //         var limit = 10;
+        //         var s = '<option value="-1">SLimit</option>'; 
+        //           for (var i = 0; i < 4; i++) {  
+        //               s += '<option value="' + i + '">' + limit + '</option>';  
+        //               limit = limit*10;
+        //           }  
+        //           $("#RecordLimitDropdown").html(s); 
 
-        });
+        //});
            //    $(document).ready(function () {  
            //    $('#OrderDate').val(date());
            //    $('#DeliveryDate').val(date());

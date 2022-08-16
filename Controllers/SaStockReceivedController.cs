@@ -138,7 +138,7 @@ namespace WETT.Controllers
                 TruckingCompanyId= (long)Convert.ToDouble(li[2]),
                 PurchaseOrder= li[3],
                 Seal=li[4],
-                TransactionNo=li[5],
+                Probill=li[5],
                 ToInventoryLocationId = (long)Convert.ToDouble(li[6]),
                 SupplierId = (long)Convert.ToDouble(li[7]),
                 InventoryTxTypeId = 7,

@@ -49,8 +49,8 @@ namespace WETT.Controllers
 
             //var products = from s in _context.Products
             //               select s;
-            
-            var result = from a in _context.Inventories
+
+            var result= from a in _context.Inventories
                          join b in _context.Products on a.ProductId equals b.ProductId
                          join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
                          join d in _context.Suppliers on b.SupplierId equals d.SupplierId
@@ -61,13 +61,13 @@ namespace WETT.Controllers
                              ProductSku = b.Sku,
                              Supplier = d.Name,
                              InvLocationId = a.InventoryLocationId,
-                             InvLocationName  = c.Description,
+                             InvLocationName = c.Description,
                              InvCount = a.Count,
                              Date = a.Date
                          };
 
 
-                //return View(result);
+            //return View(result);
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -93,7 +93,7 @@ namespace WETT.Controllers
 
             //return View(await products.AsNoTracking().ToListAsync());
             int pageSize = 3;
-            return View(await PaginatedList<Product>.CreateAsync(result.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<InventoryViewModel>.CreateAsync(result.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
 
@@ -231,7 +231,21 @@ namespace WETT.Controllers
         {
             var wETT_DBContext = _context.Products;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var productData = _context.Products.ToList();
+            var productData = from a in _context.Inventories
+                         join b in _context.Products on a.ProductId equals b.ProductId
+                         join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
+                         join d in _context.Suppliers on b.SupplierId equals d.SupplierId
+                         select new InventoryViewModel
+                         {
+                             ProductId = a.ProductId,
+                             ProductName = b.Description,
+                             ProductSku = b.Sku,
+                             Supplier = d.Name,
+                             InvLocationId = a.InventoryLocationId,
+                             InvLocationName = c.Description,
+                             InvCount = a.Count,
+                             Date = a.Date
+                         };
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -242,7 +256,7 @@ namespace WETT.Controllers
                     switch (rule.field)
                     {
                         case "name":
-                            productData = productData.Where(w => w.Description.Contains(rule.data)).ToList();
+                            productData = (IQueryable<InventoryViewModel>)productData.Where(w => w.ProductName.Contains(rule.data));
                             break;
                     }
                 }
@@ -254,13 +268,13 @@ namespace WETT.Controllers
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
             if (request.sord.ToUpper() == "DESC")
             {
-                productData = productData.OrderByDescending(t => t.Description).ToList();
-                productData = productData.Skip(currentPageIndex * request.rows).Take(request.rows).ToList();
+                productData = (IQueryable<InventoryViewModel>)productData.OrderByDescending(t => t.ProductName);
+                productData = (IQueryable<InventoryViewModel>)productData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             else
             {
-                productData = productData.OrderBy(t => t.Description).ToList();
-                productData = productData.Skip(currentPageIndex * request.rows).Take(request.rows).ToList();
+                productData = (IQueryable<InventoryViewModel>)productData.OrderBy(t => t.ProductName);
+                productData = (IQueryable<InventoryViewModel>)productData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
 
             var jsonData = new

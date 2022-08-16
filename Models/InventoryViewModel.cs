@@ -24,7 +24,7 @@ namespace WETT.Models
 
         public long InvCount { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public DateTime SysDate { get; set; }
 

@@ -484,5 +484,15 @@ namespace WETT.Controllers
                              };
             return Json(invAdjData);
         }
+        public IActionResult CreateOrderSourceList()
+        {
+            var invAdjData = from a in _context.OrderSources
+                             select new
+                             {
+                                 value = a.OrderSourceId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
+        }
     }
 }

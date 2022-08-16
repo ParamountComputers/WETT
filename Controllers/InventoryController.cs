@@ -63,7 +63,7 @@ namespace WETT.Controllers
                              InvLocationId = a.InventoryLocationId,
                              InvLocationName = c.Description,
                              InvCount = a.Count,
-                             Date = a.Date
+                             Date = a.Date.ToShortDateString()
                          };
 
 
@@ -244,7 +244,7 @@ namespace WETT.Controllers
                              InvLocationId = a.InventoryLocationId,
                              InvLocationName = c.Description,
                              InvCount = a.Count,
-                             Date = a.Date
+                             Date = a.Date.ToShortDateString()
                          };
 
 

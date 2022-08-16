@@ -138,7 +138,7 @@
                rowNum: 20,
                pager: "#jqGridPager",
                editurl: 'FulfillSales/UpdateHdr',
-              // multiselect: true,
+               multiselect: true,
                onSelectRow: function(rowid) {
                     curRowId=rowid;
                },
@@ -179,7 +179,7 @@
         $(document).ready(function () {  
            $.ajax({  
                type: "GET",  
-               url: "FulfillSales/CreateLocationsList",  
+               url: "FulfillSales/CreateOrderSourceList",  
                data: "{}",  
                success: function (data) {  
                    var s = '<option value="-1">Order Source</option>';  
@@ -387,7 +387,7 @@
                 { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
                 { label: 'Product ID(Sku)',name: 'productSku',editoptions: { readonly: 'readonly'}},
                 { label: 'Product Desc',name: 'productDesc',editoptions: { readonly: 'readonly'}},
-                //{ label: 'Stock Qty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
+                { label: 'Inventory Qty',name: '',editoptions: { readonly: 'readonly'}},
                 { label: 'Qty Ordered',name: 'qtyOrdered',editoptions: { readonly: 'readonly'}},
                 { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {number:true}},
                 { label: 'Notes',name: 'notes', editable: true,edittype:'text'}

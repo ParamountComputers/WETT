@@ -10,7 +10,7 @@
 </div>
 <fieldset class="scheduler-border">
   <div class="container-flow">
-    <div class="row p-1">
+    <div class="row">
        <div class="col-sm-3  form-group">
            <label for="date"  style="font-size:8px;">Transaction Date:</label>
            <input type="date" value=""  style="font-size:10px;" id='date' name="date" />
@@ -39,7 +39,6 @@
     $.jgrid.defaults.styleUI = 'Bootstrap';
     var header = false;
     var curRowId = -1;
-    var ProductNameList= [];
     var name ="";
     $(document).ready(function() {
        $("#saDamageRecoup").jqGrid({
@@ -75,11 +74,11 @@
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
-                    editoptions: { value:getProductName(),
-                                  dataInit: function(elem) {
+                    editoptions: {
+                    dataInit: function(elem) {
                     curRowId = $('#saDamageRecoup').getGridParam('selrow');
                     $(elem).select();
-                    $(elem).autocomplete({source: ProductNameList,autoFocus: true,minLength: 0, select:function (event, ui) {
+                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                     $('#saDamageRecoup').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
                     $('input#supplierName').val(getSupplierNames(ui.item.value));
                     $('#saDamageRecoup').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
@@ -257,8 +256,9 @@
             grid.trigger("reloadGrid", [{ page: 1 }]);
         }
 
-        function getSupplierNames(value) 
-        {
+
+       function getSupplierNames(value) 
+       {
             var Supplier="";
             $.ajaxSetup( { "async": false } );
             $.getJSON('SaDamageRecoup/CreateList', function(data) 
@@ -267,20 +267,20 @@
                 {
                     for (var i = 0; i < data.length; i++) 
                     {
-                        if(value == data[i].value)
+                        if(value === data[i].value)
                         {
                             Supplier= data[i].text;
                         }
                     } 
                 }//if
+
             });
             $.ajaxSetup( { "async": true } );
             return Supplier; 
-        }
+       }
 
-        function getProductSku(value) 
-        {
-            var ProductSku= "";
+       function getProductSku(value) 
+       {
             $.ajaxSetup( { "async": false } );
             $.getJSON('SaDamageRecoup/CreateProductSkuList', function(data) 
             {
@@ -288,20 +288,23 @@
                 {
                     for (var i = 0; i < data.length; i++) 
                     {
-                        if(data[i].value == value)
+                        if(data[i].value== value)
                         {
                             ProductSku=data[i].text;
-                        } 
+                        }  
                     }
                 }//if
-           });
-           $.ajaxSetup( { "async": true } );
-           return ProductSku; 
-        }
-        function getProductName() 
-        {
+
+            });
+            $.ajaxSetup( { "async": true } );
+            return ProductSku.toString(); 
+       }
+
+              function getProductName() 
+       {
+               var ProductNameList= [];
             $.ajaxSetup( { "async": false } );
-            $.getJSON('SaDamageRecoup/CreateProductName', function(data) 
+            $.getJSON('SaExciseDuty/CreateProductName', function(data) 
             {
                 if (data != null) 
                 {
@@ -310,11 +313,10 @@
                         ProductNameList[i]=data[i].value;
                     }
                 }//if
-
             });
             $.ajaxSetup( { "async": true } );
             return ProductNameList; 
-        }
+       }
 
         function getLocation() 
         {

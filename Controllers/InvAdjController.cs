@@ -41,7 +41,7 @@ namespace WETT.Controllers
                              InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
                              ProductSku = e.Sku,
-                             SupplierId = f.SupplierId,
+                             SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
@@ -71,7 +71,7 @@ namespace WETT.Controllers
                                             InventoryTxId = b.InventoryTxId,
                                             InventoryTxDetailId = b.InventoryTxDetailId,
                                             ProductSku = e.Sku,
-                                            SupplierId = f.SupplierId,
+                                            SupplierName = f.Name,
                                             ProductId = e.ProductId,
                                             ProductName = e.Description,
                                             InventoryLocationId = d.InventoryLocationId,
@@ -212,10 +212,12 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     join b in _context.Products on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
-                         value = s.SupplierId
+                         value = b.Description
+
                      };
             return Json(li);
         }

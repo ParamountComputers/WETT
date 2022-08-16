@@ -10,7 +10,7 @@
 </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
     <div class="container-flow">
-        <div class="row p-1">
+        <div class="row">
             <div class="col-lg-3  form-group">
                 <label style="font-size:8px;" for="date">Transaction Date:</label>
                 <input style="font-size:10px;" type="date" id="date" name="date">
@@ -19,7 +19,7 @@
                  <select style="font-size:10px;" class="form-control" id="locationsDropdown" name="locationsDropdown"></select> 
             </div>
         </div>
-        <div class="row p-1">
+        <div class="row">
             <div class="col-lg-5  form-group">
                 <input style="font-size:10px;" type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments"/>
             </div>
@@ -46,7 +46,6 @@
     var header = false;
     var locations;
     var curRowId = -1;
-    var ProductNameList= [];
     var name ="";
     $(document).ready(function() {
        $("#SaExciseDuty").jqGrid({
@@ -83,7 +82,7 @@
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Product Name',name: 'productName',fixed:true,width:170 ,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
-                                  dataInit: function(elem) {
+                    dataInit: function(elem) {
                     curRowId = $('#SaExciseDuty').getGridParam('selrow');
                     $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
@@ -332,6 +331,7 @@
 
        function getProductName() 
        {
+               var ProductNameList= [];
             $.ajaxSetup( { "async": false } );
             $.getJSON('SaExciseDuty/CreateProductName', function(data) 
             {

@@ -14,6 +14,10 @@ using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using WETT.Services;
+using WETT.Infrastructure;
+using Constants = WETT.Infrastructure.Constants;
+using Microsoft.Identity.Web.UI;
 
 namespace WETT
 {
@@ -29,29 +33,74 @@ namespace WETT
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
+			var initialScopes = new string[] { Constants.ScopeUserRead, Constants.ScopeGroupMemberRead };
+
+			services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
       //      services.AddDatabaseDeveloperPageExceptionFilter();
 						//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 						//	.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
 
+			//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+			//.AddMicrosoftIdentityWebApp(options =>
+			//{
+			//	Configuration.Bind("AzureAd", options);
+			//	options.TokenValidationParameters.RoleClaimType = "roles";
+			//});
+
+			// Sign-in users with the Microsoft identity platform
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-			.AddMicrosoftIdentityWebApp(options =>
+					.AddMicrosoftIdentityWebApp(
+				options =>
+				{
+					Configuration.Bind("AzureAd", options);
+					options.Events = new OpenIdConnectEvents();
+					options.Events.OnTokenValidated = async context =>
+					{
+						//Calls method to process groups overage claim.
+						var overageGroupClaims = await GraphHelper.GetSignedInUsersGroups(context);
+					};
+				}, options => { Configuration.Bind("AzureAd", options); })
+					.EnableTokenAcquisitionToCallDownstreamApi(options => Configuration.Bind("AzureAd", options), initialScopes)
+					.AddMicrosoftGraph(Configuration.GetSection("GraphAPI"))
+					.AddInMemoryTokenCaches();
+
+			// Adding authorization policies that enforce authorization using group values.
+			services.AddAuthorization(options =>
 			{
-				Configuration.Bind("AzureAd", options);
-				options.TokenValidationParameters.RoleClaimType = "roles";
+				options.AddPolicy("GroupAdmin",
+				policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:GroupAdmin"])));
+				options.AddPolicy("GroupMember",
+			  policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:GroupMember"])));
+			});
+			services.AddSingleton<IAuthorizationHandler, GroupPolicyHandler>();
+
+			services.AddDistributedMemoryCache();
+			services.AddSession(options =>
+			{
+				options.IdleTimeout = TimeSpan.FromMinutes(1);
+				options.Cookie.HttpOnly = true;
+				options.Cookie.IsEssential = true;
 			});
 
 			services.AddAuthorizationCore();
             services.AddDatabaseDeveloperPageExceptionFilter();
-			services.AddControllersWithViews();
 
-//			services.AddControllersWithViews(options =>
-//			{
-//				var policy = new AuthorizationPolicyBuilder()
-//				.RequireAuthenticatedUser()
-//				.Build();
-//				options.Filters.Add(new AuthorizeFilter(policy));
-//			});
+			services.AddControllersWithViews(options =>
+			{
+				var policy = new AuthorizationPolicyBuilder()
+					.RequireAuthenticatedUser()
+					.Build();
+				options.Filters.Add(new AuthorizeFilter(policy));
+			}).AddMicrosoftIdentityUI();
+
+			//services.AddControllersWithViews();
+			//			services.AddControllersWithViews(options =>
+			//			{
+			//				var policy = new AuthorizationPolicyBuilder()
+			//				.RequireAuthenticatedUser()
+			//				.Build();
+			//				options.Filters.Add(new AuthorizeFilter(policy));
+			//			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

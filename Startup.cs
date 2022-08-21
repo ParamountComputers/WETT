@@ -18,7 +18,6 @@ using WETT.Services;
 using WETT.Infrastructure;
 using Constants = WETT.Infrastructure.Constants;
 using Microsoft.Identity.Web.UI;
-using Microsoft.AspNetCore.Http;
 
 namespace WETT
 {
@@ -35,14 +34,18 @@ namespace WETT
         public void ConfigureServices(IServiceCollection services)
         {
 			var initialScopes = new string[] { Constants.ScopeUserRead, Constants.ScopeGroupMemberRead };
-			services.Configure<CookiePolicyOptions>(options =>
-			{
-				// This lambda determines whether user consent for non-essential cookies is needed for a given request.
-				options.CheckConsentNeeded = context => true;
-				options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-				// Handling SameSite cookie according to https://docs.microsoft.com/en-us/aspnet/core/security/samesite
-				options.HandleSameSiteCookieCompatibility();
-			});
+
+			services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
+      //      services.AddDatabaseDeveloperPageExceptionFilter();
+						//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+						//	.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
+
+			//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+			//.AddMicrosoftIdentityWebApp(options =>
+			//{
+			//	Configuration.Bind("AzureAd", options);
+			//	options.TokenValidationParameters.RoleClaimType = "roles";
+			//});
 
 			// Sign-in users with the Microsoft identity platform
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
@@ -64,8 +67,10 @@ namespace WETT
 			// Adding authorization policies that enforce authorization using group values.
 			services.AddAuthorization(options =>
 			{
-				options.AddPolicy("wett_user",
-				policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:wett_user"])));
+				options.AddPolicy("GroupAdmin",
+				policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:GroupAdmin"])));
+				options.AddPolicy("GroupMember",
+			  policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:GroupMember"])));
 			});
 			services.AddSingleton<IAuthorizationHandler, GroupPolicyHandler>();
 
@@ -77,8 +82,8 @@ namespace WETT
 				options.Cookie.IsEssential = true;
 			});
 
-			services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
-			services.AddDatabaseDeveloperPageExceptionFilter();
+			services.AddAuthorizationCore();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
 			services.AddControllersWithViews(options =>
 			{
@@ -88,6 +93,14 @@ namespace WETT
 				options.Filters.Add(new AuthorizeFilter(policy));
 			}).AddMicrosoftIdentityUI();
 
+			//services.AddControllersWithViews();
+			//			services.AddControllersWithViews(options =>
+			//			{
+			//				var policy = new AuthorizationPolicyBuilder()
+			//				.RequireAuthenticatedUser()
+			//				.Build();
+			//				options.Filters.Add(new AuthorizeFilter(policy));
+			//			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -36,9 +36,9 @@ namespace WETT
 			var initialScopes = new string[] { Constants.ScopeUserRead, Constants.ScopeGroupMemberRead };
 
 			services.AddDbContext<WETT_DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WETTDbConnection")));
-      //      services.AddDatabaseDeveloperPageExceptionFilter();
-						//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-						//	.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
+			services.AddDatabaseDeveloperPageExceptionFilter();
+			//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+			//	.AddMicrosoftIdentityWebApp(options => Configuration.Bind("AzureAD", options));
 
 			//services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 			//.AddMicrosoftIdentityWebApp(options =>

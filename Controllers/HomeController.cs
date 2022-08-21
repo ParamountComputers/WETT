@@ -53,7 +53,7 @@ namespace WETT.Controllers
 			return View(model);
 		}
 
-		[Authorize(Roles = "e6b52d23-02e3-4a07-9e52-206faf0ae99d, wett_user")]
+		[Authorize(Roles = "wett_user")]
 		public IActionResult Privacy()
 		{
 			return View();
@@ -81,7 +81,7 @@ namespace WETT.Controllers
 				{
 					model.Claims = User.Claims;
 					model.UserId = User.Identity.Name;
-					model.IsInRole = User.IsInRole("e6b52d23-02e3-4a07-9e52-206faf0ae99d") ? "Yes" : "No";
+					model.IsInRole = User.IsInRole("wett_user") ? "Yes" : "No";
 					if (User.Identity.AuthenticationType == "aad")
 					{
 						if (User.Claims.SingleOrDefault(c => c.Type == "name") != null)

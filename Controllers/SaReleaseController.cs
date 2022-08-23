@@ -44,7 +44,7 @@ namespace WETT.Controllers
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
-                        //     InventoryTxReasonsId = g.InventoryTxReasonId,
+                             //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
                              Comments = b.Comments,
@@ -59,29 +59,29 @@ namespace WETT.Controllers
         {
 
             var AllSaReleaseData = from b in _context.InventoryTxDetails
-                                join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                                join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
-                                join e in _context.Products on b.ProductId equals e.ProductId
-                                join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                   join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                                   join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                   join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                                   join e in _context.Products on b.ProductId equals e.ProductId
+                                   join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                    //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                where c.InventoryTxTypeId == 4
-                                select new SaReleaseViewModel
-                                {
-                                    InventoryTxId = b.InventoryTxId,
-                                    InventoryTxDetailId = b.InventoryTxDetailId,
-                                    ProductSku = e.Sku,
-                                    SupplierName = f.Name,
-                                    ProductId = e.ProductId,
-                                    ProductName = e.Description,
-                                    InventoryLocationId = d.InventoryLocationId,
-                                 //   InventoryTxReasonsId = g.InventoryTxReasonId,
-                                    Amount = b.Amount,
-                                    InventoryTxTypeId = c.InventoryTxTypeId,
-                                    Comments = b.Comments,
-                                    Date = a.Date, //.ToShortDateString(),
-                                    SaCode = a.StockAdjCode
-                                };
+                                   where c.InventoryTxTypeId == 4
+                                   select new SaReleaseViewModel
+                                   {
+                                       InventoryTxId = b.InventoryTxId,
+                                       InventoryTxDetailId = b.InventoryTxDetailId,
+                                       ProductSku = e.Sku,
+                                       SupplierName = f.Name,
+                                       ProductId = e.ProductId,
+                                       ProductName = e.Description,
+                                       InventoryLocationId = d.InventoryLocationId,
+                                       //   InventoryTxReasonsId = g.InventoryTxReasonId,
+                                       Amount = b.Amount,
+                                       InventoryTxTypeId = c.InventoryTxTypeId,
+                                       Comments = b.Comments,
+                                       Date = a.Date, //.ToShortDateString(),
+                                       SaCode = a.StockAdjCode
+                                   };
             var SaReleaseData = AllSaReleaseData;
             if (CurrentSaCode != null)
             {
@@ -150,6 +150,7 @@ namespace WETT.Controllers
             {
                 Comments = p.Comments,
                 ToInventoryLocationId = CurrentToLocation,
+                FromInventoryLocationId = 2,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = InventoryTxCurrentId
@@ -179,7 +180,7 @@ namespace WETT.Controllers
                 InventoryTxTypeId = 4,          //hard coded transaction type id for now
                 StockAdjCode = "RB",
                 //add in extra cols here******************************************
-                PurchaseOrder  = li[1],
+                PurchaseOrder = li[1],
                 ToInventoryLocationId = (long)Convert.ToDouble(li[3]),
                 PortOfEntry = li[2],
                 PreviousTransactionNo = li[4],
@@ -235,45 +236,46 @@ namespace WETT.Controllers
         public IActionResult CreateProductSkuList()
         {
             var SaReleaseData = from a in _context.Products
-                             select new
-                             {
-                                 text = a.Sku,
-                                 value = a.Description
+                                select new
+                                {
+                                    text = a.Sku,
+                                    value = a.Description
 
-                             };
+                                };
             return Json(SaReleaseData);
         }
         public IActionResult CreateProductName()
         {
             var SaReleaseData = from a in _context.Products
-                             join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                             select new
-                             {
-                                 label = a.ProductId,
-                                 value = a.Description
+                                join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                                select new
+                                {
+                                    label = a.ProductId,
+                                    value = a.Description
 
 
-                             };
+                                };
             return Json(SaReleaseData);
         }
+
         public IActionResult CreateLocationList()
         {
-            var SaReleaseData = from a in _context.InventoryLocations
-                             select new
-                             {
-                                 value = a.InventoryLocationId,
-                                 text = a.Description
-                             };
+            var SaReleaseData = from a in _context.InventoryLocations.Where(a => a.InventoryLocationId == 1 || a.InventoryLocationId == 4)
+                                select new
+                                {
+                                    value = a.InventoryLocationId,
+                                    text = a.Description
+                                };
             return Json(SaReleaseData);
         }
         public IActionResult CreateReasonsList()
         {
             var SaReleaseData = from a in _context.InventoryTxReasons
-                             select new
-                             {
-                                 value = a.InventoryTxReasonId,
-                                 text = a.Description
-                             };
+                                select new
+                                {
+                                    value = a.InventoryTxReasonId,
+                                    text = a.Description
+                                };
             return Json(SaReleaseData);
         }
     }

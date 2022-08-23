@@ -10,38 +10,57 @@
 </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
 <div class="container-flow">
-    <div class="row">
-        <div class="col-lg-2">
-            <label style="font-size:8px;" for="date">Transaction Date:</label>
-            <input style="font-size:10px;" type="date" id="date" name="date">
+    <div class="mb-3 row">
+        <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="date">Transaction Date:</label>
         </div>
-        <div class="col-lg-2 form-group">
-              <select style="font-size:10px;" class="form-control" id="locationsDropdown" name="locationsDropdown"></select> 
+        <div class="col-lg-1 p-0">
+            <input style="font-size:8px;" class="form-control" type="date" id="date" name="date">
         </div>
-        <div class="col-lg-2 form-group">
-            <input style="font-size:10px;" type="text" class="form-control" placeholder="PO:" aria-label="PO:" aria-describedby="basic-addon2" id="purchaseOrder"/>
+        <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="locationsDropwon">To Location:</label>
+        </div>
+        <div class="col-lg-1 p-0">
+              <select style="font-size:8px;" class="form-control" id="locationsDropdown" name="locationsDropdown"></select> 
+        </div>
+        <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="purchaseOrder">Purchase Order:</label>
+        </div>
+        <div class="col-lg-1 p-0">
+            <input style="font-size:8px;" type="text" class="form-control"  aria-describedby="basic-addon2" id="purchaseOrder"/>
          </div>
-         <div class="col-lg-2 form-group">
-            <input style="font-size:10px;" type="text" class="form-control" placeholder="Port of Entry:" aria-label="Port of Entry:" aria-describedby="basic-addon2" id="portEntry"/>
+         <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="portEntry">Port Entry:</label>
         </div>
-  
+         <div class="col-lg-1 p-0">
+            <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="portEntry"/>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-lg-2 form-group">
-            <input style="font-size:10px;" type="text" class="form-control" placeholder="Prev Trans #:" aria-label="Prev Trans #:" aria-describedby="basic-addon2" id="prevTransNo"/>
+    <div class="mb-3 row">
+         <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="prevTransNo">Prev Trans #:</label>
         </div>
-        <div class="col-lg-2 form-group">
-            <input style="font-size:10px;" type="text" class="form-control" placeholder="Trans #:" aria-label="Trans #:" aria-describedby="basic-addon2" id="transNumber"/>
+        <div class="col-lg-1 p-0">
+            <input style="font-size:8px;" type="text" class="form-control"  aria-describedby="basic-addon2" id="prevTransNo"/>
         </div>
-        <div class="col-lg-4 form-group">
-            <input style="font-size:10px;" type="text" class="form-control" placeholder="Notes:" aria-label="Notes:" aria-describedby="basic-addon2" id="comments"/>
+        <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="transNumber">Trans #:</label>
+        </div>
+        <div class="col-lg-1 p-0">
+            <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="transNumber"/>
+        </div>
+        <div class="col-lg-1 text-right">
+            <label style="font-size:8px;" class="col-form-label" for="comments">Notes:</label>
+        </div>
+        <div class="col-lg-3 p-0">
+            <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="comments"/>
         </div>
         <div class="col-lg-1"></div>
         <div class="col-lg-2 form-group">
-            <input style="font-size:10px;" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
+            <input style="font-size:8px;" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
         </div>
         <div class="col-lg-1 text-right">
-            <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
+            <button class="btn btn-outline-secondary" style="font-size:8px;" id="save" type="button">Save</button>  
         </div>
     </div>
 </div>
@@ -111,7 +130,7 @@
                    { label: 'Supplier',name: 'supplierName',width:180,fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                  //  { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
-                   { label: 'Quantity',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
+                   { label: 'Adj Amount (+/-)',name: 'amount',fixed:true,width:80,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
                  //  { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",editrules: { required: true },formatter:'select', editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true,width:500, editable: true, edittype:"text",}
 
@@ -169,7 +188,7 @@
                url: "SaRelease/CreateLocationList",  
                data: "{}",  
                success: function (data) {  
-                   var s = '<option value="-1">Select a Location</option>';  
+                   var s = '';  
                    for (var i = 0; i < data.length; i++) {  
                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                    }  

@@ -62,31 +62,31 @@ namespace WETT.Controllers
         {
 
             var AllSaInternalTransferData = from b in _context.InventoryTxDetails
-                                   join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                                   join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                   join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
-                                   join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
-                                   join e in _context.Products on b.ProductId equals e.ProductId
-                                   join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                   join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                   where a.InventoryTxId == InventoryTxCurrentId
+                                            join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                                            join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                            join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                                            join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
+                                            join e in _context.Products on b.ProductId equals e.ProductId
+                                            join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                            join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                                            where a.InventoryTxId == InventoryTxCurrentId
                                             select new SaInternalTransferViewModel
-                                   {
-                                       InventoryTxId = b.InventoryTxId,
-                                       InventoryTxDetailId = b.InventoryTxDetailId,
-                                       ProductSku = e.Sku,
-                                       SupplierName = f.Name,
-                                       ProductId = e.ProductId,
-                                       ProductName = e.Description,
-                                       toInventoryLocationId = d.InventoryLocationId,
-                                       fromInventoryLocationId = d2.InventoryLocationId,
-                                       InventoryTxReasonsId = g.InventoryTxReasonId,
-                                       Amount = b.Amount,
-                                       InventoryTxTypeId = c.InventoryTxTypeId,
-                                       Comments = b.Comments,
-                                       Date = a.Date, //.ToShortDateString(),
-                                       SaCode = a.StockAdjCode
-                                   };
+                                            {
+                                                InventoryTxId = b.InventoryTxId,
+                                                InventoryTxDetailId = b.InventoryTxDetailId,
+                                                ProductSku = e.Sku,
+                                                SupplierName = f.Name,
+                                                ProductId = e.ProductId,
+                                                ProductName = e.Description,
+                                                toInventoryLocationId = d.InventoryLocationId,
+                                                fromInventoryLocationId = d2.InventoryLocationId,
+                                                InventoryTxReasonsId = g.InventoryTxReasonId,
+                                                Amount = b.Amount,
+                                                InventoryTxTypeId = c.InventoryTxTypeId,
+                                                Comments = b.Comments,
+                                                Date = a.Date, //.ToShortDateString(),
+                                                SaCode = a.StockAdjCode
+                                            };
             var SaInternalTransferData = AllSaInternalTransferData;
 
             if (CurrentSaCode != null)
@@ -103,7 +103,7 @@ namespace WETT.Controllers
                 if (showPage == true)
                 {
                     //this is the type of transaction id
-                   // SaInternalTransferData = SaInternalTransferData.Where(w => w.InventoryTxTypeId == 6);
+                    // SaInternalTransferData = SaInternalTransferData.Where(w => w.InventoryTxTypeId == 6);
                     SaInternalTransferData = SaInternalTransferData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
 
                 }
@@ -161,7 +161,7 @@ namespace WETT.Controllers
             {
                 Comments = p.Comments,
                 ToInventoryLocationId = CurrentToLocation,
-                FromInventoryLocationId= CurrentFromLocation,
+                FromInventoryLocationId = CurrentFromLocation,
                 ProductId = s.ProductId,
                 Amount = p.Amount,
                 InventoryTxReasonId = p.InventoryTxReasonsId,
@@ -204,7 +204,7 @@ namespace WETT.Controllers
             s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
             _context.SaveChanges();
             CurrentSaCode = null;
-            CurrentToLocation = (long)s.ToInventoryLocationId; 
+            CurrentToLocation = (long)s.ToInventoryLocationId;
             CurrentFromLocation = (long)s.FromInventoryLocationId;
             return Json(s.StockAdjCode);
         }
@@ -241,45 +241,55 @@ namespace WETT.Controllers
         public IActionResult CreateProductSkuList()
         {
             var SaInternalTransferData = from a in _context.Products
-                                select new
-                                {
-                                    text = a.Sku,
-                                    value = a.Description
+                                         select new
+                                         {
+                                             text = a.Sku,
+                                             value = a.Description
 
-                                };
+                                         };
             return Json(SaInternalTransferData);
         }
         public IActionResult CreateProductName()
         {
             var SaInternalTransferData = from a in _context.Products
-                                join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                                select new
-                                {
-                                    label = a.ProductId,
-                                    value = a.Description
+                                         join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                                         select new
+                                         {
+                                             label = a.ProductId,
+                                             value = a.Description
 
 
-                                };
+                                         };
             return Json(SaInternalTransferData);
         }
-        public IActionResult CreateLocationList()
+        public IActionResult CreateToLocationList()
         {
             var SaInternalTransferData = from a in _context.InventoryLocations
-                                select new
-                                {
-                                    value = a.InventoryLocationId,
-                                    text = a.Description
-                                };
+                                         select new
+                                         {
+                                             value = a.InventoryLocationId,
+                                             text = a.Description
+                                         };
+            return Json(SaInternalTransferData);
+        }
+        public IActionResult CreateFromLocationList()
+        {
+            var SaInternalTransferData = from a in _context.InventoryLocations.Where(a => a.InventoryLocationId != 1 && a.InventoryLocationId != 2)
+                                         select new
+                                         {
+                                             value = a.InventoryLocationId,
+                                             text = a.Description
+                                         };
             return Json(SaInternalTransferData);
         }
         public IActionResult CreateReasonsList()
         {
             var SaInternalTransferData = from a in _context.InventoryTxReasons
-                                select new
-                                {
-                                    value = a.InventoryTxReasonId,
-                                    text = a.Description
-                                };
+                                         select new
+                                         {
+                                             value = a.InventoryTxReasonId,
+                                             text = a.Description
+                                         };
             return Json(SaInternalTransferData);
         }
     }

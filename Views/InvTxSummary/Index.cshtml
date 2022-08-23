@@ -11,32 +11,36 @@
 <fieldset class="scheduler-border">
  <div class="container-flow">
   
-      <div class="row">
-           <div class="col-lg-3  form-group">
-                <label for="startDate"  style="font-size:8px;"> Start Date Range:</label>
-                <input type="date" value="" style="font-size:10px;" id='startDate' name="startDate" />
-           </div> 
-           <div class="col-lg-3  form-group">
-                <label for="endDate"  style="font-size:8px;"> End Date Range:</label>
-                <input type="date" value=""  style="font-size:10px;" id='endDate' name="endDate" />
-            </div>
-            <div class="col-lg-2">
-              <form class="form-inline">
-                 <div class="form-group">
-                   <select style="font-size:10px;" class="form-control" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
-                 </div>
-              </form>  
+      <div class="mb-3 row">
+           <div class="col-lg-1 text-right">
+                <label for="startDate" class="col-form-label" style="font-size:8px;"> Start Date Range:</label>
            </div>
-                <div class="col-lg-3">
-                 </div>
+           <div class="col-lg-1 p-0">
+                <input type="date" class="form-control" style="font-size:8px;" id='startDate' name="startDate" />
+           </div> 
+           <div class="col-lg-1"></div>
+           <div class="col-lg-1 text-right">
+                <label for="endDate" class="col-form-label" style="font-size:8px;"> End Date Range:</label>
+            </div>
+            <div class="col-lg-1 p-0">
+                <input type="date" class="form-control" style="font-size:8px;" id='endDate' name="endDate" />
+            </div>
+            <div class="col-lg-1"></div>
             <div class="col-lg-1 text-right">
-                 <button class="btn btn-outline-secondary" style="font-size:10px;" id="search" type="button">Search</button>  
+                <label for="InvTxSummaryDropdown" class="col-form-label" style="font-size:8px;">Transaction type:</label>
+           </div>
+           <div class="col-lg-2">
+                   <select style="font-size:8px;" class="form-control" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
+           </div>
+           <div class="col-lg-2"></div>
+            <div class="col-lg-1 text-right">
+                 <button class="btn btn-outline-secondary" style="font-size:8px;" id="search" type="button">Search</button>  
             </div>        
       </div>
  </div>
 </fieldset>
 
-<table id="invTxSummary" style="align:center"></table>
+<table id="invTxSummary"></table>
 <div id="jqGridPager"></div>
 @section scripts {
 
@@ -166,7 +170,7 @@
            url: "InvTxSummary/CreateInvTxTypeList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Transaction type</option>';  
+               var s = '';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  

@@ -9,26 +9,31 @@
     <h4 class="display-5">Inventory Adjustment</h4>
 </div>
 <fieldset class="scheduler-border">
-  <div class="container-flow">
-   <div class="row">
-        <div class="col-lg-3  form-group">
-           <label for="date"  style="font-size:8px;">Transaction Date:</label>
-           <input type="date" value=""  style="font-size:10px;" id='date' name="date" />
-        </div>   
-           
-        <div class="col-lg-4">
-           <input type="text"  style="font-size:10px; border-radius: 0 !important" class="form-control" placeholder="Notes" id="comments" name="comments"/>
+ <div class="mb-3 row">
+    <div class="col-lg-1">
+          <label for="date" class="col-form-label" style="font-size:8px;">Transaction Date:</label>
+    </div>
+        <div class="col-lg-1 p-0">
+          <input type="date" class="form-control"  style="font-size:8px;" id='date' name="date" />
+        </div> 
+
+        <div class="col-lg-1 text-right"> 
+          <label for="comments"  class="col-form-label" style="font-size:8px;">Notes:</label>
         </div>
-           <div class="col-lg-1 "></div>
-        <div class="col-lg-2 text-sm-right">
-           <input type="text" style="font-size:10px; border-radius: 0 !important" name="input" class="form-control" placeholder="SA Code:" id="saCode" readonly/>
+        <div class="col-lg-5 p-0">
+          <input type="text"  style="font-size:8px;" class="form-control" id="comments" name="comments"/>
         </div>
-           <div class="col-lg-1"></div>
+        <div class="col-lg-1"></div>
+        <div class="col-lg-1 text-right"> 
+          <label for="saCode"  class="col-form-label" style="font-size:8px;">SA Code:</label>
+        </div>
+        <div class="col-lg-1 p-0">
+          <input type="text" style="font-size:8px; border-radius: 0 !important" class="form-control" id="saCode" readonly/>
+        </div>
         <div class="col-lg-1 text-right">
-           <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
-        </div>        
+          <button class="btn btn-outline-secondary" style="font-size:8px;" id="save" type="button">Save</button>  
+        </div> 
    </div>
-  </div>
 </fieldset>
 
 <table id="invAdj"></table>
@@ -91,7 +96,7 @@
                    { label: 'Supplier',name: 'supplierName',fixed:true,width:120, editoptions: {readonly: 'readonly'}},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:80,  editoptions: {readonly: 'readonly'}},
                    { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
-                   { label: 'Updated Stock',name: 'amount',fixed:true,width:95,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
+                   { label: 'Adj Amount (+/-)',name: 'amount',fixed:true,width:80,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
                    { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",editrules: { required: true },formatter:'select', editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text"}
 

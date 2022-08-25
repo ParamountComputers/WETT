@@ -10,7 +10,7 @@
 </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
 <div class="container-flow">
-    <div class="mb-3 row">
+    <div class="mb-1 row">
         <div class="col-lg-1 text-right">
             <label style="font-size:8px;" class="col-form-label" for="date">Transaction Date:</label>
         </div>
@@ -36,7 +36,7 @@
             <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="portEntry"/>
         </div>
     </div>
-    <div class="mb-3 row">
+    <div class="mb-1 row">
          <div class="col-lg-1 text-right">
             <label style="font-size:8px;" class="col-form-label" for="prevTransNo">Prev Trans #:</label>
         </div>
@@ -56,9 +56,12 @@
             <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="comments"/>
         </div>
         <div class="col-lg-1"></div>
-        <div class="col-lg-2 form-group">
-            <input style="font-size:8px;" type="text" class="form-control" placeholder="SA Code:" aria-label="SA Code:" aria-describedby="basic-addon2" id="saCode" readonly/>
-        </div>
+        <div class="col-lg-1 text-right"> 
+                 <label for="saCode"  class="col-form-label" style="font-size:8px;">SA Code:</label>
+             </div>
+             <div class="col-lg-1 p-0">
+                   <input type="text" style="font-size:8px; border-radius: 0 !important" class="form-control" id="saCode" readonly/>
+             </div>
         <div class="col-lg-1 text-right">
             <button class="btn btn-outline-secondary" style="font-size:8px;" id="save" type="button">Save</button>  
         </div>

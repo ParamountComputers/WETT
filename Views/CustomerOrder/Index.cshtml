@@ -9,47 +9,60 @@
     <h2 class="display-4">Customer Order</h2>
 </div>
 <fieldset class="scheduler-border">
-  <div class="container-flow">
 
-     <div class="row">
+     <div class="mb-1 row">
 
-             <div class="col-lg-2">
-               <label for="dateOrdered"  style="font-size:8px;">Date Ordered:</label>
-               <div class="pull-right">
-               <input type="date" value="" style="font-size:10px;" id='dateOrdered' name="dateOrdered" />
-               </div>
-             </div>
-             <div class="col-lg-2">
-               <label for="deliveryReqDate"  style="font-size:8px;">Delivery Req Date:</label>
-               <div class="pull-right">
-               <input type="date" value=""  style="font-size:10px;" id='deliveryReqDate' name="deliveryReqDate" />
-               </div>
+            <div class="col-lg-1 text-right">
+                <label for="dateOrdered" class="col-form-label" style="font-size:8px;">Date Ordered:</label>
             </div>
-            <div class="col-lg-2 form-group">  
-                 <select style="font-size:10px;" class="form-control" id="customerOrderStatus" name="customerOrderStatus"></select>
+            <div class="col-lg-1 p-0">
+                <input type="date" class="form-control" style="font-size:8px;" id='dateOrdered' name="dateOrdered" />
+            </div>
+            <div class="col-lg-1 text-right">
+               <label for="deliveryReqDate" class="col-form-label" style="font-size:8px;">Delivery Req Date:</label>
+            </div>
+            <div class="col-lg-1 p-0">
+               <input type="date" class="form-control" style="font-size:8px;" id='deliveryReqDate' name="deliveryReqDate" />
+            </div>
+            <div class="col-lg-1 text-right">
+                <label for="customerOrderStatus" class="col-form-label" style="font-size:8px;">Order Status:</label>
+            </div>
+            <div class="col-lg-1 p-0">  
+                 <select style="font-size:8px;" class="form-control" id="customerOrderStatus" name="customerOrderStatus"></select>
              </div>
-
-             <div class="col-lg-2 form-group">
-                <select style="font-size:10px;" class="form-control" id="customer" name="customer"></select>
+             <div class="col-lg-1 text-right">
+                <label for="customer" class="col-form-label" style="font-size:8px;">Customer:</label>
+            </div>
+             <div class="col-lg-1 p-0">
+                <select style="font-size:8px;" class="form-control" id="customer" name="customer"></select>
              </div>
 
      </div>
 
-     <div class="row">
-            
-             <div class="col-lg-2 form-group">
-                <input type="text"  style="font-size:10px;" class="form-control" placeholder="Special Instructions:" id="specialInstructions" name="specialInstructions"/>
+     <div class="mb-1 row">
+            <div class="col-lg-1 text-right">
+                <label for="dateOrdered" class="col-form-label" style="font-size:7px;">Special Instructions:</label>
+            </div>
+             <div class="col-lg-1 p-0">
+                <input type="text"  style="font-size:8px;" class="form-control" id="specialInstructions" name="specialInstructions"/>
              </div>
-             
-             <div class="col-lg-2">
-                <input type="text"  style="font-size:10px;" class="form-control" placeholder="Order Number:" id="orderNumber" name="orderNmber"/>
+             <div class="col-lg-1 text-right">
+                <label for="orderNumber" class="col-form-label" style="font-size:8px;">Order #:</label>
+            </div>
+             <div class="col-lg-1 p-0">
+                <input type="text"  style="font-size:8px;" class="form-control" id="orderNumber" name="orderNmber"/>
              </div>
-             <div class="col-lg-2">
-                <input type="text"  style="font-size:10px;" class="form-control" placeholder="Driver:" id="driver" name="driver"/>
+             <div class="col-lg-1 text-right">
+                <label for="driver" class="col-form-label" style="font-size:8px;">Driver:</label>
+            </div>
+             <div class="col-lg-1 p-0">
+                <input type="text"  style="font-size:8px;" class="form-control" placeholder="Driver:" id="driver" name="driver"/>
              </div>
-            
-             <div class="col-lg-2">
-                <input type="text"  style="font-size:10px;" class="form-control" placeholder="Ds Slip Number:" id="dsSlipNumber" name="dsSlipNumber"/>
+            <div class="col-lg-1 text-right">
+                <label for="dsSlipNumber" class="col-form-label" style="font-size:8px;">Ds Slip Number:</label>
+            </div>
+             <div class="col-lg-1 p-0">
+                <input type="text"  style="font-size:8px;" class="form-control"  id="dsSlipNumber" name="dsSlipNumber"/>
              </div>
 
              <div class="col-lg-3"></div>
@@ -58,7 +71,6 @@
                 <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
              </div>   
      </div>
-</div>
 </fieldset>
 
 <table id="customerOrder"></table>
@@ -176,7 +188,7 @@
            url: "CustomerOrder/CreateCustomerList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Customer</option>';  
+               var s = '';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
@@ -190,7 +202,7 @@
            url: "CustomerOrder/CreateCarrierList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Carrier</option>';  
+               var s = '';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  
@@ -204,7 +216,7 @@
            url: "CustomerOrder/CreatetCustomerOrderStatusList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Order Status</option>';  
+               var s = '';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  

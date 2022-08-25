@@ -10,21 +10,28 @@
 </div>
 <fieldset class="scheduler-border">
 <div class="container-flow">
-<div class="row p-1">
-           <div class="col-lg-2 form-group">
-                <label for="startDate"  style="font-size:8px;"> Start Order Date:</label>
-                <input type="date" value=""  style="font-size:10px;" id='startDate' name="startDate" />
+<div class="mb-1 row">
+           <div class="col-lg-1 text-right">
+                <label for="startDate" class="col-form-label" style="font-size:8px;"> Start Order Date:</label>
+            </div>
+            <div class="col-lg-1 p-0">
+                <input type="date" class="form-control"  style="font-size:8px;" id='startDate' name="startDate" />
            </div>   
            <div class="col-lg-1"></div>
-           <div class="col-lg-2 form-group">
+           <div class="col-lg-1 text-right">
                 <label for="endDate"  style="font-size:8px;"> End Order Date:</label>
-                <input type="date" value=""  style="font-size:10px;" id='endDate' name="endDate" />
+            </div>
+           <div class="col-lg-1 p-0">
+                <input type="date" class="form-control"  style="font-size:8px;" id='endDate' name="endDate" />
             </div>
             <div class="col-lg-1 "></div>
-            <div class="col-lg-2 form-group">
+            <div class="col-lg-1 text-right">
+                <label for="StatusDropdown" class="col-form-label" style="font-size:8px;">Status:</label>
+            </div>
+            <div class="col-lg-2">
                 <select style="font-size:10px;" class="form-control" id="StatusDropdown" name="StatusDropdown"></select> 
             </div>
-                <div class="col-lg-3"></div>
+                <div class="col-lg-2"></div>
             <div class="col-lg-1 text-right">
                  <button class="btn btn-outline-secondary" style="font-size:10px;" id="search" type="button">Search</button>  
             </div>        
@@ -168,7 +175,7 @@
            url: "CustomerSummary/CreateStatusList",  
            data: "{}",  
            success: function (data) {  
-               var s = '<option value="-1">Select a Status</option>';  
+               var s = '';  
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  

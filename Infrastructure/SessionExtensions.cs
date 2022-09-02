@@ -16,7 +16,7 @@ namespace WETT.Infrastructure
         {
             var binaryFormatter = new BinaryFormatter();
             var memoryStream = new MemoryStream();
-            binaryFormatter.Serialize(memoryStream, toSerialize);
+			binaryFormatter.Serialize(memoryStream, toSerialize);
 
             session.Set(key, memoryStream.ToArray());
         }

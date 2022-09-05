@@ -53,4 +53,13 @@
     <None Include="NuGet.config" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Reports\Barcodes Report.trdp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Reports\SupplierReport.trdp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

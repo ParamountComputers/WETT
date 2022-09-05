@@ -14,6 +14,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="NuGet.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Telerik.Reporting.dll" />
+    <None Remove="Telerik.Reporting.OpenXmlRendering.2.7.2.dll" />
+    <None Remove="Telerik.Reporting.Services.AspNetCore.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.8" />
@@ -40,15 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Telerik.Reporting.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Telerik.Reporting.OpenXmlRendering.2.7.2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Telerik.Reporting.Services.AspNetCore.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="NuGet.config" />
   </ItemGroup>
 
 </Project>

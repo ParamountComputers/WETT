@@ -8,6 +8,12 @@
     },
     "secrets1": {
       "type": "secrets.user"
+    },
+    "identityapp1": {
+      "secretStore": "LocalSecretsFile",
+      "type": "identityapp.secretStore",
+      "connectionId": "AzureAD:ClientSecret",
+      "dynamicId": null
     }
   }
 }

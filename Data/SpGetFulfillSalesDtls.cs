@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Web;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using WETT.Data;
 
-namespace WETT.Models
+
+namespace WETT.Data
+
 {
-    public class FulfillSalesViewModel
+    public class SpGetFulfillSalesDtls
     {
         public long CustomerOrderID { get; set; }
         public DateTime OrderDate { get; set; }
@@ -20,7 +20,5 @@ namespace WETT.Models
         public string Instructions { get; set; }
         public string Status { get; set; }
 
-        //public List<SpGetFulfillSalesHdr> FulfillSalesHdrs { get; set; }
     }
 }
-

@@ -11,43 +11,37 @@
 </div>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
   <div class="container-flow">
-  <div class="mb-1 row">
-            <div class="col-lg-1 text-right">
-                 <label for="OrderDate" class="col-form-label"  style="font-size:8px;">Order Date:</label>
+  <div class="row">
+        <div class="col-lg-2 form-group">
+                <label for="OrderDate" style="font-size:8px;">Order Date:</label>
+            <div class="pull-right">
+                <input type="date" id="OrderDate" name="OrderDate" style="font-size:10px;">
             </div>
-            <div class="col-lg-1 p-0">
-                <input type="date" id="OrderDate" class="form-control"name="OrderDate" style="font-size:8px;">
-            </div>
-            <div class="col-lg-1  text-right">
+        </div>
+        <div class="col-lg-2 form-group">
                 <label for="DeliveryDate" style="font-size:8px;">Delivery Date:</label>
+            <div class="pull-right">
+                <input type="date" style="font-size:10px;" id="DeliveryDate" name="DeliveryDate">
             </div>
-            <div class="col-lg-1 p-0">
-                <input type="date" style="font-size:8px;" class="form-control" id="DeliveryDate" name="DeliveryDate">
-            </div>
-            <div class="col-lg-1  text-right">
-                 <label for="carrierDropdown" class="col-form-label"  style="font-size:8px;">Carrier:</label>
-            </div>
-            <div class="col-lg-1 p-0">
-                <select class="form-control" style="font-size:8px;" id="carrierDropdown" name="carrierDropdown"></select>
-            </div>
-            <div class="col-lg-1  text-right">
-                 <label for="orderSourceDropdown" class="col-form-label"  style="font-size:8px;">Order Source:</label>
-            </div>
-            <div class="col-lg-1 p-0">
-                <select class="form-control" style="font-size:8px;" id="orderSourceDropdown" name="orderSourceDropdown"></select>
-            </div>
-            <div class="col-lg-1 text-right">
-                <label for="FulfilledCheckbox"class="form-check-inline" style="font-size:8px;">Fulfilled:</label>
-                <input id="FulfilledCheckbox" type="checkbox" style="font-size:8px;" value="FulfilledCheckbox">
-            </div>
-            <div class="col-lg-1 text-right">
-                <label for="PendingCheckbox" class="form-check-inline" style="font-size:8px;">Pending:</label> 
-                <input id="PendingCheckbox"type="checkbox" style="font-size:8px;" value="PendingCheckbox">
-            </div>
-             <div class="col-lg-1"></div>
-            <div class="col-lg-1 text-right">
-               <button class="btn btn-outline-secondary" style="font-size:8px;" id="fulfill" type="button">Fulfill</button>  
-            </div>  
+        </div>
+        <div class="col-lg-2 form-group">
+                <select class="form-control" style="font-size:10px;" id="carrierDropdown" name="carrierDropdown"></select>
+        </div>
+        <div class="col-lg-2 form-group">
+            <select class="form-control" style="font-size:10px;" id="orderSourceDropdown" name="orderSourceDropdown"></select>
+        </div>
+        <div class="col-lg-1 form-group">
+       <label for="FulfilledCheckbox"class="checkbox-inline" style="font-size:10px;">Fulfilled:</label>
+      <input id="FulfilledCheckbox" type="checkbox" value="FulfilledCheckbox">
+        </div>
+        <div class="col-lg-1 form-group">
+                <label for="PendingCheckbox" class="checkbox-inline" style="font-size:10px;">Pending:</label> 
+                <input id="PendingCheckbox"type="checkbox" value="PendingCheckbox">
+        </div>
+        <div class="col-lg-1"></div>
+        <div class="col-lg-1 text-right">
+          <button class="btn btn-outline-secondary" style="font-size:10px;" id="fulfill" type="button">Fulfill</button>  
+        </div>  
 
     </div>
     </div>
@@ -188,7 +182,7 @@
                url: "FulfillSales/CreateOrderSourceList",  
                data: "{}",  
                success: function (data) {  
-                   var s = '';  
+                   var s = '<option value="-1">Order Source</option>';  
                    for (var i = 0; i < data.length; i++) {  
                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                    }  
@@ -202,7 +196,7 @@
                url: "FulfillSales/CreateCarrierList",  
                data: "{}",  
                success: function (data) {  
-                   var s = '';  
+                   var s = '<option value="-1">Carrier</option>';  
                    for (var i = 0; i < data.length; i++) {  
                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                    }  

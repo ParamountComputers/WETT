@@ -42,6 +42,10 @@ namespace WETT.Data
         public virtual DbSet<Territory> Territories { get; set; }
         public virtual DbSet<TruckingCompany> TruckingCompanies { get; set; }
 
+        public virtual DbSet<SpGetFulfillSalesHdr> SpGetFulfillSalesHdrs { get; set; }
+
+        public virtual DbSet<SpGetFulfillSalesDtls> SpGetFulfillSalesDtls { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -52,6 +56,62 @@ namespace WETT.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<SpGetFulfillSalesHdr>(entity =>
+            {
+                // entity.ToTable("Call Frequency");
+                entity.HasNoKey();
+                entity.Property(e => e.CustomerOrderID).HasColumnName("CustomerOrderID");
+
+                entity.Property(e => e.CarrierID).HasColumnName("CarrierID");
+
+                entity.Property(e => e.Customer).HasColumnName("Customer");
+                entity.Property(e => e.OrderNumber).HasColumnName("OrderNumber");
+
+
+                entity.Property(e => e.OrderDate)
+                    .HasPrecision(0)
+                    .HasColumnName("OrderDate");
+
+                entity.Property(e => e.DelveryDate)
+                    .HasColumnType("date")
+                    .HasColumnName("DelveryDate");
+
+                entity.Property(e => e.City).HasColumnName("City");
+
+                entity.Property(e => e.CarrierDesc).HasColumnName("CarrierDesc");
+                entity.Property(e => e.Instructions).HasColumnName("Instructions");
+                entity.Property(e => e.Status).HasColumnName("Status");
+
+            });
+
+            modelBuilder.Entity<SpGetFulfillSalesDtls>(entity =>
+            {
+                // entity.ToTable("Call Frequency");
+                entity.HasNoKey();
+                entity.Property(e => e.CustomerOrderID).HasColumnName("CustomerOrderID");
+
+                entity.Property(e => e.CarrierID).HasColumnName("CarrierID");
+
+                entity.Property(e => e.Customer).HasColumnName("Customer");
+                entity.Property(e => e.OrderNumber).HasColumnName("OrderNumber");
+
+
+                entity.Property(e => e.OrderDate)
+                    .HasPrecision(0)
+                    .HasColumnName("OrderDate");
+
+                entity.Property(e => e.DelveryDate)
+                    .HasColumnType("date")
+                    .HasColumnName("DelveryDate");
+
+                entity.Property(e => e.City).HasColumnName("City");
+
+                entity.Property(e => e.CarrierDesc).HasColumnName("CarrierDesc");
+                entity.Property(e => e.Instructions).HasColumnName("Instructions");
+                entity.Property(e => e.Status).HasColumnName("Status");
+
+            });
+
             modelBuilder.Entity<CallFrequency>(entity =>
             {
                 entity.ToTable("Call Frequency");

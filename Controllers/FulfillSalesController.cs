@@ -17,75 +17,87 @@ namespace WETT.Controllers
         private static string deliverySearchDate;
         private static long carrierId;
         private readonly WETT_DBContext _context;
-        public static long CurrentHeaderId=-1;
+        public static long CurrentHeaderId = -1;
 
         public FulfillSalesController(WETT_DBContext context)
         {
             _context = context;
         }
-       public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-        pending = false;
-        fulfilled = false;
-        orderSearchDate = null;
-        deliverySearchDate = null;
-        carrierId = -1;
+            pending = false;
+            fulfilled = false;
+            orderSearchDate = null;
+            deliverySearchDate = null;
+            carrierId = -1;
 
-        /*
-         select * 
-            from	[Customer Order] a,
-                    [Customer] b,
-                    [Customer Order Status] c,
-                    [Carrier] d
-            where	a.[Customer Id] = b.[Customer Id]
-              and	a.[Customer Order Status Id] = c.[Customer Order Status Id]
-              and   a.[Carrier Id] = d.[Carrier Id]
+            /*
+             select * 
+                from	[Customer Order] a,
+                        [Customer] b,
+                        [Customer Order Status] c,
+                        [Carrier] d
+                where	a.[Customer Id] = b.[Customer Id]
+                  and	a.[Customer Order Status Id] = c.[Customer Order Status Id]
+                  and   a.[Carrier Id] = d.[Carrier Id]
 
-         */
-        var result = from a in _context.CustomerOrders
-                         join b in _context.Customers on a.CustomerId equals b.CustomerId
-                         join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                         join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         select new FulfillSalesViewModel
-                         {
-                             CustomerOrderID = a.CustomerOrderId,
-                             OrderDate = a.DateOrdered,
-                             DelveryDate = a.DeliveryReqDate,
-                             OrderNumber = a.OrderNumber,
-                             Customer = b.Name,
-                             City = b.City,
-                             CarrierID = d.CarrierId,
-                             CarrierDesc = d.Name,
-                             Instructions = a.SpecialInstructions,
-                             Status = c.Description
+             */
+            //var result = from a in _context.CustomerOrders
+            //             join b in _context.Customers on a.CustomerId equals b.CustomerId
+            //             join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
+            //             join d in _context.Carriers on a.CarrierId equals d.CarrierId
+            //             select new FulfillSalesViewModel
+            //             {
+            //                 CustomerOrderID = a.CustomerOrderId,
+            //                 OrderDate = a.DateOrdered,
+            //                 DelveryDate = a.DeliveryReqDate,
+            //                 OrderNumber = a.OrderNumber,
+            //                 Customer = b.Name,
+            //                 City = b.City,
+            //                 CarrierID = d.CarrierId,
+            //                 CarrierDesc = d.Name,
+            //                 Instructions = a.SpecialInstructions,
+            //                 Status = c.Description
 
 
-                         };
+            //             };
+
+
+
+            var result = _context.SpGetFulfillSalesHdrs.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesHdr]").ToList();
+
             return View(result);
+
+
+
+
         }
-     
+
         public JsonResult GetAllHdr(JqGridViewModel request)
         {
-           // var wETT_DBContext = _context.CustomerOrders;
+            // var wETT_DBContext = _context.CustomerOrders;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var FulfillSalesData = from a in _context.CustomerOrders
-                                   join b in _context.Customers on a.CustomerId equals b.CustomerId
-                                   join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                                   join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                                   select new FulfillSalesViewModel
-                                      {
-                                       CustomerOrderID = a.CustomerOrderId,
-                                       OrderDate = a.DateOrdered,
-                                       DelveryDate = a.DeliveryReqDate,
-                                       OrderNumber = a.OrderNumber,
-                                       Customer = b.Name,
-                                       City = b.City,
-                                       CarrierID = d.CarrierId,
-                                       CarrierDesc = d.Name,
-                                       Instructions = a.SpecialInstructions,
-                                       Status = c.Description
+            //var FulfillSalesData = from a in _context.CustomerOrders
+            //                       join b in _context.Customers on a.CustomerId equals b.CustomerId
+            //                       join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
+            //                       join d in _context.Carriers on a.CarrierId equals d.CarrierId
+            //                       select new FulfillSalesViewModel
+            //                          {
+            //                           CustomerOrderID = a.CustomerOrderId,
+            //                           OrderDate = a.DateOrdered,
+            //                           DelveryDate = a.DeliveryReqDate,
+            //                           OrderNumber = a.OrderNumber,
+            //                           Customer = b.Name,
+            //                           City = b.City,
+            //                           CarrierID = d.CarrierId,
+            //                           CarrierDesc = d.Name,
+            //                           Instructions = a.SpecialInstructions,
+            //                           Status = c.Description
 
-                                   };
+            //                       };
+
+            var FulfillSalesData = _context.SpGetFulfillSalesHdrs.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesHdr]").ToList();
+
             var FulfillSalesDataTemp = FulfillSalesData;
 
 
@@ -97,58 +109,58 @@ namespace WETT.Controllers
                     switch (rule.field)
                     {
                         case "OrderDate":
-                            FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(rule.data)));
+                            FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(rule.data)));
                             orderSearchDate = rule.data;
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
                             }
                             break;
                         case "DeliveryDate":
-                            FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data)));
+                            FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data)));
                             deliverySearchDate = rule.data;
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
                             }
                             break;
                         case "Carrier":
                             carrierId = (long)Convert.ToDouble(rule.data);
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
                             }
                             else
                             {
@@ -156,23 +168,23 @@ namespace WETT.Controllers
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
                             }
 
                             break;
@@ -187,15 +199,15 @@ namespace WETT.Controllers
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
                             }
-                            else if(pending == true && fulfilled == true)
+                            else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
                             }
                             else
                             {
@@ -203,15 +215,15 @@ namespace WETT.Controllers
                             }
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
                             }
                             break;
                         case "Fulfilled":
@@ -225,15 +237,15 @@ namespace WETT.Controllers
                             }
                             if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
                             }
-                            else if(pending ==true && fulfilled == false)
+                            else if (pending == true && fulfilled == false)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
                             }
                             else
                             {
@@ -241,28 +253,28 @@ namespace WETT.Controllers
                             }
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
                             }
                             break;
-                    /*    case "locationsDropdown":
-                            if (rule.data.Contains("-1"))
-                            {
-                                break; 
-                            }
-                            else
-                            {
-                                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
-                                break;
-                            }
-                    */
+                            /*    case "locationsDropdown":
+                                    if (rule.data.Contains("-1"))
+                                    {
+                                        break; 
+                                    }
+                                    else
+                                    {
+                                        FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
+                                        break;
+                                    }
+                            */
 
                     }
                 }
@@ -271,17 +283,17 @@ namespace WETT.Controllers
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
 
-            //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
-            if (request.sord.ToUpper() == "DESC")
-            {
-                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.OrderByDescending(t => t.OrderDate);
-                FulfillSalesData = FulfillSalesData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
-            else
-            {
-                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.OrderBy(t => t.OrderDate);
-                FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
+            ////Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
+            //if (request.sord.ToUpper() == "DESC")
+            //{
+            //    FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.OrderByDescending(t => t.OrderDate);
+            //    FulfillSalesData = (List<SpGetFulfillSalesHdr>)FulfillSalesData.Skip(currentPageIndex * request.rows).Take(request.rows);
+            //}
+            //else
+            //{
+            //    FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.OrderBy(t => t.OrderDate);
+            //    FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Skip(currentPageIndex * request.rows).Take(request.rows);
+            //}
             var jsonData = new
             {
                 total = totalPages,
@@ -295,25 +307,27 @@ namespace WETT.Controllers
 
         public JsonResult GetAllDtls(JqGridViewModel request)
         {
-          //  var wETT_DBContext = _context.Suppliers;
+            //  var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var AllFulfillSalesDtlsData =  from a in _context.CustomerOrders
-                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
-                                        join c in _context.Products on b.ProductId equals c.ProductId
-                                   select new FulfillSalesDtlsViewModel
-                                   {
-                                       CustomerOrderDtlsID = b.CustomerOrderDetailId,
-                                       CustomerOrderID = a.CustomerOrderId,
-                                       ProductID = c.ProductId,
-                                       ProductSku = c.Sku,
-                                       ProductDesc = c.Description,
-                                       StockQty = 0,
-                                       QtyOrdered = b.QtyOrdered,
-                                       QtyFulfilled = b.QtyFulfilled,
-                                       Notes = b.Notes
-                                   };
+            //var AllFulfillSalesDtlsData = from a in _context.CustomerOrders
+            //                              join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+            //                              join c in _context.Products on b.ProductId equals c.ProductId
+            //                              select new FulfillSalesDtlsViewModel
+            //                              {
+            //                                  CustomerOrderDtlsID = b.CustomerOrderDetailId,
+            //                                  CustomerOrderID = a.CustomerOrderId,
+            //                                  ProductID = c.ProductId,
+            //                                  ProductSku = c.Sku,
+            //                                  ProductDesc = c.Description,
+            //                                  StockQty = 0,
+            //                                  QtyOrdered = b.QtyOrdered,
+            //                                  QtyFulfilled = b.QtyFulfilled,
+            //                                  Notes = b.Notes
+            //                              };
 
-            var FulfillSalesDtlsData = AllFulfillSalesDtlsData;
+            var FulfillSalesDtlsData = _context.SpGetFulfillSalesDtls.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesDtls]").ToList();
+
+            //var FulfillSalesDtlsData = AllFulfillSalesDtlsData;
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
@@ -334,13 +348,12 @@ namespace WETT.Controllers
             if (CurrentHeaderId != -1)
             {
                 //this is the type of transaction id
-                FulfillSalesDtlsData = FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
-
+                FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)(IQueryable<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
             }
             else
             {
                 //this is to hide all transactons by type
-                FulfillSalesDtlsData = FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
+                FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)(IQueryable<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId); //FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
             }
 
 
@@ -349,16 +362,16 @@ namespace WETT.Controllers
             int currentPageIndex = request.page - 1;
 
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
-            if (request.sord.ToUpper() == "DESC")
-            {
-                FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.OrderByDescending(t => t.ProductDesc);
-                FulfillSalesDtlsData = FulfillSalesDtlsData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
-            else
-            {
-                FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.OrderBy(t => t.ProductDesc);
-                FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
+            //if (request.sord.ToUpper() == "DESC")
+            //{
+            //    FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.OrderByDescending(t => t.ProductDesc);
+            //    FulfillSalesDtlsData = FulfillSalesDtlsData.Skip(currentPageIndex * request.rows).Take(request.rows);
+            //}
+            //else
+            //{
+            //    FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.OrderBy(t => t.ProductDesc);
+            //    FulfillSalesDtlsData = (IQueryable<FulfillSalesDtlsViewModel>)FulfillSalesDtlsData.Skip(currentPageIndex * request.rows).Take(request.rows);
+            //}
             var jsonData = new
             {
                 total = totalPages,
@@ -373,8 +386,8 @@ namespace WETT.Controllers
         {
             CurrentHeaderId = data;
             return Json(true);
-       }
-            public JsonResult Add(FulfillSalesViewModel p)
+        }
+        public JsonResult Add(FulfillSalesViewModel p)
         {
             //InventoryTx s = new InventoryTx
             //{
@@ -417,7 +430,7 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
-        
+
         public JsonResult DeleteDtls(long id)
         {
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
@@ -470,7 +483,7 @@ namespace WETT.Controllers
                              {
                                  value = a.CarrierId,
                                  text = a.Name
-                                 
+
                              };
             return Json(invAdjData);
         }

@@ -325,7 +325,7 @@ namespace WETT.Controllers
             //                                  Notes = b.Notes
             //                              };
 
-            var FulfillSalesDtlsData = _context.SpGetFulfillSalesDtls.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesDtls]").ToList();
+            var FulfillSalesDtlsData = _context.SpGetFulfillSalesDtls.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesDtls] @custOdrId =" + CurrentHeaderId).ToList();
 
             //var FulfillSalesDtlsData = AllFulfillSalesDtlsData;
 
@@ -348,12 +348,12 @@ namespace WETT.Controllers
             if (CurrentHeaderId != -1)
             {
                 //this is the type of transaction id
-                FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)(IQueryable<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
+           //     FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
             }
             else
             {
                 //this is to hide all transactons by type
-                FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)(IQueryable<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId); //FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
+                //FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)(IQueryable<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId); //FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
             }
 
 

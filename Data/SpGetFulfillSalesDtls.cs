@@ -9,16 +9,17 @@ namespace WETT.Data
 {
     public class SpGetFulfillSalesDtls
     {
+        public long CustomerOrderDtlsID { get; set; }
         public long CustomerOrderID { get; set; }
-        public DateTime OrderDate { get; set; }
-        public DateTime? DelveryDate { get; set; }
-        public string OrderNumber { get; set; }
-        public string Customer { get; set; }
-        public string City { get; set; }
-        public long CarrierID { get; set; }
-        public string CarrierDesc { get; set; }
-        public string Instructions { get; set; }
-        public string Status { get; set; }
+        public long ProductID { get; set; }
+        public string ProductSku { get; set; }
+        public string ProductDesc { get; set; }
+        public int StockQty { get; set; }
+        public int QtyOrdered { get; set; }
+        public int QtyFulfilled { get; set; }
+
+        public string Notes { get; set; }
+
 
     }
 }

@@ -88,27 +88,28 @@ namespace WETT.Data
             {
                 // entity.ToTable("Call Frequency");
                 entity.HasNoKey();
+                entity.Property(e => e.CustomerOrderDtlsID).HasColumnName("CustomerOrderDtlsID");
                 entity.Property(e => e.CustomerOrderID).HasColumnName("CustomerOrderID");
 
-                entity.Property(e => e.CarrierID).HasColumnName("CarrierID");
+                entity.Property(e => e.ProductID).HasColumnName("ProductID");
 
-                entity.Property(e => e.Customer).HasColumnName("Customer");
-                entity.Property(e => e.OrderNumber).HasColumnName("OrderNumber");
+                entity.Property(e => e.ProductSku).HasColumnName("ProductSku");
+                entity.Property(e => e.ProductDesc).HasColumnName("ProductDesc");
 
 
-                entity.Property(e => e.OrderDate)
-                    .HasPrecision(0)
-                    .HasColumnName("OrderDate");
+                //entity.Property(e => e.OrderDate)
+                //    .HasPrecision(0)
+                //    .HasColumnName("OrderDate");
 
-                entity.Property(e => e.DelveryDate)
-                    .HasColumnType("date")
-                    .HasColumnName("DelveryDate");
+                //entity.Property(e => e.DelveryDate)
+                //    .HasColumnType("date")
+                //    .HasColumnName("DelveryDate");
 
-                entity.Property(e => e.City).HasColumnName("City");
+                entity.Property(e => e.StockQty).HasColumnName("StockQty");
 
-                entity.Property(e => e.CarrierDesc).HasColumnName("CarrierDesc");
-                entity.Property(e => e.Instructions).HasColumnName("Instructions");
-                entity.Property(e => e.Status).HasColumnName("Status");
+                entity.Property(e => e.QtyOrdered).HasColumnName("QtyOrdered");
+                entity.Property(e => e.QtyFulfilled).HasColumnName("QtyFulfilled");
+                entity.Property(e => e.Notes).HasColumnName("Notes");
 
             });
 

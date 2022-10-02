@@ -15,6 +15,7 @@ namespace WETT.Data
         public string ProductSku { get; set; }
         public string ProductDesc { get; set; }
         public int StockQty { get; set; }
+        public int QtyPending { get; set; }
         public int QtyOrdered { get; set; }
         public int QtyFulfilled { get; set; }
 

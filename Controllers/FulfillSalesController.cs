@@ -301,7 +301,7 @@ namespace WETT.Controllers
                 records = totalRecords,
                 rows = FulfillSalesData
             };
-
+            CurrentHeaderId = -1;
             return Json(jsonData);
         }
 
@@ -345,10 +345,11 @@ namespace WETT.Controllers
 
             //        }
             //    }
-            if (CurrentHeaderId != -1)
+            if (CurrentHeaderId == -1)
             {
                 //this is the type of transaction id
-           //     FulfillSalesDtlsData = (List<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
+                FulfillSalesDtlsData = new List<SpGetFulfillSalesDtls>();
+                //(List<SpGetFulfillSalesDtls>)FulfillSalesDtlsData.Where(w => w.CustomerOrderID == CurrentHeaderId);
             }
             else
             {

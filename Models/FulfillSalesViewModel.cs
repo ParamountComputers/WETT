@@ -19,6 +19,7 @@ namespace WETT.Models
         public string CarrierDesc { get; set; }
         public string Instructions { get; set; }
         public string Status { get; set; }
+        public string ShortInv { get; set; }
 
         //public List<SpGetFulfillSalesHdr> FulfillSalesHdrs { get; set; }
     }

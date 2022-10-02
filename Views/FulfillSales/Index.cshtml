@@ -129,7 +129,8 @@
                  //   }
                  //  },
                   { label: 'Instructions',name: 'instructions', editable: true,editoptions: { readonly: 'readonly'}},
-                  { label: 'Status',name: 'status',  editable: true,editoptions: { readonly: 'readonly'}}
+                  { label: 'Status',name: 'status',  editable: true,editoptions: { readonly: 'readonly'}},
+                  { label: 'Short',name: 'shortInv',  editable: false,editoptions: { readonly: 'readonly'}}
 
 
                  ], 
@@ -380,7 +381,8 @@
                         keys: true,
                         editOptions: { },
                         addOptions: { },
-                        delOptions: { url: 'FulfillSales/DeleteDtls' }
+                        delbutton: false
+                        //delOptions: { url: 'FulfillSales/DeleteDtls' }
                     }
                 },
                 { label: 'Customer Order Detail Id',name: 'customerOrderDtlsID',hidden:true,editoptions: { readonly: 'readonly'},key: true},
@@ -388,6 +390,7 @@
                 { label: 'Product ID(Sku)',name: 'productSku',editoptions: { readonly: 'readonly'}},
                 { label: 'Product Desc',name: 'productDesc',editoptions: { readonly: 'readonly'}},
                 { label: 'Inventory Qty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
+                { label: 'Qty Pending',name: 'qtyPending',editoptions: { readonly: 'readonly'}},
                 { label: 'Qty Ordered',name: 'qtyOrdered',editoptions: { readonly: 'readonly'}},
                 { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {number:true}},
                 { label: 'Notes',name: 'notes', editable: true,edittype:'text'}

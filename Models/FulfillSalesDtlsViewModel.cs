@@ -16,6 +16,7 @@ namespace WETT.Models
         public string ProductSku { get; set; }
         public string ProductDesc { get; set; }
         public long StockQty { get; set; }
+        public int QtyPending { get; set; }
         public int QtyOrdered { get; set; }
         public int? QtyFulfilled { get; set; }
         public string Notes { get; set; }

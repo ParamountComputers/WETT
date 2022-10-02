@@ -81,6 +81,7 @@ namespace WETT.Data
                 entity.Property(e => e.CarrierDesc).HasColumnName("CarrierDesc");
                 entity.Property(e => e.Instructions).HasColumnName("Instructions");
                 entity.Property(e => e.Status).HasColumnName("Status");
+                entity.Property(e => e.ShortInv).HasColumnName("ShortInv");
 
             });
 
@@ -106,7 +107,7 @@ namespace WETT.Data
                 //    .HasColumnName("DelveryDate");
 
                 entity.Property(e => e.StockQty).HasColumnName("StockQty");
-
+                entity.Property(e => e.QtyPending).HasColumnName("QtyPending");
                 entity.Property(e => e.QtyOrdered).HasColumnName("QtyOrdered");
                 entity.Property(e => e.QtyFulfilled).HasColumnName("QtyFulfilled");
                 entity.Property(e => e.Notes).HasColumnName("Notes");

@@ -90,7 +90,7 @@
                  ], 
                viewrecords: true,
                height: 500,
-               rowNum: 20,
+               rowNum: 14,
                pager: "#jqGridPager",
                editurl: 'InvTxSummary/Update', 
                ondblClickRow: function(rowid) {
@@ -99,7 +99,7 @@
                 console.log(cellVal);
                 if(invTxType==1)
                 {
-                    window.open("InvAdj?SaCode="+cellVal);
+                    window.open("InvAdjTest?SaCode="+cellVal);
                 }
                 else if(invTxType==2)
                 {

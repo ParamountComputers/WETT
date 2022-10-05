@@ -1,0 +1,10 @@
+﻿.Date {
+    font-size:12px;
+    width:180px;
+    display: inline-block;
+}
+.Notes {
+    font-size: 12px;
+    width: 500px;
+    display: inline-block;
+}

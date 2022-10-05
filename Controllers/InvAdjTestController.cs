@@ -15,7 +15,10 @@ namespace WETT.Controllers
         //public static Boolean showPage = false;
         public static string searchDate = DateTime.Today.ToShortDateString();
         public static string CurrentSaCode;
-        public static string Notes;
+        public static string CurrentNotes;
+        public static DateTime CurrentDate;
+        public static string PrevNotes;
+        public static DateTime PrevDate;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
 
@@ -42,6 +45,7 @@ namespace WETT.Controllers
                              InventoryTxDetailId = b.InventoryTxDetailId,
                              ProductSku = e.Sku,
                              SupplierName = f.Name,
+                             SupplierId = f.SupplierId,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
@@ -72,6 +76,7 @@ namespace WETT.Controllers
                                     InventoryTxDetailId = b.InventoryTxDetailId,
                                     ProductSku = e.Sku,
                                     SupplierName = f.Name,
+                                    SupplierId = f.SupplierId,
                                     ProductId = e.ProductId,
                                     ProductName = e.Description,
                                     InventoryLocationId = d.InventoryLocationId,
@@ -144,26 +149,33 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
-        public JsonResult Add(invAdjViewModel p, string data)
+        public JsonResult Add(invAdjViewModel p)
         {
-            //possibly add into header then have seprate function to add sacode to header
-            var li = data.Split("/");
-            InventoryTx s = new InventoryTx
+            if (CurrentSaCode == null)
             {
-                Date = DateTime.Parse(li[0]),
-                Comments = li[1],
-                InventoryTxTypeId = 1,
-                StockAdjCode = "IA"
-            };
-
-            _context.InventoryTxes.Add(s);
-            _context.SaveChanges();
-            s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
-            _context.SaveChanges();
-            InventoryTxCurrentId = s.InventoryTxId;
-            CurrentSaCode = s.StockAdjCode;
-            //changes it to allow page to be shown
-            //showPage = true;
+                InventoryTx s = new InventoryTx
+                {
+                    Date = CurrentDate,
+                    Comments = CurrentNotes,
+                    InventoryTxTypeId = 1,
+                    StockAdjCode = "IA"
+                };
+                _context.InventoryTxes.Add(s);
+                _context.SaveChanges();
+                PrevNotes = s.Comments;
+                PrevDate = s.Date;
+                InventoryTxCurrentId = s.InventoryTxId;
+                s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
+                _context.SaveChanges();
+                CurrentSaCode = s.StockAdjCode;
+            }
+            else
+            {
+                InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+                s.Comments = CurrentNotes;
+                s.Date = CurrentDate;
+                 _context.SaveChanges();
+            }
             Product c = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
@@ -204,11 +216,18 @@ namespace WETT.Controllers
             }
             return Json(null);
         }
-        public IActionResult CreateSaCode()
+        public IActionResult CreateHeader(string data)
         {
-            var tempSaCode = CurrentSaCode;
-            CurrentSaCode = null;
-            return Json(tempSaCode);
+            var li = data.Split("/");
+            CurrentDate = DateTime.Parse(li[0]);
+            CurrentNotes = li[1];
+
+            return Json(true);
+        }
+        public IActionResult DisplaySACode()
+        {
+            InventoryTx temp =_context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+            return Json(temp.StockAdjCode);
         }
 
         public IActionResult CreateList()

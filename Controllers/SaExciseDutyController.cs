@@ -11,13 +11,11 @@ namespace WETT.Controllers
 {
     public class SaExciseDutyController : Controller
     {
-
-        public static Boolean showPage = false;
-        public static string searchDate = DateTime.Today.ToShortDateString();
         public static string Notes;
         public static string CurrentSaCode;
         public static long InventoryTxCurrentId;
         public static long CurrentToLocation;
+        public static DateTime CurrentDate;
         private readonly WETT_DBContext _context;
         public SaExciseDutyController(WETT_DBContext context)
         {
@@ -30,10 +28,9 @@ namespace WETT.Controllers
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                         join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                         join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
                          join e in _context.Products on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                         //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
                          where a.InventoryTxId == InventoryTxCurrentId
                          select new SaExciseDutyViewModel
                          {
@@ -44,7 +41,6 @@ namespace WETT.Controllers
                              ProductId = e.ProductId,
                              ProductName = e.Description,
                              InventoryLocationId = d.InventoryLocationId,
-                             //     InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
                              InventoryTxTypeId = c.InventoryTxTypeId,
                              Comments = b.Comments,
@@ -61,27 +57,26 @@ namespace WETT.Controllers
             var AllSaExciseDutyData = from b in _context.InventoryTxDetails
                                       join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                                       join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                      join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
+                                      join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
                                       join e in _context.Products on b.ProductId equals e.ProductId
                                       join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                      //  join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
                                       where a.InventoryTxId == InventoryTxCurrentId
                                       select new SaExciseDutyViewModel
-                                      {
-                                          InventoryTxId = b.InventoryTxId,
-                                          InventoryTxDetailId = b.InventoryTxDetailId,
-                                          ProductSku = e.Sku,
-                                          SupplierName = f.Name,
-                                          ProductId = e.ProductId,
-                                          ProductName = e.Description,
-                                          InventoryLocationId = d.InventoryLocationId,
-                                          //   InventoryTxReasonsId = g.InventoryTxReasonId,
-                                          Amount = b.Amount,
-                                          InventoryTxTypeId = c.InventoryTxTypeId,
-                                          Comments = b.Comments,
-                                          Date = a.Date, //.ToShortDateString(),
-                                          SaCode = a.StockAdjCode
-                                      };
+                                        {
+                                            InventoryTxId = b.InventoryTxId,
+                                            InventoryTxDetailId = b.InventoryTxDetailId,
+                                            ProductSku = e.Sku,
+                                            SupplierName = f.Name,
+                                            ProductId = e.ProductId,
+                                            ProductName = e.Description,
+                                            InventoryLocationId = d.InventoryLocationId,
+                                            Amount = b.Amount,
+                                            InventoryTxTypeId = c.InventoryTxTypeId,
+                                            Comments = b.Comments,
+                                            Date = a.Date, //.ToShortDateString(),
+                                            SaCode = a.StockAdjCode
+
+                                       };
             var SaExciseDutyData = AllSaExciseDutyData;
 
 
@@ -90,21 +85,6 @@ namespace WETT.Controllers
                 SaExciseDutyData = SaExciseDutyData.Where(w => w.SaCode == CurrentSaCode);
                 InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
                 InventoryTxCurrentId = r.InventoryTxId;
-                CurrentToLocation = (long)r.ToInventoryLocationId;
-            }
-            else
-            {
-                if (showPage == true)
-                {
-                    //this is the type of transaction id
-                    SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
-                }
-                else
-                {
-                    //this is to hide all transactons by type
-                    SaExciseDutyData = SaExciseDutyData.Where(w => w.InventoryTxId == -1);
-                }
             }
 
 
@@ -146,23 +126,46 @@ namespace WETT.Controllers
         }
         public JsonResult Add(SaExciseDutyViewModel p)
         {
-            showPage = true;
-            Product s = _context.Products.Single(a => a.Description == p.ProductName);
+            if (CurrentSaCode == null)
+            {
+                InventoryTx s = new InventoryTx
+                {
+                    Date = CurrentDate,
+                    Comments = Notes,
+                    InventoryTxTypeId = 5,
+                    StockAdjCode = "ED"
+                };
+                _context.InventoryTxes.Add(s);
+                _context.SaveChanges();
+                InventoryTxCurrentId = s.InventoryTxId;
+                s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
+                _context.SaveChanges();
+                CurrentSaCode = s.StockAdjCode;
+            }
+            else
+            {
+                InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+                s.Comments = Notes;
+                s.Date = CurrentDate;
+                _context.SaveChanges();
+            }
+            Product c = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
                 ToInventoryLocationId = CurrentToLocation,
                 FromInventoryLocationId = 3,
-                ProductId = s.ProductId,
+                ProductId = c.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = InventoryTxCurrentId
+
             };
 
             _context.InventoryTxDetails.Add(r);
             _context.SaveChanges();
 
-
             return Json(true);
+      
         }
         public JsonResult Delete(long id)
         {
@@ -176,25 +179,10 @@ namespace WETT.Controllers
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
-            InventoryTx s = new InventoryTx
-            {
-                Date = DateTime.Parse(li[0]),
-                InventoryTxTypeId = 5,          //hard coded transaction type id for now
-                StockAdjCode = "ED",
-                //add in extra cols here******************************************              
-                ToInventoryLocationId = (long)Convert.ToDouble(li[1]),
-                Comments = li[2]
-                //*****************************************************************
-            };
-            //'+date+'/'+ locationsDropdown+'/'+'/'+ notes
-            _context.InventoryTxes.Add(s);
-            _context.SaveChanges();
-            InventoryTxCurrentId = s.InventoryTxId;
-            s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
-            _context.SaveChanges();
-            CurrentSaCode = null;
-            CurrentToLocation = (long)s.ToInventoryLocationId;
-            return Json(s.StockAdjCode);
+            CurrentDate = DateTime.Parse(li[0]);
+            Notes = li[1];
+            CurrentToLocation = (long)Convert.ToDouble(li[2]);
+            return Json(true);
         }
         public JsonResult SaCode()
         {
@@ -212,6 +200,12 @@ namespace WETT.Controllers
             }
             return Json(null);
         }
+        public IActionResult DisplaySACode()
+        {
+            InventoryTx temp = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+            return Json(temp.StockAdjCode);
+        }
+
 
         public IActionResult CreateList()
         {
@@ -228,44 +222,31 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var SaExciseDutyData = from a in _context.Products
-                                   select new
-                                   {
-                                       text = a.Sku,
-                                       value = a.Description
-
-                                   };
-            return Json(SaExciseDutyData);
+            var invAdjData = from a in _context.Products
+                             select new
+                             {
+                                 text = a.Sku,
+                                 value = a.Description
+                             };
+            return Json(invAdjData);
         }
         public IActionResult CreateProductName()
         {
-            var SaExciseDutyData = from a in _context.Products
-                                   join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                                   select new
-                                   {
-                                       label = a.ProductId,
-                                       value = a.Description
-
-
-                                   };
-            return Json(SaExciseDutyData);
+            var invAdjData = from a in _context.Products
+                             select new
+                             {
+                                 value = a.SupplierId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
         }
+
         public IActionResult CreateLocationList()
         {
             var SaExciseDutyData = from a in _context.InventoryLocations.Where(a => a.InventoryLocationId == 1 || a.InventoryLocationId == 4)
                                    select new
                                    {
                                        value = a.InventoryLocationId,
-                                       text = a.Description
-                                   };
-            return Json(SaExciseDutyData);
-        }
-        public IActionResult CreateReasonsList()
-        {
-            var SaExciseDutyData = from a in _context.InventoryTxReasons
-                                   select new
-                                   {
-                                       value = a.InventoryTxReasonId,
                                        text = a.Description
                                    };
             return Json(SaExciseDutyData);

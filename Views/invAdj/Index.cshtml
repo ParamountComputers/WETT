@@ -1,4 +1,4 @@
-﻿@*
+﻿@*@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -8,38 +8,35 @@
 <div class="text-center">
     <h4 class="display-5">Inventory Adjustment</h4>
 </div>
-<fieldset class="scheduler-border">
- <div class="mb-1 row">
-    <div class="col-lg-1">
-          <label for="date" class="col-form-label" style="font-size:12px;">Transaction Date:</label>
-    </div>
-        <div class="col-lg-1 p-0">
-          <input type="date" class="form-control"  style="font-size:12px;" id='date' name="date" />
-        </div> 
+<body>
 
-        <div class="col-lg-1 text-right"> 
-          <label for="comments"  class="col-form-label" style="font-size:12px;">Notes:</label>
-        </div>
-        <div class="col-lg-5 p-0">
-          <input type="text"  style="font-size:12px;" class="form-control" id="comments" name="comments"/>
-        </div>
-        <div class="col-lg-1"></div>
-        <div class="col-lg-1 text-right"> 
-          <label for="saCode"  class="col-form-label" style="font-size:12px;">SA Code:</label>
-        </div>
-        <div class="col-lg-1 p-0">
-          <input type="text" style="font-size:12px; border-radius: 0 !important" class="form-control" id="saCode" readonly/>
-        </div>
-        <div class="col-lg-1 text-right">
-          <button class="btn btn-outline-secondary" style="font-size:12px;" id="save" type="button">Save</button>  
-        </div> 
-   </div>
-</fieldset>
-
+  <div class="searchDate">
+      <label for="date" class="Label" >Trans Date:</label>
+      <input type="date"id='date' class="Date" name="date" />
+  </div>
+  <div class="Gap5"></div>
+  <div class="Notes"> 
+      <label for="comments" class="Label" >Notes:</label>
+      <input type="text" class="NotesInput"id="comments" name="comments"/>
+  </div>
+    <div class="Gap6"></div>
+  <div class="SaCode">
+      <label for="saCode"  class="Label">SA Code:</label>
+      <input type="text" class="SaCodeInput" id="saCode" readonly/>
+  </div>
+</body>
 <table id="invAdj"></table>
 <div id="jqGridPager"></div>
-@section scripts {
+<fieldset class="scheduler-border">
+ <div class="mb-3 row">
+    <div class="col-lg-12">
+          <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="newPage" type="button"> New Page </button>  
+    </div>
+ </div>
+</fieldset>
 
+
+@section scripts {
 <script type="text/javascript">
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -93,17 +90,18 @@
                     } });   
                                   }
                    }},
-                   { label: 'Supplier',name: 'supplierName',fixed:true,width:120, editoptions: {readonly: 'readonly'}},
-                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80,  editoptions: {readonly: 'readonly'}},
+                   { label: 'Supplier',name: 'supplierName',fixed:true,width:120,editable:true, editoptions: {readonly: 'readonly'}},
+                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable:true , editoptions: {readonly: 'readonly'}},
                    { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
                    { label: 'Adj Amount (+/-)',name: 'amount',fixed:true,width:80,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
                    { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",editrules: { required: true },formatter:'select', editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text"}
 
-                 ], 
+                 ],  
                viewrecords: true,
-               height: 500,
-               rowNum: 20,
+               height: 388.5,
+               rowHeight: 20,
+               rowNum: 15,
                pager: "#jqGridPager",
                editurl: 'InvAdj/Update', 
                
@@ -124,17 +122,31 @@
               zIndex:99,
               afterShowForm: function () {
               var idSelector = $.jgrid.jqID(this.p.id);
-              if(header==false) {
-              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
-              alert("Error: Need Header");
-              }
+              //if(header==false) {
+              //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              //alert("Error: Need Header");
+              //}
               },
-                   closeAfterAdd: true,
-                   recreateForm: true,
-                   errorTextFormat: function (data) {
-                       return 'Error: ' + data.responseText
+               //onclickSubmit: function (){
+               //},
+               afterSubmit:function(){
+                $.getJSON('InvAdj/DisplaySACode', function(data){
+                $("#saCode").val(data);
+                });
+                $.ajaxSetup( { "async": true } );
+               },
+               beforeSubmit :function (){
+               var currentDate = $("#date").val();
+               var notes = $("#comments").val();
+               $.getJSON('InvAdj/CreateHeader?data='+currentDate+'/'+notes, function(){});
+               $.ajaxSetup( { "async": true } );
+               },
+               closeAfterAdd: true,
+               recreateForm: true,
+               errorTextFormat: function (data) {
+                      return 'Error: ' + data.responseText
                    },
-                   url: "InvAdj/Add"
+                   url: 'InvAdj/Add'
                });
                
        });
@@ -160,11 +172,10 @@
       
        $('#invAdj').setGridWidth(parseInt($(window).width()) - 20);
 
-
-
-       $("#save").on('click', function () {
-           SaveHeader();
+       $("#newPage").on('click', function () {
+           window.location.replace("InvAdj");
        });
+
        function IsProduct(value,colname)
        {
            var containsProduct = false;
@@ -209,23 +220,8 @@
             return date;
        }
     
-       function SaveHeader()
-       {
-            header = true;
-            console.log($("#date").val());
-            var date = $("#date").val();
-            var notes = $("#comments").val();
 
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('InvAdj/CreateHeader?data='+date+'/'+notes, function(data) 
-            {
-                $("#saCode").val(data);
-            });
-            $.ajaxSetup( { "async": true } );
-            $('#invAdj').setGridParam({ page: 1 }).trigger("reloadGrid");
-       }
-
-       function getSupplierNames(value) 
+        function getSupplierNames(value) 
        {
             var Supplier="";
             $.ajaxSetup( { "async": false } );

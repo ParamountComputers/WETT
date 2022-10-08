@@ -1,10 +1,82 @@
-﻿.Date {
-    font-size:12px;
+﻿.searchDate {
     width:180px;
     display: inline-block;
 }
-.Notes {
+.Label {
+    font-size:12px;
+    width:80px;
+}
+.Date {
+    height: 30px;
     font-size: 12px;
-    width: 500px;
+    width: 90px;
+    align-items: end;
+}
+.Gap1 {
+    width:30px;
+    display:inline-block;
+}
+.Gap2 {
+    width: 40px;
     display: inline-block;
+}
+.Gap3 {
+    width: 90px;
+    display: inline-block;
+}
+.Gap4 {
+    width: 120px;
+    display: inline-block;
+}
+.Gap5 {
+    width: 135px;
+    display: inline-block;
+}
+
+.Gap6 {
+    width: 215px;
+    display: inline-block;
+}
+.Gap7 {
+    width: 260px;
+    display: inline-block;
+}
+.Notes {
+    width: 400px;
+    display: inline-block;
+}
+.NotesInput {
+    height: 30px;
+    font-size: 12px;
+    border: 1px solid black;
+    border-radius: 8px;
+    width: 310px;
+    align-items: end;
+}
+.SaCode {
+    width: 160px;
+    display: inline-block;
+}
+
+.SaCodeInput {
+    border-width: 1px;
+    text-align: right;
+    width: 75px;
+    padding-right: 0em;
+    margin-right: 0px;
+    background: lightgray;
+    font-size: 12px;
+    height: 30px;
+}
+.searchDropdown {
+    width: 230px;
+    display: inline-block;
+}
+
+.dropDownInput {
+    display: inline-block;
+    border-width: 1px;
+    text-align: left;
+    width: 110px;
+    font-size: 12px;
 }

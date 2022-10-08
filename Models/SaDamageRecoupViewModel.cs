@@ -14,6 +14,7 @@ namespace WETT.Models
         public string ProductSku { get; set; }
 
         public string SupplierName { get; set; }
+        public long SupplierId { get; set; }
 
         public long ProductId { get; set; }
 

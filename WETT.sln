@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WETT", "WETT.csproj", "{EE86E9D5-4A69-49B3-85EE-4ACCC2B376F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WETTTests", "..\WETTTests\WETTTests.csproj", "{D32E1889-5D60-41EC-AF1A-23E335058761}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EE86E9D5-4A69-49B3-85EE-4ACCC2B376F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE86E9D5-4A69-49B3-85EE-4ACCC2B376F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE86E9D5-4A69-49B3-85EE-4ACCC2B376F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D32E1889-5D60-41EC-AF1A-23E335058761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D32E1889-5D60-41EC-AF1A-23E335058761}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D32E1889-5D60-41EC-AF1A-23E335058761}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D32E1889-5D60-41EC-AF1A-23E335058761}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,70 +8,56 @@
 <div class="text-center">
     <h4 class="display-5">Release from Bond</h4>
 </div>
-<fieldset class="scheduler-border"  style="max-height: 18rem;">
-<div class="container-flow">
-    <div class="mb-1 row">
-        <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="date">Transaction Date:</label>
-        </div>
-        <div class="col-lg-1 p-0">
-            <input style="font-size:8px;" class="form-control" type="date" id="date" name="date">
-        </div>
-        <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="locationsDropwon">To Location:</label>
-        </div>
-        <div class="col-lg-1 p-0">
-              <select style="font-size:8px;" class="form-control" id="locationsDropdown" name="locationsDropdown"></select> 
-        </div>
-        <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="purchaseOrder">Purchase Order:</label>
-        </div>
-        <div class="col-lg-1 p-0">
-            <input style="font-size:8px;" type="text" class="form-control"  aria-describedby="basic-addon2" id="purchaseOrder"/>
-         </div>
-         <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="portEntry">Port Entry:</label>
-        </div>
-         <div class="col-lg-1 p-0">
-            <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="portEntry"/>
-        </div>
+<body>
+    <div class="searchDate">
+       <label for="date" class="Label" >Trans Date:</label>
+       <input type="date"id='date' class="Date" name="date"/> 
     </div>
-    <div class="mb-1 row">
-         <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="prevTransNo">Prev Trans #:</label>
-        </div>
-        <div class="col-lg-1 p-0">
-            <input style="font-size:8px;" type="text" class="form-control"  aria-describedby="basic-addon2" id="prevTransNo"/>
-        </div>
-        <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="transNumber">Trans #:</label>
-        </div>
-        <div class="col-lg-1 p-0">
-            <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="transNumber"/>
-        </div>
-        <div class="col-lg-1 text-right">
-            <label style="font-size:8px;" class="col-form-label" for="comments">Notes:</label>
-        </div>
-        <div class="col-lg-3 p-0">
-            <input style="font-size:8px;" type="text" class="form-control" aria-describedby="basic-addon2" id="comments"/>
-        </div>
-        <div class="col-lg-1"></div>
-        <div class="col-lg-1 text-right"> 
-                 <label for="saCode"  class="col-form-label" style="font-size:8px;">SA Code:</label>
-             </div>
-             <div class="col-lg-1 p-0">
-                   <input type="text" style="font-size:8px; border-radius: 0 !important" class="form-control" id="saCode" readonly/>
-             </div>
-        <div class="col-lg-1 text-right">
-            <button class="btn btn-outline-secondary" style="font-size:8px;" id="save" type="button">Save</button>  
-        </div>
+    <div class="Gap1"></div>
+    <div class="searchDropdown"> 
+          <label for="locationsDropdown"  class="Label">To Location:</label>
+          <select class="form-control dropDownInput" id="locationsDropdown" name="locationsDropdown"></select> 
     </div>
-</div>
-</fieldset>
-
-
+    <div class="Gap1"></div>
+    <div class="searchInput">
+         <label class="Label" for="purchaseOrder">Purchase Order:</label>
+         <input type="text" class="input" id="purchaseOrder"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="portEntry">Port Entry:</label>
+         <input type="text" class="input" id="portEntry"/>
+    </div>
+    <div></div>
+    <div class="searchInput">
+         <label class="Label" for="transNumber">Trans #:</label>
+         <input type="text" class="input" id="transNumber"/>
+    </div>
+    <div class="Gap1"></div>
+    <div class="searchInput">
+         <label class="Label" for="prevTransNo">Prev Trans #:</label>
+         <input type="text" class="input" id="prevTransNo"/>
+    </div>
+    <div class="Gap1"></div>
+    <div class="Notes"> 
+      <label for="comments" class="Label" >Notes:</label>
+      <input type="text" class="NotesInput"id="comments"/>
+  </div>
+  <div class="Gap2"></div>
+  <div class="SaCode">
+      <label for="saCode"  class="Label">SA Code:</label>
+      <input type="text" class="SaCodeInput" id="saCode" readonly/>
+  </div>
+    
+</body>
 <table id="saRelease"></table>
 <div id="jqGridPager"></div>
+<fieldset class="scheduler-border">
+ <div class="mb-3 row">
+    <div class="col-lg-12">
+          <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="newPage" type="button"> New Page </button>  
+    </div>
+ </div>
+</fieldset>
 @section scripts {
 
 <script type="text/javascript">
@@ -116,31 +102,29 @@
                    { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Product Name',name: 'productName',fixed:true,width:180,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
-                    editoptions: { 
-                                  dataInit: function(elem) {
-                    curRowId = $('#saRelease').getGridParam('selrow');    
-                    $(elem).select();
-                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
+                   editoptions: { 
+                   dataInit: function(elem) {
+                   curRowId = $('#saRelease').getGridParam('selrow');    
+                   $(elem).select();
+                   $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                    
-                  $('#saRelease').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
-                  $('input#supplierName').val(getSupplierNames(ui.item.value));
-                  $('#saRelease').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                  $('input#productSku').val(getProductSku(ui.item.value));
+                   $('#saRelease').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
+                   $('input#supplierName').val(getSupplierNames(ui.item.value));
+                   $('#saRelease').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
+                   $('input#productSku').val(getProductSku(ui.item.value));
                     
-                } });   
-            }
-                   }},
+                   } });   
+                   }  }},
                    { label: 'Supplier',name: 'supplierName',width:180,fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
-                 //  { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
                    { label: 'Adj Amount (+/-)',name: 'amount',fixed:true,width:80,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
-                 //  { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",editrules: { required: true },formatter:'select', editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true,width:500, editable: true, edittype:"text",}
 
                  ], 
                viewrecords: true,
-               height: 500,
-               rowNum: 20,
+               height: 388.5,
+               rowHeight: 20,
+               rowNum: 15,
                pager: "#jqGridPager",
                editurl: 'saRelease/Update',              
 
@@ -152,22 +136,45 @@
            $('#saRelease').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
-               {},
+              
+               {
+                  
+               },
                {
               zIndex:99,
               afterShowForm: function () {
-                  var idSelector = $.jgrid.jqID(this.p.id);
-                  if(header==false) {
-                      $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
-                      alert("Error: Need Header");
-                  }
+              var idSelector = $.jgrid.jqID(this.p.id);
+              //if(header==false) {
+              //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              //alert("Error: Need Header");
+              //}
               },
-                   closeAfterAdd: true,
-                   recreateForm: true,
-                   errorTextFormat: function (data) {
-                       return 'Error: ' + data.responseText
+               //onclickSubmit: function (){
+               //},
+               afterSubmit:function(){
+                $.getJSON('saRelease/DisplaySACode', function(data){
+                $("#saCode").val(data);
+                });
+                $.ajaxSetup( { "async": true } );
+               },
+               beforeSubmit :function (){
+               var currentDate = $("#date").val();
+               var notes = $("#comments").val();
+               var transNumber = $("#transNumber").val();
+               var prevTransNo = $("#prevTransNo").val();
+               var purchaseOrder = $("#purchaseOrder").val();
+               var portEntry = $("#portEntry").val();
+               var probill = $("#probill").val();
+               var locationsDropdown = $("#locationsDropdown").val();
+               $.getJSON('saRelease/CreateHeader?data='+currentDate+'/'+notes+'/'+transNumber+'/'+prevTransNo+'/'+purchaseOrder+'/'+portEntry+'/'+probill+'/'+locationsDropdown, function(){});
+               $.ajaxSetup( { "async": true } );
+               },
+               closeAfterAdd: true,
+               recreateForm: true,
+               errorTextFormat: function (data) {
+                      return 'Error: ' + data.responseText
                    },
-                   url: "saRelease/Add"
+                   url: 'saRelease/Add'
                });
                
        });
@@ -175,20 +182,13 @@
        $(document).ready(function () {  
            $('#date').val(date());
        });
-       $('#saRelease').setGridWidth(parseInt($(window).width()) - 20);
-       $("#comments").on('change keyup paste', function () {
-           SearchByComments();
+       $("#newPage").on('click', function () {
+           window.location.replace("saRelease");
        });
-       $("#date").on('change keyup paste', function () {
-           SearchByDate();
-       }); 
-       $("#save").on('click', function () {
-           SaveHeader();
-        });
-                $(document).ready(function () {  
+      $(document).ready(function () {  
        $.ajax({  
                type: "GET",  
-               url: "SaRelease/CreateLocationList",  
+               url: "saRelease/CreateLocationList",  
                data: "{}",  
                success: function (data) {  
                    var s = '';  
@@ -204,7 +204,7 @@
       $(document).ready(function () {  
           $.ajax({  
                 type: "GET",  
-                url: "SaRelease/SaCode",  
+                url: "saRelease/SaCode",  
                 data: "{}",  
                 success: function (data) {  
                      if(data!=null)
@@ -232,7 +232,7 @@
                     for (var i = 0; i < data.length; i++) 
                         {
                             // console.log(data[i].value);
-                            if(value== data[i].value)
+                            if(value== data[i].text)
                                 {
                                 containsProduct = true;
                                 }
@@ -263,69 +263,7 @@
          return date;
         }
     
-    function SaveHeader()
-        {
-            var date = $("#date").val();
-            var notes = $("#comments").val();
-            var purchaseOrder= $("#purchaseOrder").val();
-            var portEntry= $("#portEntry").val();
-            var locationsDropdown= $("#locationsDropdown").val();
-            var prevTransNo= $("#prevTransNo").val();
-            var transNumber= $("#transNumber").val();
-            if(locationsDropdown!=-1)
-            {
-                header = true;
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('saRelease/CreateHeader?data='+date+'/'+purchaseOrder+'/'+ portEntry+'/'+ locationsDropdown+'/'+ prevTransNo+'/'+transNumber +'/'+ notes, function(data) {
- 
-            $("#saCode").val(data);
-                    });
-            $.ajaxSetup( { "async": true } );
-            }
-            else
-            {
-                alert("Error: Enter A Location");
-            }
-            $('#saRelease').setGridParam({ page: 1 }).trigger("reloadGrid");
-        }
 
-    function SearchByComments()
-        {
-            //  Fetch the text from our <input> control
-            var searchString = $("#comments").val();
-        
-            //  Prepare to pass a new search filter to our jqGrid
-            var f = { groupOp: "AND", rules: [] };
-
-            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-            //  In this example, I'm searching through the UserName column.
-
-            f.rules.push({ field: "comments", op: "cn", data: searchString });
-
-            var grid = $('#saRelease');
-            grid[0].p.search = f.rules.length > 0;
-            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-            grid.trigger("reloadGrid", [{ page: 1 }]);
-        }
-
-    function SearchByDate()
-        {
-            //  Fetch the text from our <input> control
-            var searchString = $("#date").val();
-        
-            //  Prepare to pass a new search filter to our jqGrid
-            var f = { groupOp: "AND", rules: [] };
-
-            //  Remember to change the following line to reflect the jqGrid column you want to search for your string in
-            //  In this example, I'm searching through the UserName column.
-
-            f.rules.push({ field: "date", op: "cn", data: searchString });
-
-            var grid = $('#saRelease');
-            grid[0].p.search = f.rules.length > 0;
-            $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
-            grid.trigger("reloadGrid", [{ page: 1 }]);
-        }
 
     function getSupplierNames(value) 
         {
@@ -368,22 +306,22 @@
         }
 
     function getProductName() 
-        {
+       {
+               var ProductNameList= [];
             $.ajaxSetup( { "async": false } );
-            $.getJSON('saRelease/CreateProductName', function(data) {
-                if (data != null) {
+            $.getJSON('saRelease/CreateProductName', function(data) 
+            {
+                if (data != null) 
+                {
                     for (var i = 0; i < data.length; i++) 
                     {
-                        ProductNameList[i]=data[i].value;
+                        ProductNameList[i]=data[i].text;
                     }
-                 }//if
-
-                }
-             );
-                $.ajaxSetup( { "async": true } );
-  
-               return ProductNameList; 
-        }
+                }//if
+            });
+            $.ajaxSetup( { "async": true } );
+            return ProductNameList; 
+       }
 
     function getLocation() 
         {

@@ -8,40 +8,31 @@
   <div class="text-center">
     <h4 class="display-5">Adjustment Summary</h4>
   </div>
-<fieldset class="scheduler-border">
- <div class="container-flow">
-  
-      <div class="mb-1 row">
-           <div class="col-lg-1 text-right">
-                <label for="startDate" class="col-form-label" style="font-size:8px;"> Start Date Range:</label>
-           </div>
-           <div class="col-lg-1 p-0">
-                <input type="date" class="form-control" style="font-size:8px;" id='startDate' name="startDate" />
-           </div> 
-           <div class="col-lg-1"></div>
-           <div class="col-lg-1 text-right">
-                <label for="endDate" class="col-form-label" style="font-size:8px;"> End Date Range:</label>
-            </div>
-            <div class="col-lg-1 p-0">
-                <input type="date" class="form-control" style="font-size:8px;" id='endDate' name="endDate" />
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-1 text-right">
-                <label for="InvTxSummaryDropdown" class="col-form-label" style="font-size:8px;">Transaction type:</label>
-           </div>
-           <div class="col-lg-2">
-                   <select style="font-size:8px;" class="form-control" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
-           </div>
-           <div class="col-lg-2"></div>
-            <div class="col-lg-1 text-right">
-                 <button class="btn btn-outline-secondary" style="font-size:8px;" id="search" type="button">Search</button>  
-            </div>        
-      </div>
- </div>
-</fieldset>
-
+  <body>
+      <div class="searchDate">
+      <label for="startDate" class="Label" >Start Date:</label>
+      <input type="date"id='startDate' class="Date" name="startDate" />
+  </div>
+  <div class="Gap2"></div>
+  <div class="searchDate">
+      <label for="endDate" class="Label" >End Date:</label>
+      <input type="date"id='endDate' class="Date" name="endDate" />
+  </div>
+  <div class="Gap2"></div>
+  <div class="searchDropdown2"> 
+      <label for="InvTxSummaryDropdown"  class="Label">Trans type:</label>
+      <select class="form-control dropDownInput2" id="InvTxSummaryDropdown" name="InvTxSummaryDropdown"></select> 
+  </div>
+</body>
 <table id="invTxSummary"></table>
 <div id="jqGridPager"></div>
+<fieldset class="scheduler-border">
+ <div class="mb-3 row">
+    <div class="col-lg-12">
+          <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="search" type="button"> Search </button>  
+    </div>
+ </div>
+</fieldset>
 @section scripts {
 
 <script type="text/javascript">
@@ -89,14 +80,14 @@
 
                  ], 
                viewrecords: true,
-               height: 500,
-               rowNum: 14,
+               height: 388.5,
+               rowHeight: 20,
+               rowNum: 15,
                pager: "#jqGridPager",
                editurl: 'InvTxSummary/Update', 
                ondblClickRow: function(rowid) {
                 var cellVal = $('#invTxSummary').jqGrid ('getCell', rowid, 'saCode');
                 var invTxType = $("#InvTxSummaryDropdown").val();
-                console.log(cellVal);
                 if(invTxType==1)
                 {
                     window.open("InvAdj?SaCode="+cellVal);

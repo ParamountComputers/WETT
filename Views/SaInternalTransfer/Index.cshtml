@@ -13,7 +13,7 @@
       <label for="date" class="Label" >Trans Date:</label>
       <input type="date"id='date' class="Date" name="date" />
   </div>
-  <div class ="Gap3"></div>
+  <div class ="Gap2"></div>
   <div class="searchDropdown"> 
           <label for="toLocationsDropdown"  class="Label">To Location:</label>
           <select class="form-control dropDownInput" id="toLocationsDropdown" name="toLocationsDropdown"></select> 
@@ -168,22 +168,6 @@
        $(document).ready(function () {  
            $.ajax({  
                type: "GET",  
-               url: "SaInternalTransfer/SaCode",  
-               data: "{}",  
-               success: function (data) {  
-                   if(data!=null)
-                   {
-                      header= true;
-                      $("#saCode").val(data.sacode);
-                      $("#date").val(data.date);
-                      $("#comments").val(data.comments);
-                   }
-               }  
-           });  
-       });
-        $(document).ready(function () {  
-           $.ajax({  
-               type: "GET",  
                url: "SaInternalTransfer/CreateFromLocationList",  
                data: "{}",  
                success: function (data) {  
@@ -210,6 +194,26 @@
            });  
        });
 
+       $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "SaInternalTransfer/SaCode",  
+               data: "{}",  
+               success: function (data) {  
+                   if(data!=null)
+                   {
+                      header= true;
+                      $("#saCode").val(data.sacode);
+                      $("#date").val(data.date);
+                      $("#comments").val(data.comments);
+                      $("#toLocationsDropdown").val(data.toLocation);
+                      $("#fromLocationsDropdown").val(data.fromLocation);
+
+                   }
+               }  
+           });  
+       });
+       
       
        $('#saInternalTransfer').setGridWidth(parseInt($(window).width()) - 20);
 
@@ -320,7 +324,6 @@
                 }//if
             });
             $.ajaxSetup( { "async": true } );
-            console.log(ProductNameList);
             return ProductNameList; 
        }
 

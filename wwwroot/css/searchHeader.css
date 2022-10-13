@@ -1,27 +1,43 @@
 ﻿.searchDate {
-    width:180px;
+    width:210px;
     display: inline-block;
 }
-.Label {
-    font-size:12px;
-    width:80px;
-}
 .Date {
+    height: 25px;
+    font-size: 12px;
+    width: 110px;
+    border: 1px solid black;
+    border-radius: 8px;
+    align-items: end;
+    text-align:center;
+}
+.searchInput {
+    width: 210px;
+    display: inline-block;
+}
+.input {
+    border: 1px solid black;
+    border-radius: 8px;
+    border-width: 1px;
+    text-align: left;
+    width: 110px;
     height: 30px;
     font-size: 12px;
+}
+.Label {
+    font-size: 12px;
     width: 90px;
-    align-items: end;
 }
 .Gap1 {
-    width:30px;
+    width:10px;
     display:inline-block;
 }
 .Gap2 {
-    width: 40px;
+    width: 45px;
     display: inline-block;
 }
 .Gap3 {
-    width: 90px;
+    width: 80px;
     display: inline-block;
 }
 .Gap4 {
@@ -29,20 +45,20 @@
     display: inline-block;
 }
 .Gap5 {
-    width: 135px;
+    width: 155px;
     display: inline-block;
 }
 
 .Gap6 {
-    width: 215px;
+    width: 205px;
     display: inline-block;
 }
 .Gap7 {
-    width: 260px;
+    width: 240px;
     display: inline-block;
 }
 .Notes {
-    width: 400px;
+    width: 425px;
     display: inline-block;
 }
 .NotesInput {
@@ -50,11 +66,12 @@
     font-size: 12px;
     border: 1px solid black;
     border-radius: 8px;
-    width: 310px;
+    width: 325px;
     align-items: end;
+
 }
 .SaCode {
-    width: 160px;
+    width: 170px;
     display: inline-block;
 }
 
@@ -64,12 +81,12 @@
     width: 75px;
     padding-right: 0em;
     margin-right: 0px;
-    background: lightgray;
+    background: lightgrey;
     font-size: 12px;
     height: 30px;
 }
 .searchDropdown {
-    width: 230px;
+    width: 210px;
     display: inline-block;
 }
 
@@ -80,3 +97,16 @@
     width: 110px;
     font-size: 12px;
 }
+.searchDropdown2 {
+    width: 280px;
+    display: inline-block;
+}
+
+.dropDownInput2 {
+    display: inline-block;
+    border-width: 1px;
+    text-align: left;
+    width: 180px;
+    font-size: 12px;
+}
+

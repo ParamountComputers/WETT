@@ -12,10 +12,12 @@ namespace WETT.Controllers
     public class SaOutboundController : Controller
     {
 
-        public static Boolean showPage = false;
-        public static string searchDate = DateTime.Today.ToShortDateString();
+        public static DateTime CurrentDate;
         public static string Notes;
         public static string CurrentSaCode;
+        public static long CurrentTruckingCompany;
+        public static long CurrentLocation;
+        public static string CurrentProbill;
         public static long InventoryTxCurrentId;
         public static long CurrentFromLocation;
         private readonly WETT_DBContext _context;
@@ -81,21 +83,6 @@ namespace WETT.Controllers
                 SaOutboundData = SaOutboundData.Where(w => w.SaCode == CurrentSaCode);
                 InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
                 InventoryTxCurrentId = r.InventoryTxId;
-                CurrentFromLocation = (long)r.FromInventoryLocationId;
-            }
-            else
-            {
-                if (showPage == true)
-                {
-                    //this is the type of transaction id
-                    SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
-                }
-                else
-                {
-                    //this is to hide all transactons by type
-                    SaOutboundData = SaOutboundData.Where(w => w.InventoryTxId == -1);
-                }
             }
 
 
@@ -135,15 +122,46 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
-        public JsonResult Add(SaOutboundViewModel p)
+        public JsonResult Add(SaExciseDutyViewModel p)
         {
-            showPage = true;
-            Product s = _context.Products.Single(a => a.Description == p.ProductName);
+            if (CurrentSaCode == null)
+            {
+                InventoryTx s = new InventoryTx
+                {
+                    Date = CurrentDate,
+                    InventoryTxTypeId = 3,          //hard coded transaction type id for now
+                    StockAdjCode = "OT",
+                    //add in extra cols here******************************************
+                    ShippingLocationId = CurrentLocation,
+                    TruckingCompanyId = CurrentTruckingCompany,
+                    Probill = CurrentProbill,
+                    FromInventoryLocationId = CurrentFromLocation,
+                    Comments = Notes
+                };
+                _context.InventoryTxes.Add(s);
+                _context.SaveChanges();
+                InventoryTxCurrentId = s.InventoryTxId;
+                s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
+                _context.SaveChanges();
+                CurrentSaCode = s.StockAdjCode;
+            }
+            else
+            {
+                InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+                s.Comments = Notes;
+                s.Date = CurrentDate;
+                s.ShippingLocationId = CurrentLocation;
+                s.Probill = CurrentProbill;
+                s.TruckingCompanyId = CurrentTruckingCompany;
+                s.FromInventoryLocationId = CurrentFromLocation;
+                _context.SaveChanges();
+            }
+            Product c = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
                 FromInventoryLocationId = CurrentFromLocation,
-                ProductId = s.ProductId,
+                ProductId = c.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = InventoryTxCurrentId
             };
@@ -151,9 +169,10 @@ namespace WETT.Controllers
             _context.InventoryTxDetails.Add(r);
             _context.SaveChanges();
 
-
             return Json(true);
+
         }
+
         public JsonResult Delete(long id)
         {
             InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
@@ -166,48 +185,39 @@ namespace WETT.Controllers
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
-            InventoryTx s = new InventoryTx
-            {
-                Date = DateTime.Parse(li[0]),
-                InventoryTxTypeId = 3,          //hard coded transaction type id for now
-                StockAdjCode = "OT",
-                //add in extra cols here******************************************
-                ShippingLocationId = (long)Convert.ToDouble(li[1]),
-                TruckingCompanyId = (long)Convert.ToDouble(li[2]),
-                Probill = li[3],
-                FromInventoryLocationId = (long)Convert.ToDouble(li[4]),
-                Comments = li[5]
-                //*****************************************************************
-            };
-            //+date+'/'+destination+'/'+ truckingCompany+'/'+ probillNo+'/'+ fromLocationDropdown+'/'+ notes, function(data) {
-            _context.InventoryTxes.Add(s);
-            _context.SaveChanges();
-            InventoryTxCurrentId = s.InventoryTxId;
-            s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
-            _context.SaveChanges();
-            CurrentSaCode = null;
-            CurrentFromLocation = (long)s.FromInventoryLocationId;
-            return Json(s.StockAdjCode);
+            CurrentDate = DateTime.Parse(li[0]);
+            Notes = li[1];
+            CurrentFromLocation = (long)Convert.ToDouble(li[2]);
+            CurrentLocation = (long)Convert.ToDouble(li[3]);
+            CurrentTruckingCompany = (long)Convert.ToDouble(li[4]);
+            CurrentProbill = li[5];
+            return Json(true);
         }
         public JsonResult SaCode()
         {
+            if (CurrentSaCode == null)
+            {
+                return Json(null);
+            }
             InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
             var headerInfo = new
             {
                 comments = r.Comments,
                 sacode = CurrentSaCode,
                 date = r.Date.ToShortDateString(),
-                truckingCompany = r.TruckingCompanyId,
-                destination = r.ShippingLocationId,
                 fromLocation = r.FromInventoryLocationId,
+                truckingComp = r.TruckingCompanyId,
+                destDropdown = r.ShippingLocationId,
                 probill = r.Probill
             };
-            if (CurrentSaCode != null)
-            {
-                return Json(headerInfo);
-            }
-            return Json(null);
+            return Json(headerInfo);
         }
+        public IActionResult DisplaySACode()
+        {
+            InventoryTx temp = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+            return Json(temp.StockAdjCode);
+        }
+
 
         public IActionResult CreateList()
         {
@@ -236,14 +246,11 @@ namespace WETT.Controllers
         public IActionResult CreateProductName()
         {
             var saOutboundData = from a in _context.Products
-                                 join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                                 select new
-                                 {
-                                     label = a.ProductId,
-                                     value = a.Description
-
-
-                                 };
+                             select new
+                             {
+                                 value = a.SupplierId,
+                                 text = a.Description
+                             };
             return Json(saOutboundData);
         }
         public IActionResult CreateLocationList()

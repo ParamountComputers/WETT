@@ -184,7 +184,6 @@ namespace WETT.Controllers
             CurrentProbill = li[5];
             CurrentToLocation = (long)Convert.ToDouble(li[6]);
             CurrentSupplier = (long)Convert.ToDouble(li[7]);
-            CurrentToLocation = (long)Convert.ToDouble(li[7]);
             return Json(true);
         }
 

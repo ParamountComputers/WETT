@@ -10,8 +10,8 @@
  </div>
  <body>
      <div class="searchDate">
-       <label for="date" class="Label" >Trans Date:</label>
-       <input type="date"id='date' class="Date" name="date"/> 
+       <label for="searchDate" class="Label" >Trans Date:</label>
+       <input type="date"id="searchDate" class="Date" name="searchDate"/> 
     </div>
     <div></div>
     <div class="searchDropdown"> 
@@ -29,8 +29,8 @@
           <select class="form-control dropDownInput" id="supplierDropdown" name="supplierDropdown"></select> 
     </div>
     <div class="searchInput">
-         <label class="Label" for="purchaseOrder">Probill #:</label>
-         <input type="text" class="input" id="purchaseOrder"/>
+         <label class="Label" for="truckerProbillNumber">Probill #:</label>
+         <input type="text" class="input" id="truckerProbillNumber"/>
     </div>
     <div></div>
     <div class="searchInput">
@@ -105,15 +105,15 @@
                    { label: 'Product Name',name: 'productName',fixed:true,width:170,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                    editoptions: { 
                    dataInit: function(elem) {
-                   curRowId = $('#saStockReceived').getGridParam('selrow');   
+                   curRowId = $('#saStockReceived').getGridParam('selrow');    
                    $(elem).select();
-                   name=$("#supplierDropdown").val();
-                   $(elem).autocomplete({source: getProductName(name),autoFocus: true,minLength: 0, select:function (event, ui) {
+                   name= $('#supplierDropdown').val();
+                   $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                    $('#saStockReceived').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                   $('input#productSku').val(getProductSku(ui.item.value));   
+                   $('input#productSku').val(getProductSku(ui.item.value));
+                    
                    } });   
-                   }
-                   }},
+                   }  }},
                    { label: 'Product Sku',name: 'productSku',fixed:true,width:100,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'Adj Amount (+/-)',name: 'amount',fixed:true, width:80,editable: true, edittype:"text"},
                    { label: 'Notes',name: 'comments',fixed:true,width:650, editable: true, edittype:"text"}
@@ -161,7 +161,8 @@
                 $.ajaxSetup( { "async": true } );
                },
                beforeSubmit :function (){
-                var date = $("#date").val();
+                var currentDate = $("#searchDate").val();
+                console.log(currentDate);
                 var notes = $("#comments").val();
                 var truckingCompany= $("#truckingCompanyDropdown").val();
                 var Po = $("#purchaseOrder").val();
@@ -169,7 +170,7 @@
                 var truckingNumber = $("#truckerProbillNumber").val();
                 var locations = $("#locationsDropdown").val();
                 var supplier = $("#supplierDropdown").val();
-               $.getJSON('SaStockReceived/CreateHeader?data='+date+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber+'/'+locations+'/'+supplier, function(){});
+               $.getJSON('SaStockReceived/CreateHeader?data='+currentDate+'/'+notes+'/'+truckingCompany+'/'+Po+'/'+sealNumber+'/'+truckingNumber+'/'+locations+'/'+supplier, function(){});
                $.ajaxSetup( { "async": true } );
                },
                closeAfterAdd: true,
@@ -177,7 +178,7 @@
                errorTextFormat: function (data) {
                       return 'Error: ' + data.responseText
                    },
-                   url: 'saRelease/Add'
+                   url: 'SaStockReceived/Add'
                });
                
        });
@@ -226,8 +227,9 @@ $(document).ready(function () {
        });  
    });
           $(document).ready(function () {  
-           $('#date').val(date());
+           $("#searchDate").val(date());
        });
+
        $("#newPage").on('click', function () {
            window.location.replace("SaStockReceived");
        });
@@ -261,47 +263,67 @@ $(document).ready(function () {
                       $("#truckerProbillNumber").val(data.truckerProbillNumber);
                       $("#locationsDropdown").val(data.locations);
                       $("#supplierDropdown").val(data.supplier);
+                      name=getSelection(data.supplier);
                 }
               }  
            });  
        }); 
        
         function IsProduct(value,colname)
-        {
-            var containsProduct = false;
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('SaStockReceived/CreateProductName', function(data) {
-                if (data != null) {
-                    for (var i = 0; i < data.length; i++) 
-                        {
-                            // console.log(data[i].value);
-                            if(value== data[i].text)
-                                {
-                                containsProduct = true;
-                                }
-                        }
-                    }//if
-        });
-            function getSupplierNames(value) {
-        var Supplier="";
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('SaStockReceived/CreateList', function(data) {
-        if (data != null) {
-            
-            for (var i = 0; i < data.length; i++) {
-              if(data[i].value == value )
+       {
+           var containsProduct = false;
+           $.ajaxSetup( { "async": false } );
+           $.getJSON('SaStockReceived/CreateProductName', function(data) {
+                if (data != null) 
                 {
-                 Supplier=data[i].text;
-                }
-            } 
-        }//if
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(value== data[i].text)
+                        {
+             
+                            containsProduct = true;
+               
+                        }
+                    }
+                }//if
 
             });
-            $.ajaxSetup( { "async": true } );
-            console.log(Supplier);
-           return Supplier; 
+            if(containsProduct==true)
+            {
+               $.ajaxSetup( { "async": true } );
+               return [true,""];
+            }
+            else
+            {
+                $.ajaxSetup( { "async": true } );
+                return [false,"Please Enter Valid Product"];
+            }
 
-        }
+       }
+
+         function getProductName() 
+       {
+               var ProductNameList= [];
+             $.ajaxSetup( { "async": false } );
+             var count=0;
+             $.getJSON('SaStockReceived/CreateProductName', function(data) 
+            {
+                if (data != null) 
+                {
+                    for (var i = 0; i < data.length; i++) 
+                    {
+                        if(name==data[i].value)
+                        {
+                        ProductNameList[count]=data[i].text;
+                        count++;
+                        }
+                    }
+                }//if
+            });
+            $.ajaxSetup( { "async": true } );
+            console.log(ProductNameList);
+            return ProductNameList; 
+       }
 
               function getProductSku(value) {
         var ProductSku= "";
@@ -319,28 +341,9 @@ $(document).ready(function () {
 
             });
             $.ajaxSetup( { "async": true } );
-            console.log(ProductSku);
            return ProductSku; 
 
         }
-         function getProductName(value) 
-       {
-               var ProductNameList= [];
-             $.ajaxSetup( { "async": false } );
-             $.getJSON('SaStockReceived/CreateProductName', function(data) 
-            {
-                if (data != null) 
-                {
-                    for (var i = 0; i < data.length; i++) 
-                    {
-                        if(value==data[i].value)
-                        ProductNameList[i]=data[i].text;
-                    }
-                }//if
-            });
-            $.ajaxSetup( { "async": true } );
-            return ProductNameList; 
-       }
-     }
+     
  </script>
 }

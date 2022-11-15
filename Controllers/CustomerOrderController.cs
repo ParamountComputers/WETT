@@ -11,9 +11,15 @@ namespace WETT.Controllers
 {
     public class CustomerOrderController : Controller
     {
-        public static Boolean showPage = false;
-        public static string searchDate = DateTime.Today.ToShortDateString();
-        public static string Notes;
+        public static long currentCustomer;
+        public static string currentOrderNumber;
+        public static DateTime currentDateOrdered;
+        public static long currentCustomerOrderStatus;
+        public static string currentDriver;
+        public static string currentDsSlipNumber;
+        public static DateTime currentDeliveryReqDate;
+        public static string currentSpecialInstructions;
+        public static long currentCarrier;
         public static long CurrentCustomerOrderId;
         private readonly WETT_DBContext _context;
         public CustomerOrderController(WETT_DBContext context)
@@ -115,14 +121,52 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
+
         public JsonResult Add(CustomerOrderViewModel p)
         {
-            Product s = _context.Products.Single(a => a.Description == p.ProductDesc);
+            if (CurrentCustomerOrderId == -1)
+            {
+
+                CustomerOrder s = new CustomerOrder
+                {
+                    CustomerId = currentCustomer,
+                    OrderNumber = currentOrderNumber,
+                    DateOrdered = currentDateOrdered,
+                    CustomerOrderStatusId = currentCustomerOrderStatus,
+                    CarrierId = currentCarrier,
+                    Driver = currentDriver,
+                    DsSlipNumber = currentDsSlipNumber,
+                    DeliveryReqDate = currentDeliveryReqDate,
+                    SpecialInstructions = currentSpecialInstructions,
+                    //hard coded for now
+                    OrderSourceId = 1
+
+                };
+
+                _context.CustomerOrders.Add(s);
+                _context.SaveChanges();
+                CurrentCustomerOrderId = s.CustomerOrderId;
+            }
+            else
+            {
+                CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
+                s.CustomerId = currentCustomer;
+                s.OrderNumber = currentOrderNumber;
+                s.DateOrdered = currentDateOrdered;
+                s.CarrierId = currentCarrier;
+                s.CustomerOrderStatusId = currentCustomerOrderStatus;
+                s.Driver = currentDriver;
+                s.DsSlipNumber = currentDsSlipNumber;
+                s.DeliveryReqDate = currentDeliveryReqDate;
+                s.SpecialInstructions = currentSpecialInstructions;
+                _context.SaveChanges();
+            }
+            Product c = _context.Products.Single(a => a.Description == p.ProductDesc);
             CustomerOrderDetail r = new CustomerOrderDetail
             {
-                CustomerOrderId= CurrentCustomerOrderId,
-                ProductId = s.ProductId,
-                
+                CustomerOrderId = CurrentCustomerOrderId,
+                ProductId = c.ProductId,
+
                 QtyOrdered = p.QtyOrdered,
                 QtyFulfilled = p.QtyFulfilled,
                 Notes = p.Notes
@@ -131,7 +175,6 @@ namespace WETT.Controllers
 
             _context.CustomerOrderDetails.Add(r);
             _context.SaveChanges();
-
 
             return Json(true);
         }
@@ -142,30 +185,6 @@ namespace WETT.Controllers
             _context.SaveChanges();
 
 
-            return Json(true);
-        }
-        public IActionResult CreateHeader(string data)
-        {
-            var li = data.Split("/");
-            CustomerOrder s = new CustomerOrder
-            {
-              CustomerId = (long)Convert.ToDouble(li[0]),
-              OrderNumber = li[1],
-              DateOrdered =  DateTime.Parse(li[2]),
-              CustomerOrderStatusId = (long)Convert.ToDouble(li[3]),
-              CarrierId = (long)Convert.ToDouble(li[4]),
-              Driver = li[5],
-              DsSlipNumber = li[6],
-              DeliveryReqDate = DateTime.Parse(li[7]),
-              SpecialInstructions = li[8],
-              //hard coded for now
-              OrderSourceId =1
-
-            };
-
-            _context.CustomerOrders.Add(s);
-            _context.SaveChanges();
-            CurrentCustomerOrderId = s.CustomerOrderId;
             return Json(true);
         }
         public JsonResult SaCode()
@@ -189,6 +208,21 @@ namespace WETT.Controllers
             }
             return Json(null);
         }
+        public IActionResult CreateHeader(string data)
+        {
+            var li = data.Split("/");
+            currentCustomer = (long)Convert.ToDouble(li[0]);
+            currentOrderNumber = li[1];
+            currentDateOrdered = DateTime.Parse(li[2]);
+            currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
+            currentDriver = li[4];
+            currentDsSlipNumber = li[5];
+            currentDeliveryReqDate = DateTime.Parse(li[6]);
+            currentSpecialInstructions = li[7];
+            currentCarrier = (long)Convert.ToDouble(li[8]);
+            return Json(true);
+        }
+
 
         public IActionResult CreateCustomerList()
         {

@@ -24,6 +24,20 @@
     height: 30px;
     font-size: 12px;
 }
+.searchInput2 {
+    width: 900px;
+    display: inline-block;
+}
+.input2 {
+    border: 1px solid black;
+    border-radius: 8px;
+    border-width: 1px;
+    text-align: left;
+    width: 800px;
+    height: 30px;
+    font-size: 12px;
+}
+
 .Label {
     font-size: 12px;
     width: 90px;
@@ -109,4 +123,14 @@
     width: 180px;
     font-size: 12px;
 }
-
+.checkbox {
+    width: 120px;
+    display: inline-block;
+}
+.checkboxInput {
+    display: inline-block;
+    border-width: 1px;
+    text-align: left;
+    width: 30px;
+    font-size: 12px;
+}

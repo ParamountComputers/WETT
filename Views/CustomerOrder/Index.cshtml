@@ -8,73 +8,54 @@
 <div class="text-center">
     <h2 class="display-4">Customer Order</h2>
 </div>
-<fieldset class="scheduler-border">
-
-     <div class="mb-1 row">
-
-            <div class="col-lg-1 text-right">
-                <label for="dateOrdered" class="col-form-label" style="font-size:8px;">Date Ordered:</label>
-            </div>
-            <div class="col-lg-1 p-0">
-                <input type="date" class="form-control" style="font-size:8px;" id='dateOrdered' name="dateOrdered" />
-            </div>
-            <div class="col-lg-1 text-right">
-               <label for="deliveryReqDate" class="col-form-label" style="font-size:8px;">Delivery Req Date:</label>
-            </div>
-            <div class="col-lg-1 p-0">
-               <input type="date" class="form-control" style="font-size:8px;" id='deliveryReqDate' name="deliveryReqDate" />
-            </div>
-            <div class="col-lg-1 text-right">
-                <label for="customerOrderStatus" class="col-form-label" style="font-size:8px;">Order Status:</label>
-            </div>
-            <div class="col-lg-1 p-0">  
-                 <select style="font-size:8px;" class="form-control" id="customerOrderStatus" name="customerOrderStatus"></select>
-             </div>
-             <div class="col-lg-1 text-right">
-                <label for="customer" class="col-form-label" style="font-size:8px;">Customer:</label>
-            </div>
-             <div class="col-lg-1 p-0">
-                <select style="font-size:8px;" class="form-control" id="customer" name="customer"></select>
-             </div>
-
-     </div>
-
-     <div class="mb-1 row">
-            <div class="col-lg-1 text-right">
-                <label for="dateOrdered" class="col-form-label" style="font-size:7px;">Special Instructions:</label>
-            </div>
-             <div class="col-lg-1 p-0">
-                <input type="text"  style="font-size:8px;" class="form-control" id="specialInstructions" name="specialInstructions"/>
-             </div>
-             <div class="col-lg-1 text-right">
-                <label for="orderNumber" class="col-form-label" style="font-size:8px;">Order #:</label>
-            </div>
-             <div class="col-lg-1 p-0">
-                <input type="text"  style="font-size:8px;" class="form-control" id="orderNumber" name="orderNmber"/>
-             </div>
-             <div class="col-lg-1 text-right">
-                <label for="driver" class="col-form-label" style="font-size:8px;">Driver:</label>
-            </div>
-             <div class="col-lg-1 p-0">
-                <input type="text"  style="font-size:8px;" class="form-control" placeholder="Driver:" id="driver" name="driver"/>
-             </div>
-            <div class="col-lg-1 text-right">
-                <label for="dsSlipNumber" class="col-form-label" style="font-size:8px;">Ds Slip Number:</label>
-            </div>
-             <div class="col-lg-1 p-0">
-                <input type="text"  style="font-size:8px;" class="form-control"  id="dsSlipNumber" name="dsSlipNumber"/>
-             </div>
-
-             <div class="col-lg-3"></div>
-
-             <div class="col-lg-1 text-right">
-                <button class="btn btn-outline-secondary" style="font-size:10px;" id="save" type="button">Save</button>  
-             </div>   
-     </div>
-</fieldset>
-
+<body>
+   <div class="searchDate">
+      <label for="dateOrdered" class="Label" >Date Ordered:</label>
+      <input type="date"id='dateOrdered' class="Date" name="dateOrdered" />
+   </div>
+   <div class="searchDate">
+      <label for="deliveryReqDate" class="Label" >Delivery Req:</label>
+      <input type="date"id='deliveryReqDate' class="Date" name="deliveryReqDate" />
+  </div>
+  <div class="searchDropdown"> 
+      <label for="customerOrderStatus"  class="Label">Order Status:</label>
+      <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select> 
+  </div>
+  <div class="searchDropdown"> 
+      <label for="customer"  class="Label">Customer:</label>
+      <select class="form-control dropDownInput" id="customer" name="customer"></select> 
+  </div>
+  <div></div>
+  <div class="searchDropdown"> 
+      <label for="carrier"  class="Label">Carrier:</label>
+      <select class="form-control dropDownInput" id="carrier" name="carrier"></select> 
+  </div>
+  <div class="searchInput">
+         <label class="Label" for="specialInstructions">Special Notes:</label>
+         <input type="text" class="input" id="specialInstructions"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="orderNumber">Order #:</label>
+         <input type="text" class="input" id="orderNumber"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="driver">Driver:</label>
+         <input type="text" class="input" id="driver"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="dsSlipNumber">Ds Slip Number:</label>
+         <input type="text" class="input" id="dsSlipNumber"/>
+    </div>
+</body>
 <table id="customerOrder"></table>
 <div id="jqGridPager"></div>
+<fieldset class="scheduler-border">
+ <div class="mb-3 row">
+    <div class="col-lg-12">
+          <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="newPage" type="button"> New Page </button>  
+    </div>
+ </div>
+</fieldset>
 @section scripts {
 
 <script type="text/javascript">
@@ -116,14 +97,14 @@
                    { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Product Desc',name: 'productDesc',fixed:true,width:150,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
-                                  dataInit: function(elem) {
-                                                curRowId = $('#customerOrder').getGridParam('selrow');   
-                                                $(elem).select();
-                                                $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
-                                              $('#customerOrder').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                                              $('input#productSku').val(getProductSku(ui.item.value));   
-                                            } });   
-                                     }
+                    dataInit: function(elem) {
+                    curRowId = $('#customerOrder').getGridParam('selrow');   
+                    $(elem).select();
+                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
+                    $('#customerOrder').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
+                    $('input#productSku').val(getProductSku(ui.item.value));   
+                    } });   
+                    }
                    }},
                    { label: 'Product ID(Sku)',name: 'productSku',fixed:true,width:120,edittype:'text', editoptions: {readonly: 'readonly'}},
                    { label: 'Stoc Qty',name: 'stockQty',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
@@ -133,8 +114,9 @@
 
                  ], 
                viewrecords: true,
-               height: 500,
-               rowNum: 20,
+               height: 388.5,
+               rowHeight: 20,
+               rowNum: 15,
                pager: "#jqGridPager",
                editurl: 'CustomerOrder/Update',              
 
@@ -154,18 +136,34 @@
               zIndex:99,
               afterShowForm: function () {
               var idSelector = $.jgrid.jqID(this.p.id);
-              console.log(header);
-              if(header==false) {
-              $.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
-              alert("Error: Need Header");
-              }
+              //if(header==false) {
+              //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              //alert("Error: Need Header");
+              //}
               },
-                   closeAfterAdd: true,
-                   recreateForm: true,
-                   errorTextFormat: function (data) {
-                       return 'Error: ' + data.responseText
+               //onclickSubmit: function (){
+               //},
+               afterSubmit:function(){
+               },
+               beforeSubmit :function (){
+               var customer = $("#customer").val();
+               var orderNumber = $("#orderNumber").val();
+               var dateOrdered = $("#dateOrdered").val();
+               var customerOrderStatus = $("#customerOrderStatus").val();
+               var driver = $("#driver").val();
+               var dsSlipNumber = $("#dsSlipNumber").val();
+               var deliveryReqDate = $("#deliveryReqDate").val();
+               var specialInstructions = $("#specialInstructions").val();
+               var carrier = $("#carrier").val();
+               $.getJSON('CustomerOrder/CreateHeader?data='+customer+'/'+orderNumber+'/'+dateOrdered+'/'+customerOrderStatus+'/'+driver+'/'+dsSlipNumber+'/'+deliveryReqDate+'/'+specialInstructions+'/'+carrier, function(){});
+               $.ajaxSetup( { "async": true } );
+               },
+               closeAfterAdd: true,
+               recreateForm: true,
+               errorTextFormat: function (data) {
+                      return 'Error: ' + data.responseText
                    },
-                   url: "CustomerOrder/Add"
+                   url: 'CustomerOrder/Add'
                });
                
        });
@@ -174,14 +172,10 @@
             $('#deliveryReqDate').val(date());
        });
       
-       $('#customerOrder').setGridWidth(parseInt($(window).width()) - 20);
-       $("#date").on('change keyup paste', function () {
-           SearchByDate();
-           
-       }); 
-       $("#save").on('click', function () {
-           SaveHeader();
-        });
+       $('#customerOrder').setGridWidth(parseInt($(window).width()) - 20); 
+       $("#newPage").on('click', function () {
+           window.location.replace("CustomerOrder");
+       });
         $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
@@ -233,13 +227,12 @@
                    if(data!=null)
                    {
                       header= true;
-
                       $("#customer").val(data.customer);
                       $('#orderNumber').val(data.orderNumber);
                       $('#dateOrdered').val(data.dateOrdered);
                       $('#customerOrderStatus').val(data.customerOrderStatus);
-                      $('#carrier').val(data.carrier);
                       $('#driver').val(data.driver);
+                      $('#carrier').val(data.carrier);
                       $('#dsSlipNumber').val(data.dsSlipNumber);
                       $('#deliveryReqDate').val(data.deliveryReqDate);
                       $('#specialInstructions').val(data.specialInstructions);
@@ -274,7 +267,7 @@
                
          }
             }
-                         }//if
+         }//if
 
             });
             if(containsProduct==true)
@@ -288,61 +281,9 @@
             }
 
       }
-    
-            function SaveHeader()
-    {
-         header = true;
-         var CustomerId =$("#customer").val();
-         var OrderNumber=$('#orderNumber').val();
-         var DateOrdered=$('#dateOrdered').val();
-         var CustomerOrderStatusId=$('#customerOrderStatus').val();
-         var CarrierId=$('#carrier').val();
-         var Driver=$('#driver').val();
-         var DsSlipNumber=$('#dsSlipNumber').val();
-         var DeliveryReqDate=$('#deliveryReqDate').val();
-         var SpecialInstructions=$('#specialInstructions').val();
-
-         if(CustomerId !=-1 && CustomerOrderStatusId !=-1 && CarrierId != -1)
-            {
-         $.ajaxSetup( { "async": false } );
-                 $.getJSON('CustomerOrder/CreateHeader?data='+CustomerId+'/'+OrderNumber+'/'+DateOrdered+'/'+CustomerOrderStatusId+'/'+CarrierId+'/'+Driver+'/'+DsSlipNumber+'/'+DeliveryReqDate+'/'+SpecialInstructions, function(data) {});
-         $.ajaxSetup( { "async": true } );
-             }
-            else if(CustomerId==-1 && CustomerOrderStatusId==-1 && CarrierId==-1)
-            {
-                alert("Error: Enter A Customer, Order Status And A Carrier");
-            }
-            else if(CustomerId==-1 && CustomerOrderStatusId==-1)
-            {
-                alert("Error: Enter A Customer And A Order Status");
-            }
-            else if(CustomerId==-1 && CarrierId==-1)
-            {
-                alert("Error: Enter A Customer And A Carrier");
-            }
-            else if(CarrierId==-1 && CustomerOrderStatusId==-1)
-            {
-                alert("Error: Enter A Carrier And A Order Status");
-            }
-            else if(CustomerOrderStatusId==-1)
-            {
-                alert("Error: Enter A Order Status");
-            }
-            else if(CarrierId==-1)
-            {
-                 alert("Error: Enter A Carrier");
-            }
-            else if(CustomerId==-1)
-            {
-                 alert("Error: Enter A Customer");
-            }
-
-            $('#customerOrder').setGridParam({ page: 1 }).trigger("reloadGrid");
-
-    }
 
 
-         function getCarrier() {
+       function getCarrier() {
         var CarrierList= {};
         $.ajaxSetup( { "async": false } );
         $.getJSON('CustomerOrder/CreateCarrierList', function(data) {

@@ -9,6 +9,36 @@
 <div class="text-center">
     <h1 class="display-5">Fulfill Sales</h1>
 </div>
+<body>
+    <div class="searchDate">
+       <label for="OrderDate" class="Label" >Order Date:</label>
+       <input type="date"id='OrderDate' class="Date" name="OrderDate"/> 
+    </div>
+    <div class="Gap1"></div>
+    <div class="searchDate">
+       <label for="DeliveryDate" class="Label" >Delivery Date:</label>
+       <input type="date"id='DeliveryDate' class="Date" name="DeliveryDate"/> 
+    </div>
+    <div class="Gap1"></div>
+    <div class="searchDropdown"> 
+          <label for="carrierDropdown"  class="Label">Carrier:</label>
+          <select class="form-control dropDownInput" id="carrierDropdown" name="carrierDropdown"></select> 
+    </div>
+    <div class="Gap1"></div>
+    <div class="searchDropdown"> 
+          <label for="orderSourceDropdown"  class="Label">order Source:</label>
+          <select class="form-control dropDownInput" id="orderSourceDropdown" name="orderSourceDropdown"></select> 
+    </div>
+    <div class="Gap1"></div>
+    <div class="checkbox">
+                <label for="PendingCheckbox" class="Label">Pending:</label> 
+                <input id="PendingCheckbox"type="checkbox" class="checkboxInput" value="PendingCheckbox">
+        </div>
+    <div class="checkbox">
+                <label for="FulfilledCheckbox" class="Label">Fulfilled:</label> 
+                <input id="FulfilledCheckbox"type="checkbox" class="checkboxInput" value="FulfilledCheckbox">
+        </div>
+</body>
 <fieldset class="scheduler-border"  style="max-height: 18rem;">
   <div class="container-flow">
   <div class="row">

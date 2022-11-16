@@ -18,7 +18,8 @@ namespace WETT.Data
         public string Quantity { get; set; }
         public string CreateTimestamp { get; set; }
         public string Upc { get; set; }
-        //public string InsertUserId { get; set; }
-        //public DateTime? InsertTimestamp { get; set; }
+        public string SourceFile { get; set; }
+        public string InsertUserId { get; set; }
+        public DateTime? InsertTimestamp { get; set; }
     }
 }

@@ -23,10 +23,10 @@ namespace WETT.Data
         public string HlSingle { get; set; }
         public decimal HlContainer { get; set; }
         public decimal HlCase { get; set; }
-        //public string InsertUserId { get; set; }
-        //public DateTime InsertTimestamp { get; set; }
-        //public string UpdateUserId { get; set; }
-        //public DateTime UpdateTimestamp { get; set; }
+        public string InsertUserId { get; set; }
+        public DateTime InsertTimestamp { get; set; }
+        public string UpdateUserId { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
 
         public virtual Supplier Supplier { get; set; }
         public virtual ICollection<CustomerOrderDetail> CustomerOrderDetails { get; set; }

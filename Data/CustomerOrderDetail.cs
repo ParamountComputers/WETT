@@ -11,10 +11,10 @@ namespace WETT.Data
         public int QtyOrdered { get; set; }
         public int? QtyFulfilled { get; set; }
         public string Notes { get; set; }
-        //public string InsertUserId { get; set; }
-        //public DateTime InsertTimestamp { get; set; }
-        //public string UpdateUserid { get; set; }
-        //public string UpdateTimestamkp { get; set; }
+        public string InsertUserId { get; set; }
+        public DateTime InsertTimestamp { get; set; }
+        public string UpdateUserid { get; set; }
+        public DateTime UpdateTimestamp { get; set; }
 
         public virtual CustomerOrder CustomerOrder { get; set; }
         public virtual Product Product { get; set; }

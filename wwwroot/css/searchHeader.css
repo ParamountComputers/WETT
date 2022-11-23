@@ -123,14 +123,59 @@
     width: 180px;
     font-size: 12px;
 }
+.checkboxLabel {
+    font-size: 12px;
+    width: 50px;
+}
 .checkbox {
-    width: 120px;
     display: inline-block;
+    vertical-align: middle;
+    width: 60px;
 }
 .checkboxInput {
-    display: inline-block;
     border-width: 1px;
-    text-align: left;
+    float:right;
     width: 30px;
     font-size: 12px;
 }
+
+.inline-button {
+    _width: 12em;
+    font-size:12px;
+    margin: 0 0.2em;
+    padding: 0.1em 0;
+    _padding: 0;
+    border: 1px solid black;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: middle;
+    background: #ccc;
+    color: black;
+}
+
+    .inline-button em {
+        _width: 1em;
+        _cursor: hand;
+        font-style: normal;
+        margin: 0;
+        padding: 0.1em 0.5em;
+        background: white;
+        color: black;
+    }
+
+    .inline-button span {
+        _width: 1em;
+        _cursor: hand;
+        margin: 0;
+        padding: 0.1em 0.5em 0.1em 0.3em;
+    }
+
+    .inline-button:hover {
+        background: #666;
+        color: white;
+    }
+
+        .inline-button:hover em {
+            background: black;
+            color: white;
+        }

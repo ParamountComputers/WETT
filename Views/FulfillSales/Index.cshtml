@@ -14,72 +14,39 @@
        <label for="OrderDate" class="Label" >Order Date:</label>
        <input type="date"id='OrderDate' class="Date" name="OrderDate"/> 
     </div>
-    <div class="Gap1"></div>
     <div class="searchDate">
        <label for="DeliveryDate" class="Label" >Delivery Date:</label>
        <input type="date"id='DeliveryDate' class="Date" name="DeliveryDate"/> 
     </div>
-    <div class="Gap1"></div>
     <div class="searchDropdown"> 
           <label for="carrierDropdown"  class="Label">Carrier:</label>
           <select class="form-control dropDownInput" id="carrierDropdown" name="carrierDropdown"></select> 
     </div>
-    <div class="Gap1"></div>
     <div class="searchDropdown"> 
           <label for="orderSourceDropdown"  class="Label">order Source:</label>
           <select class="form-control dropDownInput" id="orderSourceDropdown" name="orderSourceDropdown"></select> 
     </div>
-    <div class="Gap1"></div>
     <div class="checkbox">
-                <label for="PendingCheckbox" class="Label">Pending:</label> 
-                <input id="PendingCheckbox"type="checkbox" class="checkboxInput" value="PendingCheckbox">
+                <label  class="Label">Pending:
+                <input id="PendingCheckbox"type="checkbox"  class="checkboxInput" value="PendingCheckbox">
+                </label> 
         </div>
     <div class="checkbox">
-                <label for="FulfilledCheckbox" class="Label">Fulfilled:</label> 
+                <label class="Label">Fulfilled:
                 <input id="FulfilledCheckbox"type="checkbox" class="checkboxInput" value="FulfilledCheckbox">
+                </label> 
         </div>
+
 </body>
-<fieldset class="scheduler-border"  style="max-height: 18rem;">
-  <div class="container-flow">
-  <div class="row">
-        <div class="col-lg-2 form-group">
-                <label for="OrderDate" style="font-size:8px;">Order Date:</label>
-            <div class="pull-right">
-                <input type="date" id="OrderDate" name="OrderDate" style="font-size:10px;">
-            </div>
-        </div>
-        <div class="col-lg-2 form-group">
-                <label for="DeliveryDate" style="font-size:8px;">Delivery Date:</label>
-            <div class="pull-right">
-                <input type="date" style="font-size:10px;" id="DeliveryDate" name="DeliveryDate">
-            </div>
-        </div>
-        <div class="col-lg-2 form-group">
-                <select class="form-control" style="font-size:10px;" id="carrierDropdown" name="carrierDropdown"></select>
-        </div>
-        <div class="col-lg-2 form-group">
-            <select class="form-control" style="font-size:10px;" id="orderSourceDropdown" name="orderSourceDropdown"></select>
-        </div>
-        <div class="col-lg-1 form-group">
-       <label for="FulfilledCheckbox"class="checkbox-inline" style="font-size:10px;">Fulfilled:</label>
-      <input id="FulfilledCheckbox" type="checkbox" value="FulfilledCheckbox">
-        </div>
-        <div class="col-lg-1 form-group">
-                <label for="PendingCheckbox" class="checkbox-inline" style="font-size:10px;">Pending:</label> 
-                <input id="PendingCheckbox"type="checkbox" value="PendingCheckbox">
-        </div>
-        <div class="col-lg-1"></div>
-        <div class="col-lg-1 text-right">
-          <button class="btn btn-outline-secondary" style="font-size:10px;" id="fulfill" type="button">Fulfill</button>  
-        </div>  
-
-    </div>
-    </div>
-   
-</fieldset>
-
 <table id="FulfillSalesHdr"></table>
 <div id="jqGridPager"></div>
+<fieldset class="scheduler-border">
+ <div class="mb-3 row">
+    <div class="col-lg-12">
+          <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="fulfill" type="button"> Fulfill </button>  
+    </div>
+ </div>
+</fieldset>
 
 <div class="text-center">
     <h1 class="display-8">Details</h1>

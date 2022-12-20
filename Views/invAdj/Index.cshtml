@@ -74,7 +74,7 @@
                     },
                    { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
-                   { label: 'Sa Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'SA Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: {
@@ -90,9 +90,9 @@
                                   }
                    }},
                    { label: 'Supplier',name: 'supplierName',fixed:true,width:120,editable:true, editoptions: {readonly: 'readonly'}},
-                   { label: 'Product Sku',name: 'productSku',fixed:true,width:80,editable:true , editoptions: {readonly: 'readonly'}},
+                   { label: 'Product SKU',name: 'productSku',fixed:true,width:80,editable:true , editoptions: {readonly: 'readonly'}},
                    { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
-                   { label: 'Adj Amount (+/-)',name: 'amount',fixed:true,width:80,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
+                   { label: 'ADJ Amount (+/-)',name: 'amount',fixed:true,width:80,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
                    { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",editrules: { required: true },formatter:'select', editoptions:{value:getReasons()}},
                    { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text"}
 

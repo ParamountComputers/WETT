@@ -116,7 +116,14 @@
                 {
                     window.open("SaStockReceived?SaCode="+cellVal);
                 }
-                
+                else if(invTxType==7)
+                {
+                    window.open("SaStockReceived?SaCode="+cellVal);
+                }
+                else if(invTxType==8)
+                {
+                    window.open("CustomerOder?CustomerOrderID="+cellVal);
+                }
 
                }
 
@@ -273,7 +280,7 @@
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvTxSummary/CreateInvTxTypeList', function(data) {
         if (data != null) {
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0; i < 7; i++) {
              ReasonsList[data[i].value]=data[i].text;
                  
               }

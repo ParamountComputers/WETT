@@ -7,7 +7,7 @@
 }
 
 <div class="text-center">
-    <h4 class="display-5">Stock Adjustment-Damage/Recoup</h4>
+    <h4 class="display-5">Sa Damage Recoup</h4>
 </div>
 <body>
   <div class="searchDate">
@@ -37,7 +37,6 @@
 
 
 @section scripts {
-
 <script type="text/javascript">
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -81,7 +80,7 @@
                    { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: {
                     dataInit: function(elem) {
-                    curRowId = $('#invAdj').getGridParam('selrow');
+                    curRowId = $('#saDamageRecoup').getGridParam('selrow');
                     $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                     $('#saDamageRecoup').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
@@ -104,7 +103,7 @@
                rowHeight: 20,
                rowNum: 15,
                pager: "#jqGridPager",
-               editurl: 'InvAdj/Update', 
+               editurl: 'SaDamageRecoup/Update', 
                
 
            })
@@ -174,7 +173,7 @@
        $('#saDamageRecoup').setGridWidth(parseInt($(window).width()) - 20);
 
        $("#newPage").on('click', function () {
-           window.location.replace("InvAdj");
+           window.location.replace("SaDamageRecoup");
        });
 
        function IsProduct(value,colname)

@@ -280,7 +280,7 @@
         $.ajaxSetup( { "async": false } );
         $.getJSON('InvTxSummary/CreateInvTxTypeList', function(data) {
         if (data != null) {
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < data.length; i++) {
              ReasonsList[data[i].value]=data[i].text;
                  
               }

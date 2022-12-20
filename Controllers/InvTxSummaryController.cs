@@ -169,6 +169,7 @@ namespace WETT.Controllers
         public IActionResult CreateInvTxTypeList()
         {
             var invAdjData = from a in _context.InventoryTxTypes
+                             where a.InventoryTxTypeId != 8 
                              select new
                              {
                                  value = a.InventoryTxTypeId,

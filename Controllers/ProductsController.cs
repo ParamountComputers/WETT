@@ -275,6 +275,8 @@ namespace WETT.Controllers
             r.HlSingle = p.HlSingle;
             r.HlContainer = p.HlContainer;
             r.HlCase = p.HlCase;
+            r.UpdateUserId = User.Identity.Name;
+            r.UpdateTimestamp = DateTime.Now;
 
 
             _context.SaveChanges();
@@ -296,7 +298,10 @@ namespace WETT.Controllers
         public JsonResult Add(Product p)
         {
 
-
+            p.InsertTimestamp = DateTime.Now;
+            p.InsertUserId = User.Identity.Name;
+            p.UpdateTimestamp = DateTime.Now;
+            p.UpdateUserId = User.Identity.Name;
             _context.Products.Add(p);
             _context.SaveChanges();
 

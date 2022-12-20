@@ -139,10 +139,7 @@
                multiselect: true,
                onSelectRow: function(rowid) {
                     curRowId=rowid;
-               },
-              ondblClickRow: function(rowid) {
-                
-              var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
+                     var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
                     getDetails(id);
                     //if(lastSel!=null)
                     //{
@@ -151,8 +148,20 @@
                     //lastSel =$('#'+rowid);
                     //$('#'+rowid).addClass('ui-state-highlight');
                      $("#FulfillSalesDtls").trigger('reloadGrid');
+               },
+              //ondblClickRow: function(rowid) {
+                
+              //var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
+              //      getDetails(id);
+              //      //if(lastSel!=null)
+              //      //{
+              //      //    $('#'+lastSel).removeClass('ui-state-highlight');
+              //      //}
+              //      //lastSel =$('#'+rowid);
+              //      //$('#'+rowid).addClass('ui-state-highlight');
+              //       $("#FulfillSalesDtls").trigger('reloadGrid');
 
-              }
+              //}
            }
         )
                

@@ -142,6 +142,8 @@ namespace WETT.Controllers
             //r.OrderNumber = p.OrderNumber;
             //r.CustomerId = s.CustomerId;
             //r.CarrierId = p.CarrierID;
+            r.UpdateUserId = User.Identity.Name;
+            r.UpdateTimestamp = DateTime.Now;
             r.SpecialInstructions = p.Instructions;
             //r.CustomerOrderStatusId = p.Status;
 

@@ -13,12 +13,9 @@ namespace WETT.Controllers
     {
         //classs variables
         //public static Boolean showPage = false;
-        public static string searchDate = DateTime.Today.ToShortDateString();
         public static string CurrentSaCode;
         public static string CurrentNotes;
         public static DateTime CurrentDate;
-        public static string PrevNotes;
-        public static DateTime PrevDate;
         public static long InventoryTxCurrentId;
         private readonly WETT_DBContext _context;
 
@@ -95,21 +92,6 @@ namespace WETT.Controllers
                 InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
                 InventoryTxCurrentId = r.InventoryTxId;
             }
-            //else
-            //{
-            //    //checks to see if grid should be displayed or not
-            //    if (showPage == true)
-            //    {
-            //        //this is the type of transaction id
-            //        invAdjData = invAdjData.Where(w => w.InventoryTxId == InventoryTxCurrentId);
-
-            //    }
-            //    else
-            //    {
-            //        //this is to hide all transactons by type
-            //        invAdjData = invAdjData.Where(w => w.InventoryTxId == -1);
-            //    }
-            //}
 
 
             int totalRecords = invAdjData.Count();
@@ -146,6 +128,8 @@ namespace WETT.Controllers
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             r.Comments = p.Comments;
+            r.UpdateUserid = User.Identity.Name;
+            r.UpdateTimestamp = DateTime.Now;
             _context.SaveChanges();
             return Json(true);
         }
@@ -158,12 +142,14 @@ namespace WETT.Controllers
                     Date = CurrentDate,
                     Comments = CurrentNotes,
                     InventoryTxTypeId = 1,
+                    InsertUserId = User.Identity.Name,
+                    InsertTimestamp = DateTime.Now,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserId = User.Identity.Name,
                     StockAdjCode = "IA"
                 };
                 _context.InventoryTxes.Add(s);
                 _context.SaveChanges();
-                PrevNotes = s.Comments;
-                PrevDate = s.Date;
                 InventoryTxCurrentId = s.InventoryTxId;
                 s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
                 _context.SaveChanges();
@@ -174,7 +160,11 @@ namespace WETT.Controllers
                 InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
                 s.Comments = CurrentNotes;
                 s.Date = CurrentDate;
-                 _context.SaveChanges();
+                s.InsertTimestamp = DateTime.Now;
+                s.InsertUserId = User.Identity.Name;
+                s.UpdateUserId = User.Identity.Name;
+                s.UpdateTimestamp = DateTime.Now;
+                _context.SaveChanges();
             }
             Product c = _context.Products.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
@@ -185,6 +175,10 @@ namespace WETT.Controllers
                 Amount = p.Amount,
                 InventoryTxId = InventoryTxCurrentId,
                 InventoryTxReasonId = p.InventoryTxReasonsId,
+                InsertTimestamp = DateTime.Now,
+                InsertUserid = User.Identity.Name,
+                UpdateTimestamp = DateTime.Now,
+                UpdateUserid = User.Identity.Name,
 
             };
 
@@ -226,7 +220,7 @@ namespace WETT.Controllers
         }
         public IActionResult DisplaySACode()
         {
-            InventoryTx temp =_context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
+            InventoryTx temp = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
             return Json(temp.StockAdjCode);
         }
 
@@ -285,3 +279,4 @@ namespace WETT.Controllers
         }
     }
 }
+

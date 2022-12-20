@@ -130,6 +130,8 @@ namespace WETT.Controllers
             r.Amount = p.Amount;
             r.Comments = p.Comments;
             r.InventoryTxReasonId = p.InventoryTxReasonsId;
+            r.UpdateTimestamp = DateTime.Now;
+            r.UpdateUserid = User.Identity.Name;
             _context.SaveChanges();
             return Json(true);
         }
@@ -145,6 +147,10 @@ namespace WETT.Controllers
                     //add in extra cols here******************************************            
                     ToInventoryLocationId = CurrentToLocation,
                     FromInventoryLocationId = CurrentFromLocation,
+                    InsertTimestamp = DateTime.Now,
+                    InsertUserId = User.Identity.Name,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserId = User.Identity.Name,
                     Comments = Notes
                     //*****************************************************************
                 };
@@ -162,6 +168,10 @@ namespace WETT.Controllers
                 s.Date = CurrentDate;
                 s.ToInventoryLocationId = CurrentToLocation;
                 s.FromInventoryLocationId = CurrentFromLocation;
+                s.InsertTimestamp = DateTime.Now;
+                s.InsertUserId = User.Identity.Name;
+                s.UpdateTimestamp = DateTime.Now;
+                s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
             Product c = _context.Products.Single(a => a.Description == p.ProductName);
@@ -173,6 +183,10 @@ namespace WETT.Controllers
                 ProductId = c.ProductId,
                 Amount = p.Amount,
                 InventoryTxReasonId = p.InventoryTxReasonsId,
+                InsertTimestamp = DateTime.Now,
+                InsertUserid = User.Identity.Name,
+                UpdateTimestamp = DateTime.Now,
+                UpdateUserid = User.Identity.Name,
                 InventoryTxId = InventoryTxCurrentId
             };
 

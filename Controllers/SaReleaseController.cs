@@ -119,6 +119,8 @@ namespace WETT.Controllers
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             r.Comments = p.Comments;
+            r.UpdateTimestamp = DateTime.Now;
+            r.UpdateUserid = User.Identity.Name;
             _context.SaveChanges();
             return Json(true);
         }
@@ -139,6 +141,10 @@ namespace WETT.Controllers
                     TransactionNo = CurrentPrevTransNo,
                     Comments = Notes,
                     Probill = CurrentProbill,
+                    InsertTimestamp = DateTime.Now,
+                    InsertUserId = User.Identity.Name,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserId = User.Identity.Name,
                     //*****************************************************************
                 };
                 _context.InventoryTxes.Add(s);
@@ -159,6 +165,10 @@ namespace WETT.Controllers
                 s.TransactionNo = CurrentTransNumber;
                 s.ToInventoryLocationId = CurrentToLocation;
                 s.Probill = CurrentProbill;
+                s.InsertTimestamp = DateTime.Now;
+                s.InsertUserId = User.Identity.Name;
+                s.UpdateTimestamp = DateTime.Now;
+                s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
             Product c = _context.Products.Single(a => a.Description == p.ProductName);
@@ -169,6 +179,10 @@ namespace WETT.Controllers
                 FromInventoryLocationId = 2,
                 ProductId = c.ProductId,
                 Amount = p.Amount,
+                InsertTimestamp = DateTime.Now,
+                InsertUserid = User.Identity.Name,
+                UpdateTimestamp = DateTime.Now,
+                UpdateUserid = User.Identity.Name,
                 InventoryTxId = InventoryTxCurrentId
             };
 

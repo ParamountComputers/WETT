@@ -120,6 +120,8 @@ namespace WETT.Controllers
         public JsonResult Update(InvTxSummaryViewModel p)
         {
             InventoryTx r = _context.InventoryTxes.Single(a => a.StockAdjCode == p.SaCode);
+            r.UpdateUserId = User.Identity.Name;
+            r.UpdateTimestamp = DateTime.Now;
             r.Comments = p.Comments;
             _context.SaveChanges();
             return Json(true);

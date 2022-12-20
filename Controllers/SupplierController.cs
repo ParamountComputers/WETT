@@ -98,6 +98,8 @@ namespace WETT.Controllers
             r.PostalCode = s.PostalCode;
             r.GeneralPhone = s.GeneralPhone;
             r.Contact1Name = s.Contact1Name;
+            r.UpdateTimestamp = DateTime.Now;
+            r.UpdateUserId = User.Identity.Name;
 
             _context.SaveChanges();
 
@@ -130,7 +132,11 @@ namespace WETT.Controllers
         public JsonResult Add(Supplier s)
         {
             s.ActiveFlag = "Y";
-           
+            s.InsertTimestamp = DateTime.Now;
+            s.InsertUserId = User.Identity.Name;
+            s.UpdateTimestamp = DateTime.Now;
+            s.UpdateUserId = User.Identity.Name;
+
             _context.Suppliers.Add(s);
             _context.SaveChanges();
 

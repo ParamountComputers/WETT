@@ -22,6 +22,7 @@ namespace WETT.Controllers
         public static long currentCarrier;
         public static long CurrentCustomerOrderId;
         private readonly WETT_DBContext _context;
+
         public CustomerOrderController(WETT_DBContext context)
         {
             _context = context;
@@ -118,6 +119,8 @@ namespace WETT.Controllers
                 r.QtyOrdered = p.QtyOrdered;
                 r.QtyFulfilled = p.QtyFulfilled;
                 r.Notes = p.Notes;
+                r.UpdateTimestamp= DateTime.Now;
+                r.UpdateUserid = User.Identity.Name;
             _context.SaveChanges();
             return Json(true);
         }
@@ -139,7 +142,11 @@ namespace WETT.Controllers
                     DeliveryReqDate = currentDeliveryReqDate,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
-                    OrderSourceId = 1
+                    OrderSourceId = 1,
+                    InsertTimestamp = DateTime.Now,
+                    InsertUserId = User.Identity.Name,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserId = User.Identity.Name,
 
                 };
 
@@ -159,6 +166,8 @@ namespace WETT.Controllers
                 s.DsSlipNumber = currentDsSlipNumber;
                 s.DeliveryReqDate = currentDeliveryReqDate;
                 s.SpecialInstructions = currentSpecialInstructions;
+                s.UpdateTimestamp = DateTime.Now;
+                s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
             Product c = _context.Products.Single(a => a.Description == p.ProductDesc);
@@ -166,10 +175,14 @@ namespace WETT.Controllers
             {
                 CustomerOrderId = CurrentCustomerOrderId,
                 ProductId = c.ProductId,
-
                 QtyOrdered = p.QtyOrdered,
                 QtyFulfilled = p.QtyFulfilled,
-                Notes = p.Notes
+                Notes = p.Notes,
+                InsertTimestamp = DateTime.Now,
+                InsertUserId = User.Identity.Name,
+                UpdateTimestamp = DateTime.Now,
+                UpdateUserid = User.Identity.Name,
+
 
             };
 

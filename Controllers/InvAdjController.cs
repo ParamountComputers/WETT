@@ -128,6 +128,8 @@ namespace WETT.Controllers
             r.ProductId = s.ProductId;
             r.Amount = p.Amount;
             r.Comments = p.Comments;
+            r.UpdateUserid = User.Identity.Name;
+            r.UpdateTimestamp = DateTime.Now;
             _context.SaveChanges();
             return Json(true);
         }
@@ -140,6 +142,10 @@ namespace WETT.Controllers
                     Date = CurrentDate,
                     Comments = CurrentNotes,
                     InventoryTxTypeId = 1,
+                    InsertUserId = User.Identity.Name,
+                    InsertTimestamp = DateTime.Now,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserId = User.Identity.Name,
                     StockAdjCode = "IA"
                 };
                 _context.InventoryTxes.Add(s);
@@ -154,6 +160,10 @@ namespace WETT.Controllers
                 InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
                 s.Comments = CurrentNotes;
                 s.Date = CurrentDate;
+                s.InsertTimestamp = DateTime.Now;
+                s.InsertUserId = User.Identity.Name;
+                s.UpdateUserId = User.Identity.Name;
+                s.UpdateTimestamp = DateTime.Now;
                 _context.SaveChanges();
             }
             Product c = _context.Products.Single(a => a.Description == p.ProductName);
@@ -165,6 +175,10 @@ namespace WETT.Controllers
                 Amount = p.Amount,
                 InventoryTxId = InventoryTxCurrentId,
                 InventoryTxReasonId = p.InventoryTxReasonsId,
+                InsertTimestamp = DateTime.Now,
+                InsertUserid = User.Identity.Name,
+                UpdateTimestamp = DateTime.Now,
+                UpdateUserid = User.Identity.Name,
 
             };
 

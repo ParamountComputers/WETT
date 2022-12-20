@@ -13,7 +13,6 @@ namespace WETT.Controllers
         public class SaDamageRecoupController : Controller
         {
             //classs variables
-            //public static Boolean showPage = false;
             public static string searchDate = DateTime.Today.ToShortDateString();
             public static string CurrentSaCode;
             public static string CurrentNotes;
@@ -132,7 +131,9 @@ namespace WETT.Controllers
                 r.ProductId = s.ProductId;
                 r.Amount = p.Amount;
                 r.Comments = p.Comments;
-                _context.SaveChanges();
+                r.UpdateTimestamp = DateTime.Now;
+                r.UpdateUserid = User.Identity.Name;
+            _context.SaveChanges();
                 return Json(true);
             }
             public JsonResult Add(SaDamageRecoupViewModel p)
@@ -144,6 +145,10 @@ namespace WETT.Controllers
                         Date = CurrentDate,
                         Comments = CurrentNotes,
                         InventoryTxTypeId = 2,
+                        InsertTimestamp = DateTime.Now,
+                        InsertUserId = User.Identity.Name,
+                        UpdateTimestamp = DateTime.Now,
+                        UpdateUserId = User.Identity.Name,
                         StockAdjCode = "DR"
                     };
                     _context.InventoryTxes.Add(s);
@@ -160,6 +165,10 @@ namespace WETT.Controllers
                     InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
                     s.Comments = CurrentNotes;
                     s.Date = CurrentDate;
+                    s.InsertTimestamp = DateTime.Now;
+                    s.InsertUserId = User.Identity.Name;
+                    s.UpdateTimestamp = DateTime.Now;
+                    s.UpdateUserId = User.Identity.Name;
                     _context.SaveChanges();
                 }
                 Product c = _context.Products.Single(a => a.Description == p.ProductName);
@@ -171,6 +180,10 @@ namespace WETT.Controllers
                     Amount = p.Amount,
                     InventoryTxId = InventoryTxCurrentId,
                     InventoryTxReasonId = p.InventoryTxReasonsId,
+                    InsertTimestamp = DateTime.Now,
+                    InsertUserid = User.Identity.Name,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserid = User.Identity.Name,
 
                 };
 

@@ -18,7 +18,6 @@ namespace WETT.Data
         public long? SupplierId { get; set; }
         public long? TruckingCompanyId { get; set; }
         public long? ShippingLocationId { get; set; }
-        public long? InventoryTxDetailsId { get; set; }
         public string PurchaseOrder { get; set; }
         public string Seal { get; set; }
         public string Probill { get; set; }

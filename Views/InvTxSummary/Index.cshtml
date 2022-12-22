@@ -87,7 +87,7 @@
                editurl: 'InvTxSummary/Update', 
                ondblClickRow: function(rowid) {
                 var cellVal = $('#invTxSummary').jqGrid ('getCell', rowid, 'saCode');
-                var invTxType = $("#InvTxSummaryDropdown").val();
+                var invTxType = $('#invTxSummary').jqGrid ('getCell', rowid, 'inventoryTxTypeId');
                 if(invTxType==1)
                 {
                     window.open("InvAdj?SaCode="+cellVal);

@@ -88,7 +88,7 @@
                         formatoptions: {
                             keys: true,
                             //editOptions: { },
-                            editbutton: false,
+                            editbutton: true,
                             addOptions: { },
                             delOptions: { url: 'FulfillSales/DeleteHdr' }
                         }
@@ -100,35 +100,9 @@
                    { label: 'Customer',name: 'customer', editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'City',name: 'city', editable: true, edittype:"text",editoptions: { readonly: 'readonly'}},
                    { label: 'Carrier',name: 'carrierID', editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getCarrier()}},
-
-
-
-
-                   //editable: true, edittype:"select",formatter:'select', editoptions: {value:getCarrierNames(),                
-                  // dataInit: function (elem) {
-                  //      name = $(elem).val();
-                  //      $('#FulfillSalesHdr').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                  //      $('#FulfillSalesHdr').setColProp('productId', { editoptions: { value:getProductName()} });
-                       // console.log(name);
-                 //   },
-                 //  dataEvents: [
-                 //   {
-                 //       type: 'change',
-                 //       fn: function(e) {
-                 //      name =$('#FulfillSalesHdr').jqGrid ('getCell', curRowId, 'supplierName');
-                     // $('#FulfillSalesHdr').setColProp('productSku', { editoptions: { value:getProductSku()} });
-                    //  $('#FulfillSalesHdr').setColProp('productId', { editoptions: { value:getProductName()} });
-                //       jQuery("FulfillSalesHdr").trigger('reloadGrid');
-                 //      console.log(name);
-                       
-                 //       }
-                 //       }
-                //     ]
-                 //   }
-                 //  },
-                  { label: 'Instructions',name: 'instructions', editable: true,editoptions: { readonly: 'readonly'}},
-                  { label: 'Status',name: 'status',  editable: true,editoptions: { readonly: 'readonly'}},
-                  { label: 'Short',name: 'shortInv',  editable: false,editoptions: { readonly: 'readonly'}}
+                   { label: 'Instructions',name: 'instructions', editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Status',name: 'status',  editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Short',name: 'shortInv',  editable: false,editoptions: { readonly: 'readonly'}}
 
 
                  ], 

@@ -411,15 +411,13 @@ namespace WETT.Controllers
             return Json(true);
 
         }
-        public JsonResult Update(FulfillSalesViewModel p)
+        public JsonResult UpdateHdr(FulfillSalesViewModel p)
         {
 
 
-            //InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-            //r.ToInventoryLocationId = p.InventoryLocationId;
-            //r.ProductId = p.ProductId;
-            //r.Amount = p.Amount;
-            //_context.SaveChanges();
+            CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerOrderId == p.CustomerOrderID);
+            r.CarrierId = p.CarrierID;
+            _context.SaveChanges();
             return Json(true);
         }
         public JsonResult UpdateDtls(FulfillSalesDtlsViewModel p)

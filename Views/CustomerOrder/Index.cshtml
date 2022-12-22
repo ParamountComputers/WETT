@@ -102,14 +102,16 @@
                     $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                     $('#customerOrder').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                    $('input#productSku').val(getProductSku(ui.item.value));   
+                    $('input#productSku').val(getProductSku(ui.item.value));  
+                    $('#customerOrder').jqGrid('setCell',curRowId,'stockQty',getProductSku(ui.item.value));
+                    $('input#stockQty').val(getStockQty(ui.item.value)); 
                     } });   
                     }
                    }},
                    { label: 'Product ID(SKU)',name: 'productSku',fixed:true,width:120,edittype:'text', editoptions: {readonly: 'readonly'}},
-                   { label: 'Stock Qty',name: 'stockQty',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                   { label: 'Stock Qty',name: 'stockQty',fixed:true,width:100, editable: true,edittype:'text',editoptions: {readonly: 'readonly'}},
                    { label: 'Qty Ordered',name: 'qtyOrdered',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
-                   { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                  // { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
                    { label: 'Notes',name: 'notes', editable: true,fixed:true,width:450,edittype:'text'}
 
                  ], 
@@ -353,7 +355,7 @@
            return ProductSku.toString(); 
 
         }
-                function getProductName() {
+         function getProductName() {
          var ProductNameList= [];
         $.ajaxSetup( { "async": false } );
         $.getJSON('CustomerOrder/CreateProductName', function(data) {
@@ -371,6 +373,27 @@
             
 
            return ProductNameList; 
+
+        }
+        function getStockQty(value) {
+        var StockQty ="";
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreateStockQtyList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+                console.log(data[i].value);
+                if(data[i].value== value)
+                {
+
+             StockQty=data[i].text;
+                } 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            console.log(StockQty);
+           return StockQty; 
 
         }
 

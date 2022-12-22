@@ -52,7 +52,6 @@ namespace WETT.Controllers
                                               ProductDesc = c.Description,
                                               StockQty = 0,
                                               QtyOrdered = b.QtyOrdered,
-                                              QtyFulfilled = b.QtyFulfilled,
                                               Notes = b.Notes
                                           };
             return View(result);
@@ -74,7 +73,6 @@ namespace WETT.Controllers
                                               ProductDesc = c.Description,
                                               StockQty = 0,
                                               QtyOrdered = b.QtyOrdered,
-                                              QtyFulfilled = b.QtyFulfilled,
                                               Notes = b.Notes
                                           };
             var CustomerOrderData = AllCustomerOrderData;
@@ -117,7 +115,6 @@ namespace WETT.Controllers
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
                 r.ProductId = s.ProductId;
                 r.QtyOrdered = p.QtyOrdered;
-                r.QtyFulfilled = p.QtyFulfilled;
                 r.Notes = p.Notes;
                 r.UpdateTimestamp= DateTime.Now;
                 r.UpdateUserid = User.Identity.Name;
@@ -176,7 +173,6 @@ namespace WETT.Controllers
                 CustomerOrderId = CurrentCustomerOrderId,
                 ProductId = c.ProductId,
                 QtyOrdered = p.QtyOrdered,
-                QtyFulfilled = p.QtyFulfilled,
                 Notes = p.Notes,
                 InsertTimestamp = DateTime.Now,
                 InsertUserId = User.Identity.Name,
@@ -286,6 +282,19 @@ namespace WETT.Controllers
                              select new
                              {
                                  text = a.Sku,
+                                 value = a.Description
+
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateStockQtyList()
+        {
+            var invAdjData = from a in _context.Products 
+                             join d in _context.Inventories on a.ProductId equals d.ProductId
+                             where d.InventoryLocationId == 1
+                             select new
+                             {
+                                 text = d.Count,
                                  value = a.Description
 
                              };

@@ -168,7 +168,7 @@
            url: "InvTxSummary/CreateInvTxTypeList",  
            data: "{}",  
            success: function (data) {  
-               var s = '';  
+               var s = '<option value="' + 0 + '">' + "All Transactions" + '</option>';   
                for (var i = 0; i < data.length; i++) {  
                    s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
                }  

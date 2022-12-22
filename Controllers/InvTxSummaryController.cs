@@ -59,6 +59,20 @@ namespace WETT.Controllers
                                     SaCode = a.StockAdjCode
 
                                 };
+            if (inventoryTxType == 0)
+            {
+                AllInvTxSummaryData = from a in _context.InventoryTxes
+                                      join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                      select new InvTxSummaryViewModel
+                                      {
+                                          InventoryTxId = a.InventoryTxId,
+                                          InventoryTxTypeId = c.InventoryTxTypeId,
+                                          Comments = a.Comments,
+                                          Date = a.Date, //.ToShortDateString(),
+                                          SaCode = a.StockAdjCode
+
+                                      };
+            }
             var InvTxSummaryData = AllInvTxSummaryData;
             if (showPage != false)
             {

@@ -373,7 +373,7 @@
                 { label: 'Inventory Qty',name: 'stockQty',editoptions: { readonly: 'readonly'}},
                 { label: 'Qty Pending',name: 'qtyPending',editoptions: { readonly: 'readonly'}},
                 { label: 'Qty Ordered',name: 'qtyOrdered',editoptions: { readonly: 'readonly'}},
-                { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {number:true}},
+                { label: 'Qty Fulfilled',name: 'qtyFulfilled', editable: true,edittype:'text',editrules: {custom:true, custom_func:qtyFulfilled}},
                 { label: 'Notes',name: 'notes', editable: true,edittype:'text'}
             ], 
             viewrecords: true,
@@ -414,6 +414,15 @@
 
             });
             $.ajaxSetup( { "async": true } );
+     }
+     function qtyFulfilled(value, colname) {    
+        var qtyPending = $("#FulfillSalesDtls").jqGrid("getCol", "qtyPending")
+        if(isNumeric(value)){
+        if(qtyPending>value){
+            return [false,"pending less than fulfilled"];
+        }
+        }
+        return[true,""];
      }
 
 

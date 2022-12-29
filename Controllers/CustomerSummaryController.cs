@@ -16,6 +16,7 @@ namespace WETT.Controllers
         public static string startSearchDate = "";
         public static string endSearchDate = "";
         public static long StatusOrderId;
+        public static long carrierId;
         //public static string Notes;
         //public static long CurrentHeaderId;
         private readonly WETT_DBContext _context;
@@ -41,6 +42,7 @@ namespace WETT.Controllers
                              Customer = b.Name,
                              City = b.City,
                              Carrier = d.Name,
+                             CarrierId = d.CarrierId,
                              CarrierDesc = d.Name,
                              Instructions = a.SpecialInstructions,
                              Status = c.Description
@@ -69,6 +71,7 @@ namespace WETT.Controllers
                              Customer = b.Name,
                              City = b.City,
                              Carrier = d.Name,
+                             CarrierId = d.CarrierId,
                              CarrierDesc = d.Name,
                              Instructions = a.SpecialInstructions,
                              Status = c.Description
@@ -78,7 +81,11 @@ namespace WETT.Controllers
             var CustomerSummaryData = AllCustomerSummaryData;
             if (showPage != false)
             {
+                if (carrierId == 0) { 
                 CustomerSummaryData = CustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate));
+                }else {
+                    CustomerSummaryData = CustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate) &&  x.CarrierId == carrierId);
+                }
             }
 
 
@@ -186,8 +193,20 @@ namespace WETT.Controllers
             startSearchDate = li[0];
             endSearchDate = li[1];
             StatusOrderId = (long)Convert.ToDouble(li[2]);
+            carrierId = (long)Convert.ToDouble(li[3]);
 
             return Json(true);
+        }
+        public IActionResult CreateCarrierList()
+        {
+            var invAdjData = from a in _context.Carriers
+                             select new
+                             {
+                                 value = a.CarrierId,
+                                 text = a.Name
+
+                             };
+            return Json(invAdjData);
         }
 
 

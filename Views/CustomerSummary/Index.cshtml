@@ -21,8 +21,13 @@
   <div class="Gap2"></div>
   <div class="searchDropdown2"> 
       <label for="StatusDropdown"  class="Label">Status:</label>
-      <select class="form-control dropDownInput2" id="StatusDropdown" name="StatusDropdown"></select> 
+      <select class="form-control dropDownInput" id="StatusDropdown" name="StatusDropdown"></select> 
   </div>
+  <div class="Gap1"></div>
+  <div class="searchDropdown"> 
+          <label for="carrierDropdown"  class="Label">Carrier:</label>
+          <select class="form-control dropDownInput" id="carrierDropdown" name="carrierDropdown"></select> 
+    </div>
 </body>
 
 <table id="customerSummary"></table>
@@ -163,6 +168,20 @@
            $('#startDate').val(date());
             $('#endDate').val(date());
        });
+        $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "FulfillSales/CreateCarrierList",  
+               data: "{}",  
+               success: function (data) {  
+                   var s = '<option value="0">All Carriers</option>';  
+                   for (var i = 0; i < data.length; i++) {  
+                       s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+                   }  
+                   $("#carrierDropdown").html(s);  
+               }  
+           });  
+        });
       $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
@@ -198,11 +217,12 @@
         var endDate = $("#endDate").val();
         var startDate = $("#startDate").val();
         var Status = $("#StatusDropdown").val();
+        var Carrier = $("#carrierDropdown").val();
         if(startDate != "" && endDate !="" && Status != -1)
             {
                     header = true;
                     $.ajaxSetup( { "async": false } );
-                    $.getJSON('CustomerSummary/CreateSearch?data='+startDate+'/'+endDate+'/'+Status, function(data) {});
+                    $.getJSON('CustomerSummary/CreateSearch?data='+startDate+'/'+endDate+'/'+Status+'/'+Carrier, function(data) {});
                     $.ajaxSetup( { "async": true } );
             }
         else if(Status==-1 && startDate== "" && endDate =="")

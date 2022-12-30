@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Console;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,24 +15,20 @@ namespace WETT.Infrastructure
     {
         public static void SetAsByteArray(this ISession session, string key, object toSerialize)
         {
-            var binaryFormatter = new BinaryFormatter();
             var memoryStream = new MemoryStream();
-			binaryFormatter.Serialize(memoryStream, toSerialize);
-
+			System.Text.Json.JsonSerializer.Serialize(memoryStream, toSerialize);
             session.Set(key, memoryStream.ToArray());
         }
 
-        public static object GetAsByteArray(this ISession session, string key)
+        public static List<string> GetAsList(this ISession session, string key)
         {
             var memoryStream = new MemoryStream();
-            var binaryFormatter = new BinaryFormatter();
 
             var objectBytes = session.Get(key) as byte[];
             memoryStream.Write(objectBytes, 0, objectBytes.Length);
             memoryStream.Position = 0;
 
-            return binaryFormatter.Deserialize(memoryStream);
-
-        }
+			return (List<string>)System.Text.Json.JsonSerializer.Deserialize(memoryStream, typeof(List<string>));
+		}
     }
 }

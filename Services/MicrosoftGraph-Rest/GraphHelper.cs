@@ -53,7 +53,7 @@ namespace WETT.Services
             // The data will exist for 'Group Overage' claim.
             if (_httpContextSession.Keys.Contains("groupClaims"))
             {
-                return _httpContextSession.GetAsByteArray("groupClaims") as List<string>;
+                return _httpContextSession.GetAsList("groupClaims") as List<string>;
             }
             return null;
         }

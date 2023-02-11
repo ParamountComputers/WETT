@@ -16,7 +16,7 @@
 </body>
 
 
-<table id="product"></table>
+<table id="inventory"></table>
 <div id="jqGridPager"></div>
 @section scripts {
 <script type="text/javascript">
@@ -25,7 +25,7 @@
     $.jgrid.defaults.responsive = true;
 
     $(document).ready(function() {
-       $("#product").jqGrid({
+       $("#inventory").jqGrid({
                url: 'Inventory/GetAll',
                mtype: "GET",
                guiStyle: "bootstrap",
@@ -53,9 +53,25 @@
                    //         delOptions: { url: 'Inventory/Delete' }
                    //     }
                    // },
-                   { label: 'Product Id',name: 'productSku',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
+                    {
+                        label: 'Product Name', name: 'productName', fixed: true, width: 150, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
+                        editoptions: {
+                            dataInit: function (elem) {
+                                curRowId = $('#inventory').getGridParam('selrow');
+                                $(elem).select();
+                                $(elem).autocomplete({
+                                    source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
+                                        $('#inventory').jqGrid('setCell', curRowId, 'supplierName', getSupplierNames(ui.item.value));
+                                        $('input#supplierName').val(getSupplierNames(ui.item.value));
+                                        $('#inventory').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
+                                        $('input#productSku').val(getProductSku(ui.item.value));
+                                    }
+                                });
+                            }
+                        }
+                    },
 
-			       { label: 'Product Name',name: 'productName',fixed:true,width:150, editable: true, edittype:"text", editoptions: { maxlength: 150}, editrules: { required: true }},
+                   { label: 'Product Id',name: 'productSku',fixed:true,width:100, editable: true, edittype:"text", editoptions: { maxlength: 50}, editrules: { required: true }},
 
                    { label: 'Supplier',name: 'supplier',fixed:true,width:125, editable: true, edittype:"select",formatter: 'select', editoptions: {value: getSupplierNames()}},
 
@@ -70,15 +86,15 @@
                rowHeight: 20,
                rowNum: 15,
                pager: "#jqGridPager",
-               editurl: 'Products/Update'
+               editurl: 'Inventory/Update'
                //onSelectRow: editRow, // the javascript function to call on row click. will use to put the row in edit mode
 
            }).hideCol("productId");
-               
 
 
 
-           $('#product').navGrid('#jqGridPager',
+
+            $('#inventory').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
@@ -95,7 +111,7 @@
 
        });
 
-       $('#product').setGridWidth(parseInt($(window).width()) - 20);
+        $('#inventory').setGridWidth(parseInt($(window).width()) - 20);
 
        $("#description").on('change keyup paste', function () {
            SearchByProductName();
@@ -114,27 +130,60 @@
 
         f.rules.push({ field: "name", op: "cn", data: searchString });
 
-        var grid = $('#product');
+            var grid = $('#inventory');
         grid[0].p.search = f.rules.length > 0;
         
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
-        function getSupplierNames() {
-          var SupplierList= {};
 
-        $.ajaxSetup( { "async": false } );
-        $.getJSON('Products/CreateList', function(data) {
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-             SupplierList[data[i].value]=data[i].text;
-              } 
-            }//if
+        }
+        function getSupplierNames(value) {
+            var Supplier = "";
+            $.ajaxSetup({ "async": false });
+            $.getJSON('Inventory/CreateList', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (value === data[i].value) {
+                            Supplier = data[i].text;
+                        }
+                    }
+                }//if
 
             });
-            $.ajaxSetup( { "async": true } );
-           return SupplierList; 
+            $.ajaxSetup({ "async": true });
+            return Supplier;
+        }
 
+        function getProductSku(value) {
+            $.ajaxSetup({ "async": false });
+            $.getJSON('Inventory/CreateProductSkuList', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].value == value) {
+                            ProductSku = data[i].text;
+                        }
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+            return ProductSku.toString();
+        }
+
+        function getProductName() {
+            var ProductNameList = [];
+            $.ajaxSetup({ "async": false });
+            $.getJSON('Inventory/CreateProductName', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        ProductNameList[i] = data[i].text;
+                    }
+                }//if
+            });
+            $.ajaxSetup({ "async": true });
+            console.log(ProductNameList);
+            return ProductNameList;
         }
 
 

@@ -328,17 +328,38 @@ namespace WETT.Controllers
 
         //    return Json(true);
         //}
-        [HttpGet]
         public IActionResult CreateList()
         {
-            var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
-            var li = from s in suppliers
+
+            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     join b in _context.Products on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
-                         value = s.SupplierId
+                         value = b.Description
+
                      };
             return Json(li);
+        }
+        public IActionResult CreateProductSkuList()
+        {
+            var invAdjData = from a in _context.Products
+                             select new
+                             {
+                                 text = a.Sku,
+                                 value = a.Description
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateProductName()
+        {
+            var invAdjData = from a in _context.Products
+                             select new
+                             {
+                                 value = a.SupplierId,
+                                 text = a.Description
+                             };
+            return Json(invAdjData);
         }
     }
 }

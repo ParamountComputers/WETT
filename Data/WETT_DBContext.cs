@@ -526,16 +526,16 @@ namespace WETT.Data
                 entity.ToTable("Inventory");
 
                 entity.ToTable(tb => tb.IsTemporal(ttb =>
-    {
-        ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_466100701", "dbo");
-        ttb
-            .HasPeriodStart("SysStartTime")
-            .HasColumnName("SysStartTime");
-        ttb
-            .HasPeriodEnd("SysEndTime")
-            .HasColumnName("SysEndTime");
-    }
-));
+                {
+                    ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_466100701", "dbo");
+                    ttb
+                        .HasPeriodStart("SysStartTime")
+                        .HasColumnName("SysStartTime");
+                    ttb
+                        .HasPeriodEnd("SysEndTime")
+                        .HasColumnName("SysEndTime");
+                }
+            ));
 
                 entity.Property(e => e.ProductId).HasColumnName("Product Id");
 
@@ -567,6 +567,8 @@ namespace WETT.Data
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Inventory_Product");
+
+                entity.ToTable(tb => tb.HasTrigger("TriggerName"));
             });
 
             modelBuilder.Entity<InventoryLocation>(entity =>
@@ -578,6 +580,8 @@ namespace WETT.Data
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                 entity.ToTable(tb => tb.HasTrigger("TriggerName"));
             });
 
             modelBuilder.Entity<InventoryTx>(entity =>
@@ -681,6 +685,8 @@ namespace WETT.Data
                     .WithMany(p => p.InventoryTxes)
                     .HasForeignKey(d => d.TruckingCompanyId)
                     .HasConstraintName("FK_Inventory Tx_Trucking Company");
+
+                entity.ToTable(tb => tb.HasTrigger("TriggerName"));
             });
 
             modelBuilder.Entity<InventoryTxDetail>(entity =>
@@ -733,6 +739,8 @@ namespace WETT.Data
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Inventory Tx Detail_Product");
+
+                entity.ToTable(tb => tb.HasTrigger("TriggerName"));
             });
 
             modelBuilder.Entity<InventoryTxReason>(entity =>
@@ -992,6 +1000,9 @@ namespace WETT.Data
                     .HasForeignKey(d => d.SupplierId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Product_Supplier");
+
+                entity.ToTable(tb => tb.HasTrigger("TriggerName"));
+
             });
 
             modelBuilder.Entity<Segment>(entity =>

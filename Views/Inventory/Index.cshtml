@@ -137,7 +137,32 @@
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
 
+        function IsProduct(value, colname) {
+            var containsProduct = false;
+            $.ajaxSetup({ "async": false });
+            $.getJSON('InvAdjTest/CreateProductName', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (value == data[i].text) {
+
+                            containsProduct = true;
+
+                        }
+                    }
+                }//if
+
+            });
+            if (containsProduct == true) {
+                $.ajaxSetup({ "async": true });
+                return [true, ""];
+            }
+            else {
+                $.ajaxSetup({ "async": true });
+                return [false, "Please Enter Valid Product"];
+            }
+
         }
+        
         function getSupplierNames(value) {
             var Supplier = "";
             $.ajaxSetup({ "async": false });

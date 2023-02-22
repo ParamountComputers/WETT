@@ -96,7 +96,7 @@
 
             $('#inventory').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
-               { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+               { edit: false, add: false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
                // options for the Add Dialog
                {},
                //{
@@ -136,11 +136,12 @@
         $.extend(grid[0].p.postData, { filters: JSON.stringify(f) });
         grid.trigger("reloadGrid", [{ page: 1 }]);
     }
+    
 
         function IsProduct(value, colname) {
             var containsProduct = false;
             $.ajaxSetup({ "async": false });
-            $.getJSON('InvAdjTest/CreateProductName', function (data) {
+            $.getJSON('Inventory/CreateProductName', function (data) {
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
                         if (value == data[i].text) {

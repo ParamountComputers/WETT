@@ -13,7 +13,10 @@
       <label for="date" class="Label" >Trans Date:</label>
       <input type="date"id='date' class="Date" name="date" />
   </div>
-  <div class="Gap3"></div>
+    <div class="searchDropdown">
+        <label for="supplierDropdown" class="Label">Supplier:</label>
+        <select class="form-control dropDownInput" id="supplierDropdown" name="supplierDropdown"></select>
+    </div>
   <div class="Notes"> 
       <label for="comments" class="Label" >Notes:</label>
       <input type="text" class="NotesInput"id="comments" name="comments"/>
@@ -76,20 +79,24 @@
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'SA Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
-                    editoptions: {
-                    dataInit: function(elem) {
-                    curRowId = $('#invAdj').getGridParam('selrow');
-                    $(elem).select();
-                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
-                    $('#invAdj').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
-                    $('input#supplierName').val(getSupplierNames(ui.item.value));
-                    $('#invAdj').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
-                    $('input#productSku').val(getProductSku(ui.item.value));
-                    } });   
-                                  }
-                   }},
-                   { label: 'Supplier',name: 'supplierName',fixed:true,width:120,editable:true, editoptions: {readonly: 'readonly'}},
+                   {
+                        label: 'Product Name', name: 'productName', fixed: true, width: 170, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
+                        editoptions: {
+                            dataInit: function (elem) {
+                                curRowId = $('#invAdj').getGridParam('selrow');
+                                $(elem).select();
+                                name = $('#supplierDropdown').val();
+                                $(elem).autocomplete({
+                                    source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
+                                        $('#invAdj').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
+                                        $('input#productSku').val(getProductSku(ui.item.value));
+
+                                    }
+                                });
+                            }
+                        }
+                   },
+                  // { label: 'Supplier',name: 'supplierName',fixed:true,width:120,editable:true, editoptions: {readonly: 'readonly'}},
                    { label: 'Product SKU',name: 'productSku',fixed:true,width:85,editable:true , editoptions: {readonly: 'readonly'}},
                    { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
                    { label: 'ADJ Amount (+/-)',name: 'amount',fixed:true,width:85,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
@@ -152,6 +159,20 @@
        $(document).ready(function () {  
            $('#date').val(date());
        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "InvAdj/CreateSupplierList",
+                data: "{}",
+                success: function (data) {
+                    var s = '';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                    }
+                    $("#supplierDropdown").html(s);
+                }
+            });
+        });
        $(document).ready(function () {  
            $.ajax({  
                type: "GET",  
@@ -263,25 +284,24 @@
             return ProductSku.toString(); 
        }
 
-              function getProductName() 
-       {
-               var ProductNameList= [];
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('InvAdj/CreateProductName', function(data) 
-            {
-                if (data != null) 
-                {
-                    for (var i = 0; i < data.length; i++) 
-                    {
-                        ProductNameList[i]=data[i].text;
+        function getProductName() {
+            var ProductNameList = [];
+            $.ajaxSetup({ "async": false });
+            var count = 0;
+            $.getJSON('SaStockReceived/CreateProductName', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (name == data[i].value) {
+                            ProductNameList[count] = data[i].text;
+                            count++;
+                        }
                     }
                 }//if
             });
-            $.ajaxSetup( { "async": true } );
+            $.ajaxSetup({ "async": true });
             console.log(ProductNameList);
-            return ProductNameList; 
-       }
-
+            return ProductNameList;
+        }
        function getLocation() 
        {
             var LocationList= {};

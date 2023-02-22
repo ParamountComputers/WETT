@@ -237,6 +237,18 @@ namespace WETT.Controllers
                      };
             return Json(li);
         }
+        public IActionResult CreateSupplierList()
+        {
+
+            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     select new
+                     {
+                         text = s.Name,
+                         value = s.SupplierId
+
+                     };
+            return Json(li);
+        }
         public IActionResult CreateProductSkuList()
         {
             var invAdjData = from a in _context.Products

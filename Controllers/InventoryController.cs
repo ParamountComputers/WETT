@@ -1,20 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using WETT.Data;
 using WETT.Models;
-using BindAttribute = Microsoft.AspNetCore.Mvc.BindAttribute;
-using Controller = Microsoft.AspNetCore.Mvc.Controller;
-using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
-using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
-using JsonResult = Microsoft.AspNetCore.Mvc.JsonResult;
-using SelectList = Microsoft.AspNetCore.Mvc.Rendering.SelectList;
-using ValidateAntiForgeryTokenAttribute = Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute;
 
 namespace WETT.Controllers
 {

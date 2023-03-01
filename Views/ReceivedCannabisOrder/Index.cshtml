@@ -1,0 +1,240 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "ReceivedCannabisOrder";
+}
+<div class="text-center">
+    <h4 class="display-5">Receive Cannabis Order</h4>
+</div>
+<body>
+    <div class="searchInput">
+        <label class="Label" for="purchaseOrder">Purchase Order:</label>
+        <input type="text" class="input" id="purchaseOrder" />
+    </div>
+    <div class="Gap2"></div>
+    <div class="SaCode">
+        <label for="saCode" class="Label">SA Code:</label>
+        <input type="text" class="SaCodeInput" id="saCode" readonly />
+    </div>
+
+</body>
+<table id="ReceivedCannabisOrder"></table>
+<div id="jqGridPager"></div>
+<fieldset class="scheduler-border">
+    <div class="mb-3 row">
+        <div class="col-lg-12">
+            <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="newPage" type="button"> New Page </button>
+        </div>
+    </div>
+</fieldset>
+@section scripts {
+    <script type="text/javascript">
+
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+        $.jgrid.defaults.responsive = true;
+        var header = false;
+        var curRowId = -1;
+        var name;
+        $(document).ready(function () {
+            $("#ReceivedCannabisOrder").jqGrid({
+                url: 'ReceivedCannabisOrder/GetAll',
+                mtype: "GET",
+                guiStyle: "bootstrap",
+                iconSet: "fontAwesome",
+                idPrefix: "gb1_",
+                datatype: "json",
+                ajaxSelectOptions: {
+                    type: "GET",
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: "json",
+                    cache: false,
+                },
+                autowidth: true,
+                colModel: [
+                    {
+                        label: "Edit Actions",
+                        name: "actions",
+                        width: 100,
+                        fixed: true,
+                        formatter: "actions",
+                        formatoptions: {
+                            keys: true,
+                            editOptions: {},
+                            addOptions: {},
+                            delOptions: { url: 'ReceivedCannabisOrder/Delete' }
+                        }
+                    },
+                    { label: 'Inventory Tx Detail Id', name: 'inventoryTxDetailId', editable: true, hidden: true, editoptions: { readonly: 'readonly' }, key: true },
+                    { label: 'Date', name: 'date', editable: true, edittype: "text", hidden: true, editoptions: { readonly: 'readonly' } },
+                    {
+                        label: 'Product Name', name: 'productName', fixed: true, width: 170, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
+                        editoptions: {
+                            dataInit: function (elem) {
+                                curRowId = $('#ReceivedCannabisOrder').getGridParam('selrow');
+                                $(elem).select();
+                                name = $('#supplierDropdown').val();
+                                $(elem).autocomplete({
+                                    source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
+                                        $('#ReceivedCannabisOrder').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
+                                        $('input#productSku').val(getProductSku(ui.item.value));
+
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    { label: 'Product SKU', name: 'productSku', fixed: true, width: 85, editable: true, edittype: "text", editoptions: { readonly: 'readonly' } },
+                    { label: 'ADJ Amount (+/-)', name: 'amount', fixed: true, width: 85, editable: true, edittype: "text" },
+                    { label: 'Notes', name: 'comments', fixed: true, width: 650, editable: true, edittype: "text" }
+
+                ],
+                viewrecords: true,
+                height: 388.5,
+                rowHeight: 20,
+                rowNum: 15,
+                pager: "#jqGridPager",
+                editurl: 'ReceivedCannabisOrder/Update',
+                onSelectRow: function (rowid) {
+                    curRowId = rowid;
+
+
+                }
+
+            })
+
+
+
+
+            $('#ReceivedCannabisOrder').navGrid('#jqGridPager',
+                // the buttons to appear on the toolbar of the grid
+                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+
+                {
+
+                },
+                {
+                    zIndex: 99,
+                    afterShowForm: function () {
+                        var idSelector = $.jgrid.jqID(this.p.id);
+                        //if(header==false) {
+                        //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+                        //alert("Error: Need Header");
+                        //}
+                    },
+                    //onclickSubmit: function (){
+                    //},
+                    afterSubmit: function () {
+                        $.getJSON('ReceivedCannabisOrder/DisplaySACode', function (data) {
+                            $("#saCode").val(data);
+                        });
+                        $.ajaxSetup({ "async": true });
+                    },
+                    beforeSubmit: function () {
+                        var Po = $("#purchaseOrder").val();
+                        $.getJSON('ReceivedCannabisOrder/CreateHeader?data=' + Po , function () { });
+                        $.ajaxSetup({ "async": true });
+                    },
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    },
+                    url: 'ReceivedCannabisOrder/Add'
+                });
+
+        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "ReceivedCannabisOrder/CreateList",
+                data: "{}",
+                success: function (data) {
+                    var s = '';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                    }
+                    $("#supplierDropdown").html(s);
+                }
+            });
+        });
+
+        $("#newPage").on('click', function () {
+            window.location.replace("ReceivedCannabisOrder");
+        });
+
+        function date() {
+            var date;
+            var currentDate = new Date();
+            var day = ("0" + currentDate.getDate()).slice(-2);
+            var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+            var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+            date = today.toString();
+            return date;
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "ReceivedCannabisOrder/SaCode",
+                data: "{}",
+                success: function (data) {
+                    if (data != null) {
+                        header = true;
+                        $("#saCode").val(data.sacode);
+                        $("#purchaseOrder").val(data.purchaseOrder);
+                        name = getSelection(data.supplier);
+                    }
+                }
+            });
+        });
+
+        function IsProduct(value, colname) {
+            var containsProduct = false;
+            $.ajaxSetup({ "async": false });
+            $.getJSON('ReceivedCannabisOrder/CreateProductName', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (value == data[i].text) {
+
+                            containsProduct = true;
+
+                        }
+                    }
+                }//if
+
+            });
+            if (containsProduct == true) {
+                $.ajaxSetup({ "async": true });
+                return [true, ""];
+            }
+            else {
+                $.ajaxSetup({ "async": true });
+                return [false, "Please Enter Valid Product"];
+            }
+
+        }
+
+
+
+        function getProductSku(value) {
+            var ProductSku = "";
+            $.ajaxSetup({ "async": false });
+            $.getJSON('ReceivedCannabisOrder/CreateProductSkuList', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].value == value) {
+                            ProductSku = data[i].text;
+                        }
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+            return ProductSku;
+
+        }
+
+    </script>
+}
+

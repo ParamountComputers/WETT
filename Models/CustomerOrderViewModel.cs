@@ -7,6 +7,7 @@ namespace WETT.Models
 
         public long CustomerOrderDtlsID { get; set; }
         public long CustomerOrderID { get; set; }
+        public string OrderNumber { get; set; }
         public long ProductID { get; set; }
         public string ProductSku { get; set; }
         public string ProductDesc { get; set; }

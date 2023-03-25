@@ -4,38 +4,33 @@
 @{
     ViewData["Title"] = "ReceivedCannabisOrder";
 }
+
 <div class="text-center">
-    <h4 class="display-5">Receive Cannabis Order</h4>
+    <h2 class="display-4">Received Cannabis Order</h2>
 </div>
 <body>
     <div class="searchInput">
-        <label class="Label" for="purchaseOrder">Purchase Order:</label>
-        <input type="text" class="input" id="purchaseOrder" />
+        <label class="Label" for="orderNumber">Order Number</label>
+        <input type="text" class="input" id="orderNumber" />
     </div>
-    <div class="Gap2"></div>
-    <div class="SaCode">
-        <label for="saCode" class="Label">SA Code:</label>
-        <input type="text" class="SaCodeInput" id="saCode" readonly />
-    </div>
-
 </body>
 <table id="ReceivedCannabisOrder"></table>
 <div id="jqGridPager"></div>
 <fieldset class="scheduler-border">
     <div class="mb-3 row">
         <div class="col-lg-12">
-            <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="newPage" type="button"> New Page </button>
+            <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="search" type="button"> Search </button>
         </div>
     </div>
 </fieldset>
 @section scripts {
+
     <script type="text/javascript">
 
         $.jgrid.defaults.styleUI = 'Bootstrap';
         $.jgrid.defaults.responsive = true;
         var header = false;
         var curRowId = -1;
-        var name;
         $(document).ready(function () {
             $("#ReceivedCannabisOrder").jqGrid({
                 url: 'ReceivedCannabisOrder/GetAll',
@@ -56,8 +51,8 @@
                         label: "Edit Actions",
                         name: "actions",
                         width: 100,
-                        fixed: true,
                         formatter: "actions",
+                        fixed: true,
                         formatoptions: {
                             keys: true,
                             editOptions: {},
@@ -65,28 +60,30 @@
                             delOptions: { url: 'ReceivedCannabisOrder/Delete' }
                         }
                     },
-                    { label: 'Inventory Tx Detail Id', name: 'inventoryTxDetailId', editable: true, hidden: true, editoptions: { readonly: 'readonly' }, key: true },
-                    { label: 'Date', name: 'date', editable: true, edittype: "text", hidden: true, editoptions: { readonly: 'readonly' } },
+                    { label: 'Customer Order Detail Id', name: 'customerOrderDetailID', editable: true, hidden: true, editoptions: { readonly: 'readonly' }, key: true },
+                    { label: 'Customer Order Id', name: 'customerOrderID', hidden: true, editable: true, editoptions: { readonly: 'readonly' } },
                     {
-                        label: 'Product Name', name: 'productName', fixed: true, width: 170, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
+                        label: 'Product Desc', name: 'productDesc', fixed: true, width: 150, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
                         editoptions: {
                             dataInit: function (elem) {
                                 curRowId = $('#ReceivedCannabisOrder').getGridParam('selrow');
                                 $(elem).select();
-                                name = $('#supplierDropdown').val();
                                 $(elem).autocomplete({
                                     source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
                                         $('#ReceivedCannabisOrder').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
                                         $('input#productSku').val(getProductSku(ui.item.value));
-
+                                        $('#ReceivedCannabisOrder').jqGrid('setCell', curRowId, 'stockQty', getProductSku(ui.item.value));
+                                        $('input#stockQty').val(getStockQty(ui.item.value));
                                     }
                                 });
                             }
                         }
                     },
-                    { label: 'Product SKU', name: 'productSku', fixed: true, width: 85, editable: true, edittype: "text", editoptions: { readonly: 'readonly' } },
-                    { label: 'ADJ Amount (+/-)', name: 'amount', fixed: true, width: 85, editable: true, edittype: "text" },
-                    { label: 'Notes', name: 'comments', fixed: true, width: 650, editable: true, edittype: "text" }
+                    { label: 'Product ID(SKU)', name: 'productSku', fixed: true, width: 125, edittype: 'text', editoptions: { readonly: 'readonly' } },
+                    { label: 'Stock Qty', name: 'stockQty', fixed: true, width: 100, editable: true, edittype: 'text', editoptions: { readonly: 'readonly' } },
+                    { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: true, edittype: 'text', editrules: { number: true } },
+                     { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                    { label: 'Notes', name: 'notes', editable: true, fixed: true, width: 450, edittype: 'text' }
 
                 ],
                 viewrecords: true,
@@ -95,11 +92,6 @@
                 rowNum: 15,
                 pager: "#jqGridPager",
                 editurl: 'ReceivedCannabisOrder/Update',
-                onSelectRow: function (rowid) {
-                    curRowId = rowid;
-
-
-                }
 
             })
 
@@ -108,7 +100,7 @@
 
             $('#ReceivedCannabisOrder').navGrid('#jqGridPager',
                 // the buttons to appear on the toolbar of the grid
-                { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+                { edit: false, add: false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
 
                 {
 
@@ -125,42 +117,38 @@
                     //onclickSubmit: function (){
                     //},
                     afterSubmit: function () {
-                        $.getJSON('ReceivedCannabisOrder/DisplaySACode', function (data) {
-                            $("#saCode").val(data);
-                        });
-                        $.ajaxSetup({ "async": true });
                     },
-                    beforeSubmit: function () {
-                        var Po = $("#purchaseOrder").val();
-                        $.getJSON('ReceivedCannabisOrder/CreateHeader?data=' + Po , function () { });
-                        $.ajaxSetup({ "async": true });
-                    },
+                    //beforeSubmit: function () {
+                    //    var customer = $("#customer").val();
+                    //    var orderNumber = $("#orderNumber").val();
+                    //    var dateOrdered = $("#dateOrdered").val();
+                    //    var customerOrderStatus = $("#customerOrderStatus").val();
+                    //    var driver = $("#driver").val();
+                    //    var dsSlipNumber = $("#dsSlipNumber").val();
+                    //    var deliveryReqDate = $("#deliveryReqDate").val();
+                    //    var specialInstructions = $("#specialInstructions").val();
+                    //    var carrier = $("#carrier").val();
+                    //    $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier, function () { });
+                    //    $.ajaxSetup({ "async": true });
+                    //},
                     closeAfterAdd: true,
                     recreateForm: true,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
                     },
-                    url: 'ReceivedCannabisOrder/Add'
+                    url: 'CustomerOrder/Add'
                 });
 
         });
-        $(document).ready(function () {
-            $.ajax({
-                type: "GET",
-                url: "ReceivedCannabisOrder/CreateList",
-                data: "{}",
-                success: function (data) {
-                    var s = '';
-                    for (var i = 0; i < data.length; i++) {
-                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
-                    }
-                    $("#supplierDropdown").html(s);
-                }
-            });
-        });
 
-        $("#newPage").on('click', function () {
-            window.location.replace("ReceivedCannabisOrder");
+
+        $('#ReceivedCannabisOrder').setGridWidth(parseInt($(window).width()) - 20);
+        $("#search").on('click', function () {
+           var orderNumber = $("#orderNumber").val();
+            $.ajaxSetup({ "async": false });
+            $.getJSON('ReceivedCannabisOrder/CreateHeader?data=' orderNumber, function (data) {
+            });
+            $.ajaxSetup({ "async": true });
         });
 
         function date() {
@@ -172,30 +160,15 @@
             date = today.toString();
             return date;
         }
-
-        $(document).ready(function () {
-            $.ajax({
-                type: "GET",
-                url: "ReceivedCannabisOrder/SaCode",
-                data: "{}",
-                success: function (data) {
-                    if (data != null) {
-                        header = true;
-                        $("#saCode").val(data.sacode);
-                        $("#purchaseOrder").val(data.purchaseOrder);
-                        name = getSelection(data.supplier);
-                    }
-                }
-            });
-        });
-
         function IsProduct(value, colname) {
             var containsProduct = false;
             $.ajaxSetup({ "async": false });
             $.getJSON('ReceivedCannabisOrder/CreateProductName', function (data) {
                 if (data != null) {
+
+
                     for (var i = 0; i < data.length; i++) {
-                        if (value == data[i].text) {
+                        if (value == data[i].value) {
 
                             containsProduct = true;
 
@@ -215,8 +188,6 @@
 
         }
 
-
-
         function getProductSku(value) {
             var ProductSku = "";
             $.ajaxSetup({ "async": false });
@@ -224,6 +195,7 @@
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].value == value) {
+
                             ProductSku = data[i].text;
                         }
                     }
@@ -231,10 +203,49 @@
 
             });
             $.ajaxSetup({ "async": true });
-            return ProductSku;
+            return ProductSku.toString();
+
+        }
+        function getProductName() {
+            var ProductNameList = [];
+            $.ajaxSetup({ "async": false });
+            $.getJSON('ReceivedCannabisOrder/CreateProductName', function (data) {
+                if (data != null) {
+
+
+                    for (var i = 0; i < data.length; i++) {
+                        ProductNameList[i] = data[i].value;
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+
+
+            return ProductNameList;
+
+        }
+        function getStockQty(value) {
+            var StockQty = "";
+            $.ajaxSetup({ "async": false });
+            $.getJSON('ReceivedCannabisOrder/CreateStockQtyList', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].value == value) {
+
+                            StockQty = data[i].text;
+                        }
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+            return StockQty;
 
         }
 
     </script>
 }
 
+<div>Graph API result</div>
+<div>@ViewData["GraphApiResult"]</div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,296 +9,287 @@ using WETT.Data;
 using WETT.Models;
 
 namespace WETT.Controllers
-{
-    public class ReceivedCannabisOrderController : Controller
     {
-
-        public static DateTime CurrentDate;
-        public static string CurrentSaCode;
-        public static string Notes;
-        public static long CurrentTruckingCompany;
-        public static string CurrentPurchaseOrder;
-        public static string CurrentSealNumber;
-        public static string CurrentProbill;
-        public static string CurrentLocations;
-        public static long CurrentSupplier;
-        public static long InventoryTxCurrentId;
-        public static long CurrentToLocation;
-        private readonly WETT_DBContext _context;
-        public ReceivedCannabisOrderController(WETT_DBContext context)
+        public class ReceivedCannabisOrderController : Controller
         {
-            _context = context;
-        }
-        public async Task<IActionResult> Index(string SaCode)
-        {
-            CurrentSaCode = SaCode;
-            InventoryTxCurrentId = -1;
+            public static string orderNumber;
+            public static long CurrentCustomerOrderId;
+            private readonly WETT_DBContext _context;
 
-            var result = from b in _context.InventoryTxDetails
-                         join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                         join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                         join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                         join e in _context.Products on b.ProductId equals e.ProductId
-                         join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                         join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
-                         where a.InventoryTxId == InventoryTxCurrentId
-                         select new SaStockReceivedViewModel
-                         {
-                             InventoryTxDetailId = b.InventoryTxDetailId,
-                             ProductSku = e.Sku,
-                             SupplierName = f.Name,
-                             InventoryTxId = b.InventoryTxId,
-                             ProductId = e.ProductId,
-                             ProductName = e.Description,
-                             InventoryLocationId = d.InventoryLocationId,
-                             Amount = b.Amount,
-                             Comments = b.Comments,
-                             Date = a.Date, //.ToShortDateString(),
-                             SaCode = a.StockAdjCode
-
-                         };
-            return View(result);
-        }
-
-        public JsonResult GetAll(JqGridViewModel request)
-        {
-
-            // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var AllSaStockReceivedData = from b in _context.InventoryTxDetails
-                                         join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                                         join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                         join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                                         join e in _context.Products on b.ProductId equals e.ProductId
-                                         join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                         where a.InventoryTxId == InventoryTxCurrentId
-                                         select new SaStockReceivedViewModel
-                                         {
-                                             InventoryTxId = b.InventoryTxId,
-                                             InventoryTxDetailId = b.InventoryTxDetailId,
-                                             ProductSku = e.Sku,
-                                             SupplierName = f.Name,
-                                             ProductId = e.ProductId,
-                                             ProductName = e.Description,
-                                             InventoryTxTypeId = c.InventoryTxTypeId,
-                                             Amount = b.Amount,
-                                             Comments = b.Comments,
-                                             Date = a.Date, //.ToShortDateString(),
-                                             SaCode = a.StockAdjCode
-
-                                         };
-            var SaStockReceivedData = AllSaStockReceivedData;
-            if (CurrentSaCode != null)
+            public ReceivedCannabisOrderController(WETT_DBContext context)
             {
-                SaStockReceivedData = SaStockReceivedData.Where(w => w.SaCode == CurrentSaCode);
-                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-                InventoryTxCurrentId = r.InventoryTxId;
+                _context = context;
             }
-
-
-
-            int totalRecords = SaStockReceivedData.Count();
-            var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
-            int currentPageIndex = request.page - 1;
-
-            //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
-            if (request.sord.ToUpper() == "DESC")
+            public async Task<IActionResult> Index(string CustomerOrderID)
             {
-                SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.OrderByDescending(t => t.ProductName);
-                SaStockReceivedData = SaStockReceivedData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
-            else
-            {
-                SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.OrderBy(t => t.ProductName);
-                SaStockReceivedData = (IQueryable<SaStockReceivedViewModel>)SaStockReceivedData.Skip(currentPageIndex * request.rows).Take(request.rows);
-            }
-            var jsonData = new
-            {
-                total = totalPages,
-                request.page,
-                records = totalRecords,
-                rows = SaStockReceivedData
-            };
-
-            return Json(jsonData);
-        }
-        public JsonResult Add(SaExciseDutyViewModel p)
-        {
-            if (CurrentSaCode == null)
-            {
-                InventoryTx s = new InventoryTx
+                if (CustomerOrderID != null)
                 {
-                    Date = CurrentDate,
-                    Comments = Notes,
-                    TruckingCompanyId = CurrentTruckingCompany,
-                    PurchaseOrder = CurrentPurchaseOrder,
-                    Seal = CurrentSealNumber,
-                    Probill = CurrentProbill,
-                    ToInventoryLocationId = CurrentToLocation,
-                    SupplierId = CurrentSupplier,
-                    InventoryTxTypeId = 7,
-                    InsertTimestamp = DateTime.Now,
-                    InsertUserId = User.Identity.Name,
-                    UpdateTimestamp = DateTime.Now,
-                    UpdateUserId = User.Identity.Name,
-                    StockAdjCode = "SR"
+                    CurrentCustomerOrderId = (long)Convert.ToDouble(CustomerOrderID);
+                }
+                else
+                {
+                    CurrentCustomerOrderId = -1;
+                }
+
+
+                var result = from a in _context.CustomerOrders
+                             join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+                             join c in _context.Products on b.ProductId equals c.ProductId
+                             where a.CustomerOrderId == CurrentCustomerOrderId
+                             select new CustomerOrderViewModel
+                             {
+                                 CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                 CustomerOrderID = a.CustomerOrderId,
+                                 ProductID = c.ProductId,
+                                 ProductSku = c.Sku,
+                                 ProductDesc = c.Description,
+                                 StockQty = 0,
+                                 QtyOrdered = b.QtyOrdered,
+                                 QtyFulfilled= b.QtyFulfilled,
+                                 Notes = b.Notes
+                             };
+                return View(result);
+            }
+
+
+            public JsonResult GetAll(JqGridViewModel request)
+            {
+                var AllCustomerOrderData = from a in _context.CustomerOrders
+                                           join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
+                                           join c in _context.Products on b.ProductId equals c.ProductId
+                                           where a.CustomerOrderId == CurrentCustomerOrderId
+                                           select new CustomerOrderViewModel
+                                           {
+                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                               CustomerOrderID = a.CustomerOrderId,
+                                               ProductID = c.ProductId,
+                                               ProductSku = c.Sku,
+                                               ProductDesc = c.Description,
+                                               StockQty = 0,
+                                               QtyOrdered = b.QtyOrdered,
+                                               QtyFulfilled = b.QtyFulfilled,
+                                               Notes = b.Notes
+                                           };
+                var CustomerOrderData = AllCustomerOrderData;
+                if (CurrentCustomerOrderId != -1)
+                {
+                    CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentCustomerOrderId);
+
+                }
+
+
+
+                int totalRecords = CustomerOrderData.Count();
+                var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
+                int currentPageIndex = request.page - 1;
+
+                //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
+                if (request.sord.ToUpper() == "DESC")
+                {
+                    CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.OrderByDescending(t => t.ProductDesc);
+                    CustomerOrderData = CustomerOrderData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                }
+                else
+                {
+                    CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.OrderBy(t => t.ProductDesc);
+                    CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                }
+                var jsonData = new
+                {
+                    total = totalPages,
+                    request.page,
+                    records = totalRecords,
+                    rows = CustomerOrderData
                 };
-                _context.InventoryTxes.Add(s);
-                _context.SaveChanges();
-                InventoryTxCurrentId = s.InventoryTxId;
-                s.StockAdjCode = s.StockAdjCode + s.InventoryTxId;
-                _context.SaveChanges();
-                CurrentSaCode = s.StockAdjCode;
+
+                return Json(jsonData);
             }
-            else
+            public JsonResult Update(CustomerOrderViewModel p)
             {
-                InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
-                s.Comments = Notes;
-                s.Date = CurrentDate;
-                s.ToInventoryLocationId = CurrentToLocation;
-                s.Probill = CurrentProbill;
-                s.PurchaseOrder = CurrentPurchaseOrder;
-                s.TruckingCompanyId = CurrentTruckingCompany;
-                s.Seal = CurrentSealNumber;
-                s.ToInventoryLocationId = CurrentToLocation;
-                s.SupplierId = CurrentSupplier;
-                s.InsertTimestamp = DateTime.Now;
-                s.InsertUserId = User.Identity.Name;
-                s.UpdateTimestamp = DateTime.Now;
-                s.UpdateUserId = User.Identity.Name;
+                Product s = _context.Products.Single(a => a.Description == p.ProductDesc);
+                CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
+                r.ProductId = s.ProductId;
+                r.QtyOrdered = p.QtyOrdered;
+                r.QtyFulfilled = p.QtyFulfilled;
+                r.Notes = p.Notes;
+                r.UpdateTimestamp = DateTime.Now;
+                r.UpdateUserid = User.Identity.Name;
                 _context.SaveChanges();
+                return Json(true);
             }
-            Product c = _context.Products.Single(a => a.Description == p.ProductName);
-            InventoryTxDetail r = new InventoryTxDetail
+
+            //public JsonResult Add(CustomerOrderViewModel p)
+            //{
+            //    if (CurrentCustomerOrderId == -1)
+            //    {
+
+            //        CustomerOrder s = new CustomerOrder
+            //        {
+            //            CustomerId = currentCustomer,
+            //            OrderNumber = currentOrderNumber,
+            //            DateOrdered = currentDateOrdered,
+            //            CustomerOrderStatusId = currentCustomerOrderStatus,
+            //            CarrierId = currentCarrier,
+            //            Driver = currentDriver,
+            //            DsSlipNumber = currentDsSlipNumber,
+            //            DeliveryReqDate = currentDeliveryReqDate,
+            //            SpecialInstructions = currentSpecialInstructions,
+            //            //hard coded for now
+            //            OrderSourceId = 1,
+            //            InsertTimestamp = DateTime.Now,
+            //            InsertUserId = User.Identity.Name,
+            //            UpdateTimestamp = DateTime.Now,
+            //            UpdateUserId = User.Identity.Name,
+
+            //        };
+
+            //        _context.CustomerOrders.Add(s);
+            //        _context.SaveChanges();
+            //        CurrentCustomerOrderId = s.CustomerOrderId;
+            //    }
+            //    else
+            //    {
+            //        CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
+            //        s.CustomerId = currentCustomer;
+            //        s.OrderNumber = currentOrderNumber;
+            //        s.DateOrdered = currentDateOrdered;
+            //        s.CarrierId = currentCarrier;
+            //        s.CustomerOrderStatusId = currentCustomerOrderStatus;
+            //        s.Driver = currentDriver;
+            //        s.DsSlipNumber = currentDsSlipNumber;
+            //        s.DeliveryReqDate = currentDeliveryReqDate;
+            //        s.SpecialInstructions = currentSpecialInstructions;
+            //        s.UpdateTimestamp = DateTime.Now;
+            //        s.UpdateUserId = User.Identity.Name;
+            //        _context.SaveChanges();
+            //    }
+            //    Product c = _context.Products.Single(a => a.Description == p.ProductDesc);
+            //    CustomerOrderDetail r = new CustomerOrderDetail
+            //    {
+            //        CustomerOrderId = CurrentCustomerOrderId,
+            //        ProductId = c.ProductId,
+            //        QtyOrdered = p.QtyOrdered,
+            //        Notes = p.Notes,
+            //        InsertTimestamp = DateTime.Now,
+            //        InsertUserId = User.Identity.Name,
+            //        UpdateTimestamp = DateTime.Now,
+            //        UpdateUserid = User.Identity.Name,
+
+
+            //    };
+
+            //    _context.CustomerOrderDetails.Add(r);
+            //    _context.SaveChanges();
+
+            //    return Json(true);
+            //}
+            public JsonResult Delete(long id)
             {
-                Comments = p.Comments,
-                ToInventoryLocationId = CurrentToLocation,
-                ProductId = c.ProductId,
-                Amount = p.Amount,
-                InventoryTxId = InventoryTxCurrentId,
-                InsertTimestamp = DateTime.Now,
-                InsertUserid = User.Identity.Name,
-                UpdateTimestamp = DateTime.Now,
-                UpdateUserid = User.Identity.Name,
-            };
-            _context.InventoryTxDetails.Add(r);
-            _context.SaveChanges();
+                CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
+                _context.CustomerOrderDetails.Remove(r);
+                _context.SaveChanges();
 
-            return Json(true);
 
-        }
-        public IActionResult CreateHeader(string data)
-        {
-            var li = data.Split("/");
-            CurrentDate = DateTime.Parse(li[0]);
-            Notes = li[1];
-            CurrentTruckingCompany = (long)Convert.ToDouble(li[2]);
-            CurrentPurchaseOrder = li[3];
-            CurrentSealNumber = li[4];
-            CurrentProbill = li[5];
-            CurrentToLocation = (long)Convert.ToDouble(li[6]);
-            CurrentSupplier = (long)Convert.ToDouble(li[7]);
-            return Json(true);
-        }
-
-        public JsonResult SaCode()
-        {
-            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-            var headerInfo = new
-            {
-                comments = r.Comments,
-                sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString(),
-                truckingCompanyDropdown = r.TruckingCompanyId,
-                sealNo = r.Seal,
-                locations = r.ToInventoryLocationId,
-                truckerProbillNumber = r.Probill,
-                purchaseOrder = r.PurchaseOrder,
-                supplier = r.SupplierId
-
-            };
-            if (CurrentSaCode != null)
-            {
-                return Json(headerInfo);
+                return Json(true);
             }
-            return Json(null);
-        }
-        public JsonResult Update(SaStockReceivedViewModel p)
-        {
+            //public JsonResult SaCode()
+            //{
+            //    if (CurrentCustomerOrderId != -1)
+            //    {
+            //        CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
+            //        var headerInfo = new
+            //        {
+            //            customer = r.CustomerId,
+            //            orderNumber = r.OrderNumber,
+            //            dateOrdered = r.DateOrdered.ToShortDateString(),
+            //            customerOrderStatus = r.CustomerOrderStatusId,
+            //            carrier = r.CarrierId,
+            //            driver = r.Driver,
+            //            dsSlipNumber = r.DsSlipNumber,
+            //            deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
+            //            specialInstructions = r.SpecialInstructions,
+            //        };
+            //        return Json(headerInfo);
+            //    }
+            //    return Json(null);
+            //}
+            public IActionResult CreateHeader(string data)
+            {
+                //var li = data.Split("/");
 
-            Product s = _context.Products.Single(a => a.Description == p.ProductName);
-            InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
-            r.ToInventoryLocationId = CurrentToLocation;
-            r.ProductId = s.ProductId;
-            r.Amount = p.Amount;
-            r.Comments = p.Comments;
-            r.UpdateTimestamp = DateTime.Now;
-            r.UpdateUserid = User.Identity.Name;
-            _context.SaveChanges();
-            return Json(true);
-        }
-        public JsonResult Delete(long id)
-        {
-            InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
-            _context.SaveChanges();
+                orderNumber = data;
+             var newOrder = _context.CustomerOrders.Single(e => e.OrderNumber == orderNumber);
+            CurrentCustomerOrderId = newOrder.CustomerOrderId;
+                return Json(true);
+            }
 
 
-            return Json(true);
-        }
+            public IActionResult CreateCustomerList()
+            {
+                var invAdjData = from a in _context.Customers
+                                 select new
+                                 {
+                                     value = a.CustomerId,
+                                     text = a.Name
+                                 };
+                return Json(invAdjData);
+            }
+            public IActionResult CreateCarrierList()
+            {
+                var invAdjData = from a in _context.Carriers
+                                 select new
+                                 {
+                                     value = a.CarrierId,
+                                     text = a.Name
+                                 };
+                return Json(invAdjData);
+            }
+            public IActionResult CreatetCustomerOrderStatusList()
+            {
+                var invAdjData = from a in _context.CustomerOrderStatuses
+                                 select new
+                                 {
+                                     value = a.CustomerOrderStatusId,
+                                     text = a.Description
+                                 };
+                return Json(invAdjData);
+            }
+            public IActionResult CreateProductName()
+            {
+                var invAdjData = from a in _context.Products
+                                 join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                                 select new
+                                 {
+                                     label = a.ProductId,
+                                     value = a.Description
 
-        public IActionResult CreateList()
-        {
 
-            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     select new
-                     {
-                         text = s.Name,
-                         value = s.SupplierId
+                                 };
+                return Json(invAdjData);
+            }
+            public IActionResult CreateProductSkuList()
+            {
+                var invAdjData = from a in _context.Products
+                                 select new
+                                 {
+                                     text = a.Sku,
+                                     value = a.Description
 
-                     };
-            return Json(li);
-        }
-        public IActionResult CreateProductSkuList()
-        {
-            var invAdjData = from a in _context.Products
-                             select new
-                             {
-                                 text = a.Sku,
-                                 value = a.Description
+                                 };
+                return Json(invAdjData);
+            }
+            public IActionResult CreateStockQtyList()
+            {
+                var invAdjData = from a in _context.Products
+                                 join d in _context.Inventories on a.ProductId equals d.ProductId
+                                 where d.InventoryLocationId == 1
+                                 select new
+                                 {
+                                     text = d.Count,
+                                     value = a.Description
 
-                             };
-            return Json(invAdjData);
-        }
-        public IActionResult CreateProductName()
-        {
-            var invAdjData = from a in _context.Products
-                             select new
-                             {
-                                 value = a.SupplierId,
-                                 text = a.Description,
-
-                             };
-            return Json(invAdjData);
-        }
-        public IActionResult CreateLocationsList()
-        {
-            var invAdjData = from a in _context.InventoryLocations
-                             select new
-                             {
-                                 value = a.InventoryLocationId,
-                                 text = a.Description
-                             };
-            return Json(invAdjData);
-        }
-        public IActionResult CreateTruckingList()
-        {
-            var invAdjData = from a in _context.TruckingCompanies
-                             select new
-                             {
-                                 value = a.TruckingCompanyId,
-                                 text = a.Name
-                             };
-            return Json(invAdjData);
+                                 };
+                return Json(invAdjData);
+            }
         }
     }
-}

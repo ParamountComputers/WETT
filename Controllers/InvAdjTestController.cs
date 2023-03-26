@@ -36,7 +36,7 @@ namespace WETT.Controllers
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
                          join h in _context.ProductRetailerLiqs on b.ProductId equals h.ProductId 
-                         where a.InventoryTxId == InventoryTxCurrentId and h.Lob//and wher
+                         where a.InventoryTxId == InventoryTxCurrentId 
                          select new invAdjViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -243,7 +243,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductMasters
+            var invAdjData = from a in _context.ProductRetailerLiqs
                              select new
                              {
                                  text = a.Sku,

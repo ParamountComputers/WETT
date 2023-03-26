@@ -41,14 +41,15 @@ namespace WETT.Controllers
 
             var result = from a in _context.CustomerOrders
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
-                                          join c in _context.Products on b.ProductId equals c.ProductId
-                                         where a.CustomerOrderId == CurrentCustomerOrderId
+                                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
+                                          join d in _context.ProductRetailerLiqs on b.ProductId equals d.ProductId
+                                          where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Liqs"
                          select new CustomerOrderViewModel
                                           {
                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
                                               CustomerOrderID = a.CustomerOrderId,
                                               ProductID = c.ProductId,
-                                              ProductSku = c.Sku,
+                                              ProductSku = d.Sku,
                                               ProductDesc = c.Description,
                                               StockQty = 0,
                                               QtyOrdered = b.QtyOrdered,
@@ -62,14 +63,15 @@ namespace WETT.Controllers
         {
             var AllCustomerOrderData = from a in _context.CustomerOrders
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
-                                       join c in _context.Products on b.ProductId equals c.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId
+                                       join c in _context.ProductMasters on b.ProductId equals c.ProductId
+                                       join d in _context.ProductRetailerCans on b.ProductId equals d.ProductId
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Liqs"
                                        select new CustomerOrderViewModel
                                           {
                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
                                               CustomerOrderID = a.CustomerOrderId,
                                               ProductID = c.ProductId,
-                                              ProductSku = c.Sku,
+                                              ProductSku = d.Sku,
                                               ProductDesc = c.Description,
                                               StockQty = 0,
                                               QtyOrdered = b.QtyOrdered,
@@ -111,7 +113,7 @@ namespace WETT.Controllers
         }
         public JsonResult Update(CustomerOrderViewModel p)
         {
-            Product s = _context.Products.Single(a => a.Description == p.ProductDesc);
+            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
                 r.ProductId = s.ProductId;
                 r.QtyOrdered = p.QtyOrdered;
@@ -167,7 +169,7 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-            Product c = _context.Products.Single(a => a.Description == p.ProductDesc);
+            ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
             CustomerOrderDetail r = new CustomerOrderDetail
             {
                 CustomerOrderId = CurrentCustomerOrderId,
@@ -265,7 +267,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
                              {
@@ -278,10 +280,11 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
+                             join b in _context.ProductRetailerLiqs on a.ProductId equals b.ProductId
                              select new
                              {
-                                 text = a.Sku,
+                                 text = b.Sku,
                                  value = a.Description
 
                              };
@@ -289,7 +292,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateStockQtyList()
         {
-            var invAdjData = from a in _context.Products 
+            var invAdjData = from a in _context.ProductMasters
                              join d in _context.Inventories on a.ProductId equals d.ProductId
                              where d.InventoryLocationId == 1
                              select new

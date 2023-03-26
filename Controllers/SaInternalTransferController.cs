@@ -31,15 +31,16 @@ namespace WETT.Controllers
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
                          join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                          join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
-                         join e in _context.Products on b.ProductId equals e.ProductId
+                         join e in _context.ProductMasters on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                         join h in _context.ProductRetailerCans on b.ProductId equals h.ProductId
                          where a.InventoryTxId == InventoryTxCurrentId
                          select new SaInternalTransferViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
-                             ProductSku = e.Sku,
+                             ProductSku = h.Sku,
                              SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
@@ -64,26 +65,28 @@ namespace WETT.Controllers
                                             join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
                                             join d in _context.InventoryLocations on a.ToInventoryLocationId equals d.InventoryLocationId
                                             join d2 in _context.InventoryLocations on a.FromInventoryLocationId equals d2.InventoryLocationId
-                                            join e in _context.Products on b.ProductId equals e.ProductId
+                                            join e in _context.ProductMasters on b.ProductId equals e.ProductId
                                             join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                             join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
+                                            join h in _context.ProductRetailerCans on b.ProductId equals h.ProductId
                                             where a.InventoryTxId == InventoryTxCurrentId
                                             select new SaInternalTransferViewModel
                                             {
                                                 InventoryTxId = b.InventoryTxId,
                                                 InventoryTxDetailId = b.InventoryTxDetailId,
-                                                ProductSku = e.Sku,
+                                                ProductSku = h.Sku,
                                                 SupplierName = f.Name,
                                                 ProductId = e.ProductId,
                                                 ProductName = e.Description,
-                                                toInventoryLocationId = d.InventoryLocationId,
-                                                fromInventoryLocationId = d2.InventoryLocationId,
+                                                toInventoryLocationId = (long)a.ToInventoryLocationId,
+                                                fromInventoryLocationId = (long)a.FromInventoryLocationId,
                                                 InventoryTxReasonsId = g.InventoryTxReasonId,
                                                 Amount = b.Amount,
                                                 InventoryTxTypeId = c.InventoryTxTypeId,
                                                 Comments = b.Comments,
                                                 Date = a.Date, //.ToShortDateString(),
                                                 SaCode = a.StockAdjCode
+
                                             };
             var SaInternalTransferData = AllSaInternalTransferData;
 
@@ -122,7 +125,7 @@ namespace WETT.Controllers
         }
         public JsonResult Update(SaInternalTransferViewModel p)
         {
-            Product s = _context.Products.Single(a => a.Description == p.ProductName);
+            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = CurrentToLocation;
             r.FromInventoryLocationId = CurrentFromLocation;
@@ -174,7 +177,7 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-            Product c = _context.Products.Single(a => a.Description == p.ProductName);
+            ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
@@ -240,7 +243,7 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join b in _context.Products on s.SupplierId equals b.SupplierId
+                     join b in _context.ProductMasters on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
@@ -251,7 +254,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductRetailerCans
                              select new
                              {
                                  text = a.Sku,
@@ -261,7 +264,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              select new
                              {
                                  value = a.SupplierId,

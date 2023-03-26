@@ -30,14 +30,15 @@ namespace WETT.Controllers
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
                          join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                         join e in _context.Products on b.ProductId equals e.ProductId
+                         join e in _context.ProductMasters on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
+                         join h in _context.ProductRetailerCans on b.ProductId equals h.ProductId
                          where a.InventoryTxId == InventoryTxCurrentId
                          select new SaStockReceivedViewModel
                          {
                              InventoryTxDetailId = b.InventoryTxDetailId,
-                             ProductSku = e.Sku,
+                             ProductSku = h.Sku,
                              SupplierName = f.Name,
                              InventoryTxId = b.InventoryTxId,
                              ProductId = e.ProductId,
@@ -57,27 +58,29 @@ namespace WETT.Controllers
             
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
             var AllSaStockReceivedData = from b in _context.InventoryTxDetails
-                                      join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
-                                      join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                      join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                                      join e in _context.Products on b.ProductId equals e.ProductId
-                                      join f in _context.Suppliers on e.SupplierId equals f.SupplierId
-                                       where a.InventoryTxId == InventoryTxCurrentId
+                                         join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
+                                         join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
+                                         join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
+                                         join e in _context.ProductMasters on b.ProductId equals e.ProductId
+                                         join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                         join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
+                                         join h in _context.ProductRetailerCans on b.ProductId equals h.ProductId
+                                         where a.InventoryTxId == InventoryTxCurrentId
                                          select new SaStockReceivedViewModel
-                                      {
-                                          InventoryTxId = b.InventoryTxId,
-                                          InventoryTxDetailId = b.InventoryTxDetailId,
-                                         ProductSku = e.Sku,
-                                         SupplierName = f.Name,
-                                         ProductId = e.ProductId,
-                                         ProductName = e.Description,
-                                         InventoryTxTypeId = c.InventoryTxTypeId,
-                                          Amount = b.Amount,
-                                         Comments = b.Comments,
-                                         Date = a.Date, //.ToShortDateString(),
-                                         SaCode = a.StockAdjCode
+                                         {
+                                             InventoryTxDetailId = b.InventoryTxDetailId,
+                                             ProductSku = h.Sku,
+                                             SupplierName = f.Name,
+                                             InventoryTxId = b.InventoryTxId,
+                                             ProductId = e.ProductId,
+                                             ProductName = e.Description,
+                                             InventoryLocationId = d.InventoryLocationId,
+                                             Amount = b.Amount,
+                                             Comments = b.Comments,
+                                             Date = a.Date, //.ToShortDateString(),
+                                             SaCode = a.StockAdjCode
 
-                                     };
+                                         };
             var SaStockReceivedData =AllSaStockReceivedData;
             if (CurrentSaCode != null)
             {
@@ -148,7 +151,7 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-                Product c = _context.Products.Single(a => a.Description == p.ProductName);
+                ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
                 InventoryTxDetail r = new InventoryTxDetail
                 {
                     Comments = p.Comments,
@@ -199,7 +202,7 @@ namespace WETT.Controllers
         public JsonResult Update(SaStockReceivedViewModel p)
         {
 
-            Product s = _context.Products.Single(a => a.Description == p.ProductName);
+            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = CurrentToLocation;
             r.ProductId = s.ProductId;
@@ -234,7 +237,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductRetailerCans
                              select new
                              {
                                  text = a.Sku,
@@ -245,7 +248,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              select new
                              {
                                  value =a.SupplierId,

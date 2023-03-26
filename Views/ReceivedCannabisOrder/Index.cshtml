@@ -9,8 +9,9 @@
     <h2 class="display-4">Received Cannabis Order</h2>
 </div>
 <body>
+
     <div class="searchInput">
-        <label class="Label" for="orderNumber">Order Number</label>
+        <label class="Label" for="orderNumber">Order #:</label>
         <input type="text" class="input" id="orderNumber" />
     </div>
 </body>
@@ -82,7 +83,7 @@
                     { label: 'Product ID(SKU)', name: 'productSku', fixed: true, width: 125, edittype: 'text', editoptions: { readonly: 'readonly' } },
                     { label: 'Stock Qty', name: 'stockQty', fixed: true, width: 100, editable: true, edittype: 'text', editoptions: { readonly: 'readonly' } },
                     { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: true, edittype: 'text', editrules: { number: true } },
-                     { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                    { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
                     { label: 'Notes', name: 'notes', editable: true, fixed: true, width: 450, edittype: 'text' }
 
                 ],
@@ -118,19 +119,19 @@
                     //},
                     afterSubmit: function () {
                     },
-                    //beforeSubmit: function () {
-                    //    var customer = $("#customer").val();
-                    //    var orderNumber = $("#orderNumber").val();
-                    //    var dateOrdered = $("#dateOrdered").val();
-                    //    var customerOrderStatus = $("#customerOrderStatus").val();
-                    //    var driver = $("#driver").val();
-                    //    var dsSlipNumber = $("#dsSlipNumber").val();
-                    //    var deliveryReqDate = $("#deliveryReqDate").val();
-                    //    var specialInstructions = $("#specialInstructions").val();
-                    //    var carrier = $("#carrier").val();
-                    //    $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier, function () { });
-                    //    $.ajaxSetup({ "async": true });
-                    //},
+                    beforeSubmit: function () {
+                        var customer = $("#customer").val();
+                        var orderNumber = $("#orderNumber").val();
+                        var dateOrdered = $("#dateOrdered").val();
+                        var customerOrderStatus = $("#customerOrderStatus").val();
+                        var driver = $("#driver").val();
+                        var dsSlipNumber = $("#dsSlipNumber").val();
+                        var deliveryReqDate = $("#deliveryReqDate").val();
+                        var specialInstructions = $("#specialInstructions").val();
+                        var carrier = $("#carrier").val();
+                        $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier, function () { });
+                        $.ajaxSetup({ "async": true });
+                    },
                     closeAfterAdd: true,
                     recreateForm: true,
                     errorTextFormat: function (data) {
@@ -140,26 +141,18 @@
                 });
 
         });
-
+        $(document).ready(function () {
+            $('#dateOrdered').val(date());
+            $('#deliveryReqDate').val(date());
+        });
 
         $('#ReceivedCannabisOrder').setGridWidth(parseInt($(window).width()) - 20);
         $("#search").on('click', function () {
-           var orderNumber = $("#orderNumber").val();
+            var orderNumber = $("#orderNumber").val();
             $.ajaxSetup({ "async": false });
-            $.getJSON('ReceivedCannabisOrder/CreateHeader?data=' orderNumber, function (data) {
-            });
+            $.getJSON('ReceivedCannabisOrder/CreateProductName?data=' + orderNumber, function () { });
             $.ajaxSetup({ "async": true });
         });
-
-        function date() {
-            var date;
-            var currentDate = new Date();
-            var day = ("0" + currentDate.getDate()).slice(-2);
-            var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-            var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
-            date = today.toString();
-            return date;
-        }
         function IsProduct(value, colname) {
             var containsProduct = false;
             $.ajaxSetup({ "async": false });
@@ -187,6 +180,7 @@
             }
 
         }
+
 
         function getProductSku(value) {
             var ProductSku = "";
@@ -249,3 +243,4 @@
 
 <div>Graph API result</div>
 <div>@ViewData["GraphApiResult"]</div>
+

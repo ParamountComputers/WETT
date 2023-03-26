@@ -452,11 +452,12 @@ namespace WETT.Controllers
 
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             join c in _context.ProductRetailerLiqs on a.ProductId equals c.ProductId
                              select new
                              {
-                                 text = a.Sku,
+                                 text = c.Sku,
                                  value = b.Name
 
                              };
@@ -464,7 +465,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              select new
                              {

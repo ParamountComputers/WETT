@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT.Data
+namespace WETT.Data;
+
+public partial class InventoryLocation
 {
-    public partial class InventoryLocation
-    {
-        public InventoryLocation()
-        {
-            Inventories = new HashSet<Inventory>();
-            InventoryTxFromInventoryLocations = new HashSet<InventoryTx>();
-            InventoryTxToInventoryLocations = new HashSet<InventoryTx>();
-        }
+    public long InventoryLocationId { get; set; }
 
-        public long InventoryLocationId { get; set; }
-        public string Description { get; set; }
+    public string Description { get; set; }
 
-        public virtual ICollection<Inventory> Inventories { get; set; }
-        public virtual ICollection<InventoryTx> InventoryTxFromInventoryLocations { get; set; }
-        public virtual ICollection<InventoryTx> InventoryTxToInventoryLocations { get; set; }
-    }
+    public virtual ICollection<Inventory> Inventories { get; } = new List<Inventory>();
+
+    public virtual ICollection<InventoryTx> InventoryTxFromInventoryLocations { get; } = new List<InventoryTx>();
+
+    public virtual ICollection<InventoryTx> InventoryTxToInventoryLocations { get; } = new List<InventoryTx>();
 }

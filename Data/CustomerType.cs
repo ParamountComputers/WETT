@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT.Data
+namespace WETT.Data;
+
+public partial class CustomerType
 {
-    public partial class CustomerType
-    {
-        public CustomerType()
-        {
-            Customers = new HashSet<Customer>();
-        }
+    public string CustomerTypeCode { get; set; }
 
-        public string CustomerTypeCode { get; set; }
-        public string Description { get; set; }
+    public string Description { get; set; }
 
-        public virtual ICollection<Customer> Customers { get; set; }
-    }
+    public virtual ICollection<Customer> Customers { get; } = new List<Customer>();
 }

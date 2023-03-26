@@ -29,14 +29,15 @@ namespace WETT.Controllers
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
                          join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                         join e in _context.Products on b.ProductId equals e.ProductId
+                         join e in _context.ProductMasters on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                         join g in _context.ProductRetailerCans on b.ProductId equals g.ProductId
                          where a.InventoryTxId == InventoryTxCurrentId
                          select new SaExciseDutyViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
-                             ProductSku = e.Sku,
+                             ProductSku = g.Sku,
                              SupplierName = f.Name,
                              ProductId = e.ProductId,
                              ProductName = e.Description,
@@ -58,14 +59,15 @@ namespace WETT.Controllers
                                       join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                                       join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
                                       join d in _context.InventoryLocations on b.ToInventoryLocationId equals d.InventoryLocationId
-                                      join e in _context.Products on b.ProductId equals e.ProductId
+                                      join e in _context.ProductMasters on b.ProductId equals e.ProductId
                                       join f in _context.Suppliers on e.SupplierId equals f.SupplierId
+                                      join g in _context.ProductRetailerCans on b.ProductId equals g.ProductId
                                       where a.InventoryTxId == InventoryTxCurrentId
                                       select new SaExciseDutyViewModel
                                         {
                                             InventoryTxId = b.InventoryTxId,
                                             InventoryTxDetailId = b.InventoryTxDetailId,
-                                            ProductSku = e.Sku,
+                                            ProductSku = g.Sku,
                                             SupplierName = f.Name,
                                             ProductId = e.ProductId,
                                             ProductName = e.Description,
@@ -115,7 +117,7 @@ namespace WETT.Controllers
         }
         public JsonResult Update(SaExciseDutyViewModel p)
         {
-            Product s = _context.Products.Single(a => a.Description == p.ProductName);
+            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = CurrentToLocation;
             r.ProductId = s.ProductId;
@@ -159,7 +161,7 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-            Product c = _context.Products.Single(a => a.Description == p.ProductName);
+            ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
@@ -225,7 +227,7 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join b in _context.Products on s.SupplierId equals b.SupplierId
+                     join b in _context.ProductMasters on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
@@ -236,7 +238,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductRetailerCans
                              select new
                              {
                                  text = a.Sku,
@@ -246,7 +248,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              select new
                              {
                                  value = a.SupplierId,

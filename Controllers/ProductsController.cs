@@ -54,8 +54,16 @@ namespace WETT.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var products = from s in _context.Products
-                           select s;
+            var products = from a in _context.ProductMasters
+                           join b in _context.ProductRetailerLiqs on a.ProductId equals b.ProductId
+                           select new ProductRetailerLiq
+                           {
+                               Sku = b.Sku,
+                               ProductId = b.ProductId,
+                               Description= b.Description,
+                               Supplier = a.Supplier
+                           };
+                            
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -93,7 +101,7 @@ namespace WETT.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var product = await _context.ProductMasters
                 .Include(p => p.Supplier)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
@@ -136,7 +144,7 @@ namespace WETT.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.ProductMasters.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -217,9 +225,9 @@ namespace WETT.Controllers
         }
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.Products;
+            var wETT_DBContext = _context.ProductMasters;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var productData = _context.Products.ToList();
+            var productData = _context.ProductMasters.ToList();
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -264,7 +272,7 @@ namespace WETT.Controllers
         public JsonResult Update(Product p)
         {
 
-            Product r = _context.Products.Single(e => e.ProductId == p.ProductId);
+            ProductRetailerLiq r = _context.ProductRetailerLiqs.Single(e => e.ProductId == p.ProductId);
             r.SupplierId = p.SupplierId;
             r.Sku = p.Sku;
             r.Description = p.Description;
@@ -287,8 +295,8 @@ namespace WETT.Controllers
 
         public JsonResult Delete(int id)
         {
-            Product r = _context.Products.Single(e => e.ProductId == id);
-            _context.Products.Remove(r);
+            ProductMaster r = _context.ProductMasters.Single(e => e.ProductId == id);
+            _context.ProductMasters.Remove(r);
             _context.SaveChanges();
 
 
@@ -302,7 +310,7 @@ namespace WETT.Controllers
             p.InsertUserId = User.Identity.Name;
             p.UpdateTimestamp = DateTime.Now;
             p.UpdateUserId = User.Identity.Name;
-            _context.Products.Add(p);
+            _context.ProductMasters.Add(p);
             _context.SaveChanges();
 
             return Json(true);

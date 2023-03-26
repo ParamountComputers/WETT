@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT.Data
+namespace WETT.Data;
+
+public partial class Territory
 {
-    public partial class Territory
-    {
-        public Territory()
-        {
-            Customers = new HashSet<Customer>();
-        }
+    public long TerritoryId { get; set; }
 
-        public long TerritoryId { get; set; }
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public virtual ICollection<Customer> Customers { get; set; }
-    }
+    public virtual ICollection<Customer> Customers { get; } = new List<Customer>();
 }

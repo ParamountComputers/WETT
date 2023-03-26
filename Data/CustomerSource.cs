@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WETT.Data
+namespace WETT.Data;
+
+public partial class CustomerSource
 {
-    public partial class CustomerSource
-    {
-        public CustomerSource()
-        {
-            Customers = new HashSet<Customer>();
-        }
+    public long CustomerSourceId { get; set; }
 
-        public long CustomerSourceId { get; set; }
-        public string Description { get; set; }
+    public string Description { get; set; }
 
-        public virtual ICollection<Customer> Customers { get; set; }
-    }
+    public virtual ICollection<Customer> Customers { get; } = new List<Customer>();
 }

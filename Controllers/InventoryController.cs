@@ -42,14 +42,15 @@ namespace WETT.Controllers
             //               select s;
 
             var result= from a in _context.Inventories
-                         join b in _context.Products on a.ProductId equals b.ProductId
+                         join b in _context.ProductMasters on a.ProductId equals b.ProductId
                          join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
                          join d in _context.Suppliers on b.SupplierId equals d.SupplierId
-                         select new InventoryViewModel
+                         join e in _context.ProductRetailerCans on a.ProductId equals e.ProductId
+                        select new InventoryViewModel
                          {
                              ProductId = a.ProductId,
                              ProductName = b.Description,
-                             ProductSku = b.Sku,
+                             ProductSku = e.Sku,
                              Supplier = d.Name,
                              InvLocationId = a.InventoryLocationId,
                              InvLocationName = c.Description,
@@ -96,7 +97,7 @@ namespace WETT.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var product = await _context.ProductMasters
                 .Include(p => p.Supplier)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
@@ -216,27 +217,28 @@ namespace WETT.Controllers
         */
         private bool ProductExists(long id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _context.ProductMasters.Any(e => e.ProductId == id);
         }
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.Products;
+            var wETT_DBContext = _context.ProductMasters;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
             var productData = from a in _context.Inventories
-                         join b in _context.Products on a.ProductId equals b.ProductId
-                         join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
-                         join d in _context.Suppliers on b.SupplierId equals d.SupplierId
-                         select new InventoryViewModel
-                         {
-                             ProductId = a.ProductId,
-                             ProductName = b.Description,
-                             ProductSku = b.Sku,
-                             Supplier = d.Name,
-                             InvLocationId = a.InventoryLocationId,
-                             InvLocationName = c.Description,
-                             InvCount = a.Count,
-                             Date = a.Date.ToShortDateString()
-                         };
+                              join b in _context.ProductMasters on a.ProductId equals b.ProductId
+                              join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
+                              join d in _context.Suppliers on b.SupplierId equals d.SupplierId
+                              join e in _context.ProductRetailerCans on a.ProductId equals e.ProductId
+                              select new InventoryViewModel
+                              {
+                                  ProductId = a.ProductId,
+                                  ProductName = b.Description,
+                                  ProductSku = e.Sku,
+                                  Supplier = d.Name,
+                                  InvLocationId = a.InventoryLocationId,
+                                  InvLocationName = c.Description,
+                                  InvCount = a.Count,
+                                  Date = a.Date.ToShortDateString()
+                              };
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -323,7 +325,7 @@ namespace WETT.Controllers
         {
 
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join b in _context.Products on s.SupplierId equals b.SupplierId
+                     join b in _context.ProductMasters on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
@@ -334,7 +336,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductRetailerCans
                              select new
                              {
                                  text = a.Sku,
@@ -344,7 +346,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.Products
+            var invAdjData = from a in _context.ProductMasters
                              select new
                              {
                                  value = a.SupplierId,

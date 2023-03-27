@@ -36,7 +36,7 @@ namespace WETT.Controllers
                 var result = from a in _context.CustomerOrders
                              join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                              join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                             join d in _context.ProductRetailerCans on b.ProductId equals d.ProductId
+                             join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
                              where a.CustomerOrderId == CurrentCustomerOrderId
                              select new CustomerOrderViewModel
                              {
@@ -59,7 +59,7 @@ namespace WETT.Controllers
                 var AllCustomerOrderData = from a in _context.CustomerOrders
                                            join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                            join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                           join d in _context.ProductRetailerCans on b.ProductId equals d.ProductId
+                                           join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
                                            where a.CustomerOrderId == CurrentCustomerOrderId
                                            select new CustomerOrderViewModel
                                            {
@@ -272,7 +272,7 @@ namespace WETT.Controllers
             }
             public IActionResult CreateProductSkuList()
             {
-                var invAdjData = from a in _context.ProductRetailerCans
+                var invAdjData = from a in _context.ProductRegulatorCan
                                  select new
                                  {
                                      text = a.Sku,

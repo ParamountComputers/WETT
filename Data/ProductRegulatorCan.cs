@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WETT.Data;
 
-public partial class ProductRetailerCan
+public partial class ProductRegulatorCan
 {
     public long ProductId { get; set; }
 
@@ -17,3 +17,4 @@ public partial class ProductRetailerCan
 
     public virtual ProductMaster Product { get; set; }
 }
+

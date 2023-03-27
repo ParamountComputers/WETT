@@ -45,7 +45,7 @@ namespace WETT.Controllers
                          join b in _context.ProductMasters on a.ProductId equals b.ProductId
                          join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
                          join d in _context.Suppliers on b.SupplierId equals d.SupplierId
-                         join e in _context.ProductRetailerCans on a.ProductId equals e.ProductId
+                         join e in _context.ProductRegulatorLiq on a.ProductId equals e.ProductId
                         select new InventoryViewModel
                          {
                              ProductId = a.ProductId,
@@ -227,7 +227,7 @@ namespace WETT.Controllers
                               join b in _context.ProductMasters on a.ProductId equals b.ProductId
                               join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
                               join d in _context.Suppliers on b.SupplierId equals d.SupplierId
-                              join e in _context.ProductRetailerCans on a.ProductId equals e.ProductId
+                              join e in _context.ProductRegulatorLiq on a.ProductId equals e.ProductId
                               select new InventoryViewModel
                               {
                                   ProductId = a.ProductId,
@@ -336,7 +336,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductRetailerCans
+            var invAdjData = from a in _context.ProductRegulatorLiq
                              select new
                              {
                                  text = a.Sku,

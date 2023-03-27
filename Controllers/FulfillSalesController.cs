@@ -454,7 +454,7 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                             join c in _context.ProductRetailerLiqs on a.ProductId equals c.ProductId
+                             join c in _context.ProductRegulatorLiq on a.ProductId equals c.ProductId
                              select new
                              {
                                  text = c.Sku,

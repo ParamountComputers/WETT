@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WETT.Data;
 
-public partial class ProductRetailerLiq
+public partial class ProductRegulatorLiq
 {
     public long ProductId { get; set; }
 

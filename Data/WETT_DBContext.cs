@@ -57,9 +57,9 @@ public partial class WETT_DBContext : DbContext
 
     public virtual DbSet<ProductMaster> ProductMasters { get; set; }
 
-    public virtual DbSet<ProductRetailerCan> ProductRetailerCans { get; set; }
+    public virtual DbSet<ProductRegulatorCan> ProductRegulatorCan { get; set; }
 
-    public virtual DbSet<ProductRetailerLiq> ProductRetailerLiqs { get; set; }
+    public virtual DbSet<ProductRegulatorLiq> ProductRegulatorLiq { get; set; }
 
     public virtual DbSet<Segment> Segments { get; set; }
 
@@ -836,7 +836,7 @@ public partial class WETT_DBContext : DbContext
                 .HasConstraintName("FK_Product Master_Supplier");
         });
 
-        modelBuilder.Entity<ProductRetailerCan>(entity =>
+        modelBuilder.Entity<ProductRegulatorCan>(entity =>
         {
             entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Retailer_CAN");
 
@@ -876,7 +876,7 @@ public partial class WETT_DBContext : DbContext
                 .HasConstraintName("FK_Product Retailer CAN_Product Master");
         });
 
-        modelBuilder.Entity<ProductRetailerLiq>(entity =>
+        modelBuilder.Entity<ProductRegulatorLiq>(entity =>
         {
             entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Retailer_LIQ");
 

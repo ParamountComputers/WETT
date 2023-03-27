@@ -25,9 +25,9 @@ public partial class ProductMaster
 
     public virtual ICollection<Inventory> Inventories { get; } = new List<Inventory>();
 
-    public virtual ICollection<ProductRetailerCan> ProductRetailerCans { get; } = new List<ProductRetailerCan>();
+    public virtual ICollection<ProductRegulatorCan> ProductRetailerCans { get; } = new List<ProductRegulatorCan>();
 
-    public virtual ICollection<ProductRetailerLiq> ProductRetailerLiqs { get; } = new List<ProductRetailerLiq>();
+    public virtual ICollection<ProductRegulatorLiq> ProductRetailerLiqs { get; } = new List<ProductRegulatorLiq>();
 
     public virtual Supplier Supplier { get; set; }
 }

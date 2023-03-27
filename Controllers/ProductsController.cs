@@ -55,9 +55,9 @@ namespace WETT.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var products = from a in _context.ProductMasters
-                           join b in _context.ProductRetailerLiqs on a.ProductId equals b.ProductId
+                           join b in _context.ProductRegulatorLiq on a.ProductId equals b.ProductId
                            join c in _context.Suppliers on a.SupplierId equals c.SupplierId
-                           select new ProductRetailerLiq
+                           select new ProductRegulatorLiq
                            {
                                Sku = b.Sku,
                                ProductId = b.ProductId,
@@ -90,7 +90,7 @@ namespace WETT.Controllers
 
             //return View(await products.AsNoTracking().ToListAsync());
             int pageSize = 3;
-            return View(await PaginatedList<ProductRetailerLiq>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<ProductRegulatorLiq>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
 
@@ -273,7 +273,7 @@ namespace WETT.Controllers
         public JsonResult Update(Product p)
         {
 
-            ProductRetailerLiq r = _context.ProductRetailerLiqs.Single(e => e.ProductId == p.ProductId);
+            ProductRegulatorLiq r = _context.ProductRegulatorLiq.Single(e => e.ProductId == p.ProductId);
             //r.SupplierId = p.SupplierId;
             r.Sku = p.Sku;
             r.Description = p.Description;

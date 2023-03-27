@@ -838,10 +838,10 @@ public partial class WETT_DBContext : DbContext
 
         modelBuilder.Entity<ProductRegulatorCan>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Retailer_CAN");
+            entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Regulator_CAN");
 
             entity
-                .ToTable("Product Retailer CAN")
+                .ToTable("Product Regulator CAN")
                 .ToTable(tb => tb.IsTemporal(ttb =>
                     {
                         ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_1101246978", "dbo");
@@ -873,15 +873,15 @@ public partial class WETT_DBContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.ProductRetailerCans)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Product Retailer CAN_Product Master");
+                .HasConstraintName("FK_Product Regulator CAN_Product Master");
         });
 
         modelBuilder.Entity<ProductRegulatorLiq>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Retailer_LIQ");
+            entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Regulator_LIQ");
 
             entity
-                .ToTable("Product Retailer LIQ")
+                .ToTable("Product Regulator LIQ")
                 .ToTable(tb => tb.IsTemporal(ttb =>
                     {
                         ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_957246465", "dbo");

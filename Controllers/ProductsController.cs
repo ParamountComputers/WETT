@@ -56,12 +56,13 @@ namespace WETT.Controllers
 
             var products = from a in _context.ProductMasters
                            join b in _context.ProductRetailerLiqs on a.ProductId equals b.ProductId
+                           join c in _context.Suppliers on a.SupplierId equals c.SupplierId
                            select new ProductRetailerLiq
                            {
                                Sku = b.Sku,
                                ProductId = b.ProductId,
                                Description= b.Description,
-                               Supplier = a.Supplier
+                              // Supplier = a.Supplier
                            };
                             
 
@@ -79,9 +80,9 @@ namespace WETT.Controllers
                 case "Description":
                     products = products.OrderBy(s => s.Description);
                     break;
-                case "Supplier":
-                    products = products.OrderBy(s => s.Supplier);
-                    break;
+                //case "Supplier":
+                  //  products = products.OrderBy(s => s.Supplier);
+                    //break;
                 default:
                     products = products.OrderBy(s => s.Sku);
                     break;
@@ -89,7 +90,7 @@ namespace WETT.Controllers
 
             //return View(await products.AsNoTracking().ToListAsync());
             int pageSize = 3;
-            return View(await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<ProductRetailerLiq>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
 
@@ -221,7 +222,7 @@ namespace WETT.Controllers
         */
         private bool ProductExists(long id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _context.ProductMasters.Any(e => e.ProductId == id);
         }
         public JsonResult GetAll(JqGridViewModel request)
         {
@@ -273,7 +274,7 @@ namespace WETT.Controllers
         {
 
             ProductRetailerLiq r = _context.ProductRetailerLiqs.Single(e => e.ProductId == p.ProductId);
-            r.SupplierId = p.SupplierId;
+            //r.SupplierId = p.SupplierId;
             r.Sku = p.Sku;
             r.Description = p.Description;
             r.SingleWeight = p.SingleWeight;
@@ -283,8 +284,8 @@ namespace WETT.Controllers
             r.HlSingle = p.HlSingle;
             r.HlContainer = p.HlContainer;
             r.HlCase = p.HlCase;
-            r.UpdateUserId = User.Identity.Name;
-            r.UpdateTimestamp = DateTime.Now;
+            //r.UpdateUserId = User.Identity.Name;
+            //r.UpdateTimestamp = DateTime.Now;
 
 
             _context.SaveChanges();
@@ -303,7 +304,7 @@ namespace WETT.Controllers
             return Json(true);
         }
 
-        public JsonResult Add(Product p)
+        public JsonResult Add(ProductMaster p)
         {
 
             p.InsertTimestamp = DateTime.Now;

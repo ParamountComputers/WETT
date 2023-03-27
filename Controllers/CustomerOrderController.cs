@@ -64,7 +64,7 @@ namespace WETT.Controllers
             var AllCustomerOrderData = from a in _context.CustomerOrders
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                       join d in _context.ProductRetailerCans on b.ProductId equals d.ProductId
+                                       join d in _context.ProductRetailerLiqs on b.ProductId equals d.ProductId
                                        where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Liqs"
                                        select new CustomerOrderViewModel
                                           {

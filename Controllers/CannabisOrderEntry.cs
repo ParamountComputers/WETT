@@ -9,21 +9,19 @@ using WETT.Models;
 
 namespace WETT.Controllers
 {
-    public class CannabisCustomerOrder : Controller
+    public class CannabisOrderEntry : Controller
     {
         public static long currentCustomer;
         public static string currentOrderNumber;
         public static DateTime currentDateOrdered;
         public static long currentCustomerOrderStatus;
-        public static string currentDriver;
-        public static string currentDsSlipNumber;
-        public static DateTime currentDeliveryReqDate;
         public static string currentSpecialInstructions;
         public static long currentCarrier;
         public static long CurrentCustomerOrderId;
+        public static long currentSupplierId;
         private readonly WETT_DBContext _context;
 
-        public CannabisCustomerOrder(WETT_DBContext context)
+        public CannabisOrderEntry(WETT_DBContext context)
         {
             _context = context;
         }
@@ -43,7 +41,7 @@ namespace WETT.Controllers
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
                          join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                         where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Can"
+                         where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Can" && c.SupplierId == currentSupplierId
                          select new CustomerOrderViewModel
                          {
                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -52,7 +50,7 @@ namespace WETT.Controllers
                              ProductSku = d.Sku,
                              ProductDesc = c.Description,
                              QtyOrdered = b.QtyOrdered,
-                             QtyFulfilled = b.QtyFulfilled,
+                             //QtyFulfilled = b.QtyFulfilled,
                              Notes = b.Notes
                          };
             return View(result);
@@ -65,7 +63,7 @@ namespace WETT.Controllers
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
                                        join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Can"
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Can" && c.SupplierId == currentSupplierId
                                        select new CustomerOrderViewModel
                                        {
                                            CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -74,7 +72,7 @@ namespace WETT.Controllers
                                            ProductSku = d.Sku,
                                            ProductDesc = c.Description,
                                            QtyOrdered = b.QtyOrdered,
-                                           QtyFulfilled= b.QtyFulfilled,
+                                           //QtyFulfilled= b.QtyFulfilled,
                                            Notes = b.Notes
                                        };
             var CustomerOrderData = AllCustomerOrderData;
@@ -137,9 +135,6 @@ namespace WETT.Controllers
                     DateOrdered = currentDateOrdered,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
                     CarrierId = currentCarrier,
-                    Driver = currentDriver,
-                    DsSlipNumber = currentDsSlipNumber,
-                    DeliveryReqDate = currentDeliveryReqDate,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
                     OrderSourceId = 1,
@@ -162,9 +157,6 @@ namespace WETT.Controllers
                 s.DateOrdered = currentDateOrdered;
                 s.CarrierId = currentCarrier;
                 s.CustomerOrderStatusId = currentCustomerOrderStatus;
-                s.Driver = currentDriver;
-                s.DsSlipNumber = currentDsSlipNumber;
-                s.DeliveryReqDate = currentDeliveryReqDate;
                 s.SpecialInstructions = currentSpecialInstructions;
                 s.UpdateTimestamp = DateTime.Now;
                 s.UpdateUserId = User.Identity.Name;
@@ -228,12 +220,20 @@ namespace WETT.Controllers
             currentOrderNumber = li[1];
             currentDateOrdered = DateTime.Parse(li[2]);
             currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
-            currentDriver = li[4];
-            currentDsSlipNumber = li[5];
-            currentDeliveryReqDate = DateTime.Parse(li[6]);
-            currentSpecialInstructions = li[7];
-            currentCarrier = (long)Convert.ToDouble(li[8]);
+            currentSpecialInstructions = li[4];
+            currentCarrier = (long)Convert.ToDouble(li[5]);
+            currentSupplierId = (long)Convert.ToDouble(li[6]);
             return Json(true);
+        }
+        public IActionResult CreateSupplierList()
+        {
+            var invAdjData = from a in _context.Suppliers
+                             select new
+                             {
+                                 value = a.SupplierId,
+                                 text = a.Name
+                             };
+            return Json(invAdjData);
         }
 
 

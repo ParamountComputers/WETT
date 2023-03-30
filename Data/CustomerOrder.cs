@@ -13,7 +13,7 @@ public partial class CustomerOrder
 
     public string LobCode { get; set; }
 
-    public string RetailerCode { get; set; }
+    public string RegulatorCode { get; set; }
 
     public string OrderNumber { get; set; }
 

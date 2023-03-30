@@ -345,10 +345,10 @@ public partial class WETT_DBContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("Order Number");
             entity.Property(e => e.OrderSourceId).HasColumnName("Order Source Id");
-            entity.Property(e => e.RetailerCode)
+            entity.Property(e => e.RegulatorCode)
                 .HasMaxLength(10)
                 .IsFixedLength()
-                .HasColumnName("Retailer Code");
+                .HasColumnName("Regulator Code");
             entity.Property(e => e.SpecialInstructions).HasColumnName("Special Instructions");
             entity.Property(e => e.UpdateTimestamp)
                 .HasPrecision(0)

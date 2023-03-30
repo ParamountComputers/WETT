@@ -41,7 +41,7 @@ namespace WETT.Controllers
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
                          join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                         where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Can" && c.SupplierId == currentSupplierId
+                         where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode == "CAN" //&& c.SupplierId == currentSupplierId
                          select new CustomerOrderViewModel
                          {
                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -63,7 +63,7 @@ namespace WETT.Controllers
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
                                        join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Can" && c.SupplierId == currentSupplierId
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode == "CAN" //&& c.SupplierId == currentSupplierId
                                        select new CustomerOrderViewModel
                                        {
                                            CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -137,6 +137,7 @@ namespace WETT.Controllers
                     CarrierId = currentCarrier,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
+                    LobCode = "CAN",
                     OrderSourceId = 1,
                     InsertTimestamp = DateTime.Now,
                     InsertUserId = User.Identity.Name,
@@ -257,7 +258,7 @@ namespace WETT.Controllers
                              };
             return Json(invAdjData);
         }
-        public IActionResult CreatetCustomerOrderStatusList()
+        public IActionResult CreateCustomerOrderStatusList()
         {
             var invAdjData = from a in _context.CustomerOrderStatuses
                              select new
@@ -271,11 +272,12 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             where a.LobCode == "CAN" //&& b.SupplierId == currentSupplierId
                              select new
                              {
                                  label = a.ProductId,
-                                 value = a.Description
-
+                                 value = a.Description,
+                                 supplier =  b.SupplierId
 
                              };
             return Json(invAdjData);

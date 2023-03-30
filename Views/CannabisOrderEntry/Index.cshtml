@@ -94,7 +94,7 @@
                                 curRowId = $('#CannabisOrderEntry').getGridParam('selrow');
                                 $(elem).select();
                                 $(elem).autocomplete({
-                                    source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
+                                    source: getProductName($("#supplier").val()), autoFocus: true, minLength: 0, select: function (event, ui) {
                                         $('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
                                         $('input#productSku').val(getProductSku(ui.item.value));
                                     }
@@ -200,7 +200,7 @@
         $(document).ready(function () {
             $.ajax({
                 type: "GET",
-                url: "CannabisOrderEntry/CreatetCustomerOrderStatusList",
+                url: "CannabisOrderEntry/CreateCustomerOrderStatusList",
                 data: "{}",
                 success: function (data) {
                     var s = '';
@@ -302,7 +302,7 @@
         function getCustomer() {
             var CustomerList = {};
             $.ajaxSetup({ "async": false });
-            $.getJSON('CannabisOrderEntry/CreatetCustomerList', function (data) {
+            $.getJSON('CannabisOrderEntry/CreateCustomerList', function (data) {
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
                         CustomerList[data[i].value] = data[i].text;
@@ -319,7 +319,7 @@
         function getCustomerOrderStatus() {
             var CustomerOrderStatusList = {};
             $.ajaxSetup({ "async": false });
-            $.getJSON('CannabisOrderEntry/CreatetCustomerOrderStatusList', function (data) {
+            $.getJSON('CannabisOrderEntry/CreateCustomerOrderStatusList', function (data) {
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
                         CustomerOrderStatusList[data[i].value] = data[i].text;
@@ -351,15 +351,17 @@
             return ProductSku.toString();
 
         }
-        function getProductName() {
+        function getProductName(value) {
             var ProductNameList = [];
-            $.ajaxSetup({ "async": false });
+            $.ajaxSetup({ "async": true });
             $.getJSON('CannabisOrderEntry/CreateProductName', function (data) {
                 if (data != null) {
 
 
                     for (var i = 0; i < data.length; i++) {
-                        ProductNameList[i] = data[i].value;
+                     //   if (data[i].supplier == value) {
+                            ProductNameList[i] = data[i].value;
+                     //   }
                     }
                 }//if
 

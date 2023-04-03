@@ -21,14 +21,10 @@
         <label for="customer" class="Label">Customer Id:</label>
         <select class="form-control dropDownInput" id="customer" name="Customer"></select>
     </div>
+    <div></div>
     <div class="searchDropdown">
         <label for="supplier" class="Label">Supplier Id:</label>
         <select class="form-control dropDownInput" id="supplier" name="Supplier"></select>
-    </div>
-    <div></div>
-    <div class="searchDropdown">
-        <label for="carrier" class="Label">Carrier Id:</label>
-        <select class="form-control dropDownInput" id="carrier" name="Carrier"></select>
     </div>
     <div class="searchInput">
         <label class="Label" for="specialInstructions">Special Notes:</label>
@@ -146,9 +142,8 @@
                         var dateOrdered = $("#dateOrdered").val();
                         var customerOrderStatus = $("#customerOrderStatus").val();
                         var specialInstructions = $("#specialInstructions").val();
-                        var carrier = $("#carrier").val();
                         var supplier = $("#supplier").val();
-                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions + '/' + carrier + '/' + supplier, function () { });
+                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier, function () { });
                         $.ajaxSetup({ "async": true });
                     },
                     closeAfterAdd: true,
@@ -180,20 +175,6 @@
                         s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
                     }
                     $("#customer").html(s);
-                }
-            });
-        });
-        $(document).ready(function () {
-            $.ajax({
-                type: "GET",
-                url: "CannabisOrderEntry/CreateCarrierList",
-                data: "{}",
-                success: function (data) {
-                    var s = '';
-                    for (var i = 0; i < data.length; i++) {
-                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
-                    }
-                    $("#carrier").html(s);
                 }
             });
         });
@@ -237,7 +218,6 @@
                         $('#orderNumber').val(data.orderNumber);
                         $('#dateOrdered').val(data.dateOrdered);
                         $('#customerOrderStatus').val(data.customerOrderStatus);
-                        $('#carrier').val(data.carrier);
                         $('#specialInstructions').val(data.specialInstructions);
                         $('#supplier').val(data.supplier);
                     }
@@ -281,24 +261,6 @@
 
         }
 
-
-        function getCarrier() {
-            var CarrierList = {};
-            $.ajaxSetup({ "async": false });
-            $.getJSON('CannabisOrderEntry/CreateCarrierList', function (data) {
-                if (data != null) {
-                    for (var i = 0; i < data.length; i++) {
-                        CarrierList[data[i].value] = data[i].text;
-
-                    }
-                }//if
-
-            });
-            $.ajaxSetup({ "async": true });
-
-            return CarrierList;
-
-        }
         function getCustomer() {
             var CustomerList = {};
             $.ajaxSetup({ "async": false });

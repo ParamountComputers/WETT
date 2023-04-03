@@ -9,19 +9,18 @@ using WETT.Models;
 
 namespace WETT.Controllers
 {
-    public class CannabisOrderEntry : Controller
+    public class CannabisOrderEntryController : Controller
     {
         public static long currentCustomer;
         public static string currentOrderNumber;
         public static DateTime currentDateOrdered;
         public static long currentCustomerOrderStatus;
         public static string currentSpecialInstructions;
-        public static long currentCarrier;
         public static long CurrentCustomerOrderId;
         public static long currentSupplierId;
         private readonly WETT_DBContext _context;
 
-        public CannabisOrderEntry(WETT_DBContext context)
+        public CannabisOrderEntryController(WETT_DBContext context)
         {
             _context = context;
         }
@@ -134,7 +133,6 @@ namespace WETT.Controllers
                     OrderNumber = currentOrderNumber,
                     DateOrdered = currentDateOrdered,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
-                    CarrierId = currentCarrier,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
                     LobCode = "CAN",
@@ -156,7 +154,6 @@ namespace WETT.Controllers
                 s.CustomerId = currentCustomer;
                 s.OrderNumber = currentOrderNumber;
                 s.DateOrdered = currentDateOrdered;
-                s.CarrierId = currentCarrier;
                 s.CustomerOrderStatusId = currentCustomerOrderStatus;
                 s.SpecialInstructions = currentSpecialInstructions;
                 s.UpdateTimestamp = DateTime.Now;
@@ -204,7 +201,6 @@ namespace WETT.Controllers
                     orderNumber = r.OrderNumber,
                     dateOrdered = r.DateOrdered.ToShortDateString(),
                     customerOrderStatus = r.CustomerOrderStatusId,
-                    carrier = r.CarrierId,
                     driver = r.Driver,
                     dsSlipNumber = r.DsSlipNumber,
                     deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
@@ -222,8 +218,7 @@ namespace WETT.Controllers
             currentDateOrdered = DateTime.Parse(li[2]);
             currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
             currentSpecialInstructions = li[4];
-            currentCarrier = (long)Convert.ToDouble(li[5]);
-            currentSupplierId = (long)Convert.ToDouble(li[6]);
+            currentSupplierId = (long)Convert.ToDouble(li[5]);
             return Json(true);
         }
         public IActionResult CreateSupplierList()
@@ -244,16 +239,6 @@ namespace WETT.Controllers
                              select new
                              {
                                  value = a.CustomerId,
-                                 text = a.Name
-                             };
-            return Json(invAdjData);
-        }
-        public IActionResult CreateCarrierList()
-        {
-            var invAdjData = from a in _context.Carriers
-                             select new
-                             {
-                                 value = a.CarrierId,
                                  text = a.Name
                              };
             return Json(invAdjData);

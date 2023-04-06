@@ -16,6 +16,7 @@ namespace WETT.Controllers
         public static DateTime currentDateOrdered;
         public static long currentCustomerOrderStatus;
         public static string currentSpecialInstructions;
+        public static long currentCarrier;
         public static long CurrentCustomerOrderId;
         public static long currentSupplierId;
         private readonly WETT_DBContext _context;
@@ -133,10 +134,12 @@ namespace WETT.Controllers
                     OrderNumber = currentOrderNumber,
                     DateOrdered = currentDateOrdered,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
+                    //CarrierId = currentCarrier,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
                     LobCode = "CAN",
                     OrderSourceId = 1,
+                    CarrierId = 1,
                     InsertTimestamp = DateTime.Now,
                     InsertUserId = User.Identity.Name,
                     UpdateTimestamp = DateTime.Now,
@@ -154,6 +157,7 @@ namespace WETT.Controllers
                 s.CustomerId = currentCustomer;
                 s.OrderNumber = currentOrderNumber;
                 s.DateOrdered = currentDateOrdered;
+               //s.CarrierId = currentCarrier;
                 s.CustomerOrderStatusId = currentCustomerOrderStatus;
                 s.SpecialInstructions = currentSpecialInstructions;
                 s.UpdateTimestamp = DateTime.Now;
@@ -181,7 +185,7 @@ namespace WETT.Controllers
 
             return Json(true);
         }
-        public JsonResult Delete(long id)
+        public JsonResult Delete(int id)
         {
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
             _context.CustomerOrderDetails.Remove(r);
@@ -201,6 +205,7 @@ namespace WETT.Controllers
                     orderNumber = r.OrderNumber,
                     dateOrdered = r.DateOrdered.ToShortDateString(),
                     customerOrderStatus = r.CustomerOrderStatusId,
+                    carrier = r.CarrierId,
                     driver = r.Driver,
                     dsSlipNumber = r.DsSlipNumber,
                     deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
@@ -224,10 +229,13 @@ namespace WETT.Controllers
         public IActionResult CreateSupplierList()
         {
             var invAdjData = from a in _context.Suppliers
+                             where a.ActiveFlag == "Y"
+                             orderby a.Name
                              select new
                              {
                                  value = a.SupplierId,
                                  text = a.Name
+                                
                              };
             return Json(invAdjData);
         }
@@ -239,6 +247,16 @@ namespace WETT.Controllers
                              select new
                              {
                                  value = a.CustomerId,
+                                 text = a.Name
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateCarrierList()
+        {
+            var invAdjData = from a in _context.Carriers
+                             select new
+                             {
+                                 value = a.CarrierId,
                                  text = a.Name
                              };
             return Json(invAdjData);

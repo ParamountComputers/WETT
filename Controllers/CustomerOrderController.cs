@@ -42,8 +42,8 @@ namespace WETT.Controllers
             var result = from a in _context.CustomerOrders
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                           join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                          join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                                          where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Liqs"
+                                          join d in _context.ProductRegulatorLiq on b.ProductId equals d.ProductId
+                                          where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "LIQ"
                          select new CustomerOrderViewModel
                                           {
                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -65,7 +65,7 @@ namespace WETT.Controllers
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
                                        join d in _context.ProductRegulatorLiq on b.ProductId equals d.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "Liqs"
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode == "LIQ"
                                        select new CustomerOrderViewModel
                                           {
                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -141,6 +141,7 @@ namespace WETT.Controllers
                     DeliveryReqDate = currentDeliveryReqDate,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
+                    LobCode = "LIQ",
                     OrderSourceId = 1,
                     InsertTimestamp = DateTime.Now,
                     InsertUserId = User.Identity.Name,
@@ -238,6 +239,7 @@ namespace WETT.Controllers
         public IActionResult CreateCustomerList()
         {
             var invAdjData = from a in _context.Customers
+                             orderby a.Name
                              select new
                              {
                                  value = a.CustomerId,
@@ -269,6 +271,7 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             where a.LobCode == "LIQ" //&& b.SupplierId == currentSupplierId
                              select new
                              {
                                  label = a.ProductId,

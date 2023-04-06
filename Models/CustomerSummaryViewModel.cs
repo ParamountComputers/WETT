@@ -15,6 +15,7 @@ namespace WETT.Models
         public string CarrierDesc { get; set; }
         public string Instructions { get; set; }
         public string Status { get; set; }
+        public string LOBCode { get; set; }
 
     }
 }

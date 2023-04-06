@@ -81,6 +81,7 @@
                    { label: 'Customer Order Id',name: 'customerOrderID',hidden:true, editable: true,key: true},
                    { label: 'Order Date',name: 'orderDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
                    { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
+                   { label: 'LOB', name: 'lobCode', fixed: true, width: 100, editoptions: { readonly: 'readonly' } },
                    { label: 'Order Number',name: 'orderNumber',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
                    { label: 'Customer',name: 'customer',fixed:true,width:150,editoptions: { readonly: 'readonly'}},
                    { label: 'City',name: 'city',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
@@ -98,38 +99,15 @@
                editurl: 'CustomerSummary/Update', 
                ondblClickRow: function(rowid) {
                 var cellVal = $('#customerSummary').jqGrid ('getCell', rowid, 'customerOrderID');
-                //var invTxType = $("#InvTxSummaryDropdown").val();
-                window.open("CustomerOrder?CustomerOrderID="+cellVal);
+                var LOBVal = $('#customerSummary').jqGrid('getCell', rowid, 'lobCode');
+                if (LOBVal == "LIQ       ") {
+                    window.open("CustomerOrder?CustomerOrderID=" + cellVal);
+                }
+                    else if (LOBVal == "CAN       ") {
+                    window.open("CannabisOrderEntry?CustomerOrderID=" + cellVal);
+                }
+                    window.open("CustomerOrder?CustomerOrderID=" + LOBVal + cellVal);
                 console.log(cellVal);
-                //if(invTxType==1)
-                //{
-                //    window.open("CustomerOrder?CustomerOrderID="+cellVal);
-                //}
-                //else if(invTxType==2)
-                //{
-                //    window.open("SaDamageRecoup?SaCode="+cellVal);
-                //}
-                //else if(invTxType==3)
-                //{
-                //    window.open("saOutbound?SaCode="+cellVal);
-                //}
-                //else if(invTxType==4)
-                //{
-                //    window.open("SaRelease?SaCode="+cellVal);
-                //}
-                //else if(invTxType==5)
-                //{
-                //    window.open("SaExciseDuty?SaCode="+cellVal);
-                //}
-                //else if(invTxType==6)
-                //{
-                //    window.open("saInternalTransfer?SaCode="+cellVal);
-                //}
-                //else if(invTxType==7)
-                //{
-                //    window.open("SaStockReceived?SaCode="+cellVal);
-                //}
-                
 
                }
 

@@ -13,27 +13,28 @@
         <label for="dateOrdered" class="Label">Date Ordered:</label>
         <input type="date" id='dateOrdered' class="Date" name="dateOrdered" />
     </div>
-    <div class="searchDropdown">
-        <label for="customerOrderStatus" class="Label">Order Status:</label>
-        <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
-    </div>
-    <div class="searchDropdown">
-        <label for="customer" class="Label">Customer Id:</label>
-        <select class="form-control dropDownInput" id="customer" name="Customer"></select>
-    </div>
-    <div></div>
-    <div class="searchDropdown">
-        <label for="supplier" class="Label">Supplier Id:</label>
-        <select class="form-control dropDownInput" id="supplier" name="Supplier"></select>
-    </div>
-    <div class="searchInput">
-        <label class="Label" for="specialInstructions">Special Notes:</label>
-        <input type="text" class="input" id="specialInstructions" />
-    </div>
     <div class="searchInput">
         <label class="Label" for="orderNumber">Order #:</label>
         <input type="text" class="input" id="orderNumber" />
     </div>
+    <div class="searchDropdown">
+        <label for="customerOrderStatus" class="Label">Order Status:</label>
+        <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
+    </div>
+    <div></div>
+    <div class="searchDropdown2">
+        <label for="customer" class="Label">Customer:</label>
+        <select class="form-control dropDownInput2" id="customer" name="Customer"></select>
+    </div>
+    <div class="searchDropdown">
+        <label for="supplier" class="Label">Supplier:</label>
+        <select class="form-control dropDownInput" id="supplier" name="Supplier"></select>
+    </div>
+    <div class="Notes">
+        <label class="Label" for="specialInstructions">Special Notes:</label>
+        <input type="text" class="NotesInput" id="specialInstructions" />
+    </div>
+   
 </body>
 <table id="CannabisOrderEntry"></table>
 <div id="jqGridPager"></div>
@@ -68,6 +69,7 @@
                 },
                 autowidth: true,
                 colModel: [
+
                     {
                         label: "Edit Actions",
                         name: "actions",
@@ -81,7 +83,7 @@
                             delOptions: { url: 'CannabisOrderEntry/Delete' }
                         }
                     },
-                    { label: 'Customer Order Detail Id', name: 'customerOrderDetailID', editable: true, hidden: true, editoptions: { readonly: 'readonly' }, key: true },
+                    { label: 'Customer Order Detail Id', name: 'customerOrderDetailID', hidden: true, editable: true, editoptions: { readonly: 'readonly' }, key: true },
                     { label: 'Customer Order Id', name: 'customerOrderID', hidden: true, editable: true, editoptions: { readonly: 'readonly' } },
                     {
                         label: 'Product Desc', name: 'productDesc', fixed: true, width: 150, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
@@ -111,8 +113,7 @@
                 pager: "#jqGridPager",
                 editurl: 'CannabisOrderEntry/Update',
 
-            })
-
+            });
 
 
 

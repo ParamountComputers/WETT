@@ -42,6 +42,12 @@
     font-size: 12px;
     width: 90px;
 }
+
+.Labelshort {
+    font-size: 12px;
+    width: 70px;
+}
+
 .Gap1 {
     width:10px;
     display:inline-block;

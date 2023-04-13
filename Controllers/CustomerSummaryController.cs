@@ -32,7 +32,7 @@ namespace WETT.Controllers
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
                         join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
                          join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         where a.CustomerOrderStatusId == StatusOrderId
+                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode.Trim() == "LIQ"
                          select new CustomerSummaryViewModel
                          {
                              CustomerOrderID = a.CustomerOrderId,
@@ -62,7 +62,7 @@ namespace WETT.Controllers
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
                          join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
                          join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         where a.CustomerOrderStatusId == StatusOrderId
+                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode.Trim() == "LIQ"
                          select new CustomerSummaryViewModel
                          {
                              CustomerOrderID = a.CustomerOrderId,
@@ -159,35 +159,7 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
-        //public JsonResult Add(InvTxSummaryViewModel p)
-        //{
-        //    showPage = true;
-        //    Product s = _context.Products.Single(a => a.Description == p.ProductName);
-        //    InventoryTxDetail r = new InventoryTxDetail
-        //    {
-        //        //comments = p.Comments,
-        //        ToInventoryLocationId = p.InventoryLocationId,
-        //        ProductId = s.ProductId,
-        //        Amount = p.Amount,
-        //        InventoryTxId = CurrentHeaderId,
-        //        InventoryTxReasonId = p.InventoryTxReasonsId
-        //    };
 
-        //    _context.InventoryTxDetails.Add(r);
-        //    _context.SaveChanges();
-
-
-        //    return Json(true);
-        //}
-        //public JsonResult Delete(long id)
-        //{
-        //    InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-        //    _context.InventoryTxDetails.Remove(r);
-        //    _context.SaveChanges();
-
-
-        //    return Json(true);
-        //}
         public IActionResult CreateSearch(string data)
         {
             showPage = true;

@@ -31,20 +31,16 @@ namespace WETT.Controllers
             var result = from a in _context.CustomerOrders
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
                         join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                         join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode == "CAN"
-                         select new CustomerSummaryViewModel
+                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode.Trim() == "CAN"
+                         select new CanCustSummViewModel
                          {
                              CustomerOrderID = a.CustomerOrderId,
                              OrderDate = a.DateOrdered,
-                             DelveryDate = a.DeliveryReqDate,
+                           //  DelveryDate = a.DeliveryReqDate,
                              OrderNumber = a.OrderNumber,
                              LOBCode = a.LobCode,
                              Customer = b.Name,
                              City = b.City,
-                             Carrier = d.Name,
-                             CarrierId = d.CarrierId,
-                             CarrierDesc = d.Name,
                              Instructions = a.SpecialInstructions,
                              Status = c.Description
 
@@ -58,91 +54,57 @@ namespace WETT.Controllers
         {
 
 
-            var AllCustomerSummaryData = from a in _context.CustomerOrders
+            var AllCanCustomerSummaryData = from a in _context.CustomerOrders
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
                          join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                         join d in _context.Carriers on a.CarrierId equals d.CarrierId
-                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode == "CAN"
-                         select new CustomerSummaryViewModel
+                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode.Trim() == "CAN"
+                         select new CanCustSummViewModel
                          {
                              CustomerOrderID = a.CustomerOrderId,
                              OrderDate = a.DateOrdered,
-                             DelveryDate = a.DeliveryReqDate,
+                          //   DelveryDate = a.DeliveryReqDate,
                              OrderNumber = a.OrderNumber,
                              LOBCode = a.LobCode,
                              Customer = b.Name,
                              City = b.City,
-                             Carrier = d.Name,
-                             CarrierId = d.CarrierId,
-                             CarrierDesc = d.Name,
                              Instructions = a.SpecialInstructions,
                              Status = c.Description
 
 
                          };
-            var CustomerSummaryData = AllCustomerSummaryData;
+            var CanCustomerSummaryData = AllCanCustomerSummaryData;
             if (showPage != false)
             {
-                if (carrierId == 0) { 
-                CustomerSummaryData = CustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate));
-                }else {
-                    CustomerSummaryData = CustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate) &&  x.CarrierId == carrierId);
-                }
+               CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate));
             }
 
 
-
-            //bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
-
-            //if (issearch)
-            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-            //    {
-            //        switch (rule.field)
-            //        {
-            //            case "date":
-
-            //                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.Where(w => w.Date.Equals(DateTime.Parse(rule.data)));
-            //                searchDate = rule.data;
-            //                break;
-            //            case "comments":
-
-            //                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.Where(w => w.Comments.Contains(rule.data));
-            //                InvTxSummaryData = (IQueryable<InvTxSummaryViewModel>)InvTxSummaryData.Where(w => w.Date.Equals(DateTime.Parse(searchDate)));
-
-
-            //                Notes = rule.data;
-            //                break;
-            //        }
-            //    }
-
-
-
-            int totalRecords = CustomerSummaryData.Count();
+            int totalRecords = CanCustomerSummaryData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
 
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
             if (request.sord.ToUpper() == "DESC")
             {
-                CustomerSummaryData = (IQueryable<CustomerSummaryViewModel>)CustomerSummaryData.OrderByDescending(t => t.OrderDate);
-                CustomerSummaryData = CustomerSummaryData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                CanCustomerSummaryData = (IQueryable<CanCustSummViewModel>)CanCustomerSummaryData.OrderByDescending(t => t.OrderDate);
+                CanCustomerSummaryData = CanCustomerSummaryData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             else
             {
-                CustomerSummaryData = (IQueryable<CustomerSummaryViewModel>)CustomerSummaryData.OrderBy(t => t.OrderDate);
-                CustomerSummaryData = (IQueryable<CustomerSummaryViewModel>)CustomerSummaryData.Skip(currentPageIndex * request.rows).Take(request.rows);
+                CanCustomerSummaryData = (IQueryable<CanCustSummViewModel>)CanCustomerSummaryData.OrderBy(t => t.OrderDate);
+                CanCustomerSummaryData = (IQueryable<CanCustSummViewModel>)CanCustomerSummaryData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             var jsonData = new
             {
                 total = totalPages,
                 request.page,
                 records = totalRecords,
-                rows = CustomerSummaryData
+                rows = CanCustomerSummaryData
             };
 
             return Json(jsonData);
         }
-        public JsonResult Update(CustomerSummaryViewModel p)
+        public JsonResult Update(CanCustSummViewModel p)
         {
             //Customer s = _context.Customers.Single(a => a.Name == p.Customer);
             CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerId == p.CustomerOrderID);
@@ -159,35 +121,7 @@ namespace WETT.Controllers
             _context.SaveChanges();
             return Json(true);
         }
-        //public JsonResult Add(InvTxSummaryViewModel p)
-        //{
-        //    showPage = true;
-        //    Product s = _context.Products.Single(a => a.Description == p.ProductName);
-        //    InventoryTxDetail r = new InventoryTxDetail
-        //    {
-        //        //comments = p.Comments,
-        //        ToInventoryLocationId = p.InventoryLocationId,
-        //        ProductId = s.ProductId,
-        //        Amount = p.Amount,
-        //        InventoryTxId = CurrentHeaderId,
-        //        InventoryTxReasonId = p.InventoryTxReasonsId
-        //    };
-
-        //    _context.InventoryTxDetails.Add(r);
-        //    _context.SaveChanges();
-
-
-        //    return Json(true);
-        //}
-        //public JsonResult Delete(long id)
-        //{
-        //    InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-        //    _context.InventoryTxDetails.Remove(r);
-        //    _context.SaveChanges();
-
-
-        //    return Json(true);
-        //}
+        
         public IActionResult CreateSearch(string data)
         {
             showPage = true;
@@ -195,21 +129,21 @@ namespace WETT.Controllers
             startSearchDate = li[0];
             endSearchDate = li[1];
             StatusOrderId = (long)Convert.ToDouble(li[2]);
-            carrierId = (long)Convert.ToDouble(li[3]);
+           // carrierId = (long)Convert.ToDouble(li[3]);
 
             return Json(true);
         }
-        public IActionResult CreateCarrierList()
-        {
-            var invAdjData = from a in _context.Carriers
-                             select new
-                             {
-                                 value = a.CarrierId,
-                                 text = a.Name
+        //public IActionResult CreateCarrierList()
+        //{
+        //    var invAdjData = from a in _context.Carriers
+        //                     select new
+        //                     {
+        //                         value = a.CarrierId,
+        //                         text = a.Name
 
-                             };
-            return Json(invAdjData);
-        }
+        //                     };
+        //    return Json(invAdjData);
+        //}
 
 
         public IActionResult CreateStatusList()

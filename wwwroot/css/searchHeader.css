@@ -37,7 +37,19 @@
     height: 30px;
     font-size: 12px;
 }
-
+.searchInput220 {
+    width: 230px;
+    display: inline-block;
+}
+.input3 {
+    border: 1px solid black;
+    border-radius: 8px;
+    border-width: 1px;
+    text-align: left;
+    width: 110px;
+    height: 30px;
+    font-size: 12px;
+}
 .Label {
     font-size: 12px;
     width: 90px;
@@ -51,6 +63,10 @@
 .Gap1 {
     width:10px;
     display:inline-block;
+}
+.Gap66 {
+    width: 66px;
+    display: inline-block;
 }
 .Gap2 {
     width: 45px;

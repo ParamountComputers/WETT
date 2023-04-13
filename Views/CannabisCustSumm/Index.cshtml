@@ -23,14 +23,14 @@
       <label for="StatusDropdown"  class="Label">Status:</label>
       <select class="form-control dropDownInput" id="StatusDropdown" name="StatusDropdown"></select> 
   </div>
-  <div class="Gap1"></div>
+  @*<div class="Gap1"></div>
   <div class="searchDropdown"> 
           <label for="carrierDropdown"  class="Label">Carrier:</label>
           <select class="form-control dropDownInput" id="carrierDropdown" name="carrierDropdown"></select> 
-    </div>
+    </div>*@
 </body>
 
-<table id="customerSummary"></table>
+<table id="CanCustomerSummary"></table>
 <div id="jqGridPager"></div>
 <fieldset class="scheduler-border">
  <div class="mb-3 row">
@@ -49,8 +49,8 @@
     var curRowId = -1;
     var name ="";
     $(document).ready(function() {
-       $("#customerSummary").jqGrid({
-               url: 'CustomerSummary/GetAll',
+       $("#CanCustomerSummary").jqGrid({
+               url: 'CannabisCustSumm/GetAll',
                mtype: "GET",
                guiStyle: "bootstrap",
                iconSet: "fontAwesome",
@@ -79,13 +79,15 @@
                         }
                     },
                    { label: 'Customer Order Id',name: 'customerOrderID',hidden:true, editable: true,key: true},
-                   { label: 'Order Date',name: 'orderDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
-                   { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
+                    {
+                        label: 'Order Date', name: 'orderDate', fixed: true, width: 120, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { readonly: 'readonly' }
+                    },
+                  // { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
                    { label: 'LOB', name: 'lobCode', fixed: true, width: 100, editoptions: { readonly: 'readonly' } },
                    { label: 'Order Number',name: 'orderNumber',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
                    { label: 'Customer',name: 'customer',fixed:true,width:150,editoptions: { readonly: 'readonly'}},
                    { label: 'City',name: 'city',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
-                   { label: 'Carrier',name: 'carrier',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
+                  // { label: 'Carrier',name: 'carrier',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
                    { label: 'Instructions',name: 'instructions',fixed:true,width:280,edittype:'text', editable: true},
                    { label: 'Status',name: 'status',fixed:true,width:100,editoptions: { readonly: 'readonly'}}
 
@@ -96,17 +98,17 @@
                rowHeight: 20,
                rowNum: 15,
                pager: "#jqGridPager",
-               editurl: 'CustomerSummary/Update', 
-               ondblClickRow: function(rowid) {
-                var cellVal = $('#customerSummary').jqGrid ('getCell', rowid, 'customerOrderID');
-                var LOBVal = $('#customerSummary').jqGrid('getCell', rowid, 'lobCode');
+                editurl: 'CannabisCustSumm/Update',
+                ondblClickRow: function(rowid) {
+                var cellVal = $('#CanCustomerSummary').jqGrid ('getCell', rowid, 'customerOrderID');
+                var LOBVal = $('#CanCustomerSummary').jqGrid('getCell', rowid, 'lobCode');
                 if (LOBVal == "LIQ       ") {
                     window.open("CustomerOrder?CustomerOrderID=" + cellVal);
                 }
                     else if (LOBVal == "CAN       ") {
                     window.open("CannabisOrderEntry?CustomerOrderID=" + cellVal);
                 }
-                    window.open("CustomerOrder?CustomerOrderID=" + LOBVal + cellVal);
+                  // window.open("CustomerOrder?CustomerOrderID=" + LOBVal + cellVal);
                 console.log(cellVal);
 
                }
@@ -116,7 +118,7 @@
 
 
 
-           $('#customerSummary').navGrid('#jqGridPager',
+           $('#CanCustomerSummary').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false,add:false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
               
@@ -146,25 +148,25 @@
            $('#startDate').val(date());
             $('#endDate').val(date());
        });
-        $(document).ready(function () {  
-           $.ajax({  
-               type: "GET",  
-               url: "FulfillSales/CreateCarrierList",  
-               data: "{}",  
-               success: function (data) {  
-                   var s = '<option value="0">All Carriers</option>';  
-                   for (var i = 0; i < data.length; i++) {  
-                       s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
-                   }  
-                   $("#carrierDropdown").html(s);  
-               }  
-           });  
-        });
+        //$(document).ready(function () {  
+        //   $.ajax({  
+        //       type: "GET",
+        //        url: "CannabisCustSumm/CreateCarrierList",
+        //        data: "{}",  
+        //       success: function (data) {  
+        //           var s = '<option value="0">All Carriers</option>';  
+        //           for (var i = 0; i < data.length; i++) {  
+        //               s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+        //           }  
+        //           $("#carrierDropdown").html(s);  
+        //       }  
+        //   });  
+        //});
       $(document).ready(function () {  
        $.ajax({  
-           type: "GET",  
-           url: "CustomerSummary/CreateStatusList",  
-           data: "{}",  
+           type: "GET",
+                url: "CannabisCustSumm/CreateStatusList",
+                data: "{}",  
            success: function (data) {  
                var s = '';  
                for (var i = 0; i < data.length; i++) {  
@@ -174,7 +176,7 @@
            }  
        });  
    });
-       $('#customerSummary').setGridWidth(parseInt($(window).width()) - 20);
+       $('#CanCustomerSummary').setGridWidth(parseInt($(window).width()) - 20);
        
        $("#search").on('click', function () {
            SaveHeader();
@@ -195,12 +197,12 @@
         var endDate = $("#endDate").val();
         var startDate = $("#startDate").val();
         var Status = $("#StatusDropdown").val();
-        var Carrier = $("#carrierDropdown").val();
+       // var Carrier = $("#carrierDropdown").val();
         if(startDate != "" && endDate !="" && Status != -1)
             {
                     header = true;
                     $.ajaxSetup( { "async": false } );
-                    $.getJSON('CustomerSummary/CreateSearch?data='+startDate+'/'+endDate+'/'+Status+'/'+Carrier, function(data) {});
+                    $.getJSON('CannabisCustSumm/CreateSearch?data=' + startDate + '/' + endDate + '/' + Status , function (data) { });
                     $.ajaxSetup( { "async": true } );
             }
         else if(Status==-1 && startDate== "" && endDate =="")
@@ -231,7 +233,7 @@
             {
                 alert("Error: Enter A End Date");
             }
-    $('#customerSummary').setGridParam({ page: 1 }).trigger("reloadGrid");
+    $('#CanCustomerSummary').setGridParam({ page: 1 }).trigger("reloadGrid");
 
     }
 

@@ -41,7 +41,7 @@ namespace WETT.Controllers
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
                          join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                         where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode == "CAN" //&& c.SupplierId == currentSupplierId
+                         where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN" //&& c.SupplierId == currentSupplierId
                          select new CustomerOrderViewModel
                          {
                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -63,7 +63,7 @@ namespace WETT.Controllers
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
                                        join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode == "CAN" //&& c.SupplierId == currentSupplierId
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN" //&& c.SupplierId == currentSupplierId
                                        select new CustomerOrderViewModel
                                        {
                                            CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -244,6 +244,7 @@ namespace WETT.Controllers
         public IActionResult CreateCustomerList()
         {
             var invAdjData = from a in _context.Customers
+                             orderby a.Name
                              select new
                              {
                                  value = a.CustomerId,
@@ -254,6 +255,7 @@ namespace WETT.Controllers
         public IActionResult CreateCarrierList()
         {
             var invAdjData = from a in _context.Carriers
+                             orderby a.Name
                              select new
                              {
                                  value = a.CarrierId,
@@ -264,6 +266,7 @@ namespace WETT.Controllers
         public IActionResult CreateCustomerOrderStatusList()
         {
             var invAdjData = from a in _context.CustomerOrderStatuses
+                             orderby a.Description
                              select new
                              {
                                  value = a.CustomerOrderStatusId,
@@ -275,7 +278,8 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                             where a.LobCode == "CAN" //&& b.SupplierId == currentSupplierId
+                             where a.LobCode.Trim() == "CAN" //&& b.SupplierId == currentSupplierId
+                             orderby a.Description
                              select new
                              {
                                  label = a.ProductId,
@@ -289,6 +293,7 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.ProductRegulatorCan on a.ProductId equals b.ProductId
+                             orderby a.Description
                              select new
                              {
                                  text = b.Sku,

@@ -79,8 +79,8 @@
                         }
                     },
                    { label: 'Customer Order Id',name: 'customerOrderID',hidden:true, editable: true,key: true},
-                   { label: 'Order Date',name: 'orderDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
-                   { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
+                    { label: 'Order Date', name: 'orderDate', fixed: true, width: 120, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { readonly: 'readonly' } },
+                    { label: 'Delivery Date', name: 'delveryDate', fixed: true, width: 120, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { readonly: 'readonly' } },
                    { label: 'LOB', name: 'lobCode', fixed: true, width: 100, editoptions: { readonly: 'readonly' } },
                    { label: 'Order Number',name: 'orderNumber',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
                    { label: 'Customer',name: 'customer',fixed:true,width:150,editoptions: { readonly: 'readonly'}},

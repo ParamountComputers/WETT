@@ -61,7 +61,7 @@
                             delOptions: { url: 'ReceivedCannabisOrder/Delete' }
                         }
                     },
-                    { label: 'Customer Order Detail Id', name: 'customerOrderDetailID', editable: true, hidden: true, editoptions: { readonly: 'readonly' }, key: true },
+                    { label: 'Customer Order Detail Id', name: 'customerOrderDtlsID', editable: true, hidden: true, editoptions: { readonly: 'readonly' } },//, key: true },
                     { label: 'Customer Order Id', name: 'customerOrderID', hidden: true, editable: true, editoptions: { readonly: 'readonly' } },
                     {
                         label: 'Product Desc', name: 'productDesc', fixed: true, width: 150, editable: false, editrules: { required: true, custom: true, custom_func: IsProduct },
@@ -83,8 +83,8 @@
                     { label: 'Product (SKU)', name: 'productSku', fixed: true, width: 125, edittype: 'text', editoptions: { readonly: 'readonly' } },
                  //   { label: 'Stock Qty', name: 'stockQty', fixed: true, width: 100, editable: false, edittype: 'text', editoptions: { readonly: 'readonly' } },
                     { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: false, edittype: 'text', editrules: { number: true } },
-                   // { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
-                    { label: 'Qty Received', name: 'qtyFulfilled', editable: true, edittype: 'text', editrules: { custom: true, custom_func: qtyFulfilled } },
+                    { label: 'Qty Received', name: 'qtyFulfilled', fixed: true, width: 100, editable: true, edittype: 'text', editrules: { number: true } },
+                 //   { label: 'Qty Received', name: 'qtyFulfilled', editable: true, edittype: 'text', editrules: { custom: true, custom_func: qtyFulfilled } },
                     { label: 'Notes', name: 'notes', editable: true, fixed: true, width: 450, edittype: 'text' }
 
                 ],

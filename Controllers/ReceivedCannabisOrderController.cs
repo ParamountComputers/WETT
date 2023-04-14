@@ -46,7 +46,7 @@ namespace WETT.Controllers
                                  ProductID = c.ProductId,
                                  ProductSku = d.Sku,
                                  ProductDesc = c.Description,
-                                 StockQty = 0,
+                              //   StockQty = 0,
                                  QtyOrdered = b.QtyOrdered,
                                  QtyFulfilled= b.QtyFulfilled,
                                  Notes = b.Notes
@@ -70,7 +70,7 @@ namespace WETT.Controllers
                                                ProductID = c.ProductId,
                                                ProductSku = d.Sku,
                                                ProductDesc = c.Description,
-                                               StockQty = 0,
+                                            //   StockQty = 0,
                                                QtyOrdered = b.QtyOrdered,
                                                QtyFulfilled = b.QtyFulfilled,
                                                Notes = b.Notes

@@ -13,6 +13,7 @@ namespace WETT.Controllers
     {
         public class ReceivedCannabisOrderController : Controller
         {
+            public static Boolean showPage;
             public static string orderNumber;
             public static long CurrentCustomerOrderId;
             private readonly WETT_DBContext _context;
@@ -37,7 +38,7 @@ namespace WETT.Controllers
                              join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                              join c in _context.ProductMasters on b.ProductId equals c.ProductId
                              join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                             where a.CustomerOrderId == CurrentCustomerOrderId
+                             where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN"
                              select new CustomerOrderViewModel
                              {
                                  CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -60,11 +61,12 @@ namespace WETT.Controllers
                                            join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                            join c in _context.ProductMasters on b.ProductId equals c.ProductId
                                            join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
-                                           where a.CustomerOrderId == CurrentCustomerOrderId
+                                           where a.LobCode.Trim() == "CAN" && a.OrderNumber == orderNumber //CurrentCustomerOrderId.ToString()
                                            select new CustomerOrderViewModel
                                            {
                                                CustomerOrderDtlsID = b.CustomerOrderDetailId,
                                                CustomerOrderID = a.CustomerOrderId,
+                                               OrderNumber = a.OrderNumber,
                                                ProductID = c.ProductId,
                                                ProductSku = d.Sku,
                                                ProductDesc = c.Description,
@@ -76,13 +78,16 @@ namespace WETT.Controllers
                 var CustomerOrderData = AllCustomerOrderData;
                 if (CurrentCustomerOrderId != -1)
                 {
-                    CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentCustomerOrderId);
+                    CustomerOrderData = CustomerOrderData.Where(w => w.OrderNumber == CurrentCustomerOrderId.ToString());
 
                 }
 
+            if (showPage != false)
+            {
+                CustomerOrderData = CustomerOrderData.Where(w => w.OrderNumber == orderNumber);
+            }
 
-
-                int totalRecords = CustomerOrderData.Count();
+            int totalRecords = CustomerOrderData.Count();
                 var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
                 int currentPageIndex = request.page - 1;
 
@@ -111,7 +116,7 @@ namespace WETT.Controllers
             {
                 ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
                 CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
-                r.ProductId = s.ProductId;
+                r.ProductId = p.ProductID;
                 r.QtyOrdered = p.QtyOrdered;
                 r.QtyFulfilled = p.QtyFulfilled;
                 r.Notes = p.Notes;
@@ -121,71 +126,7 @@ namespace WETT.Controllers
                 return Json(true);
             }
 
-            //public JsonResult Add(CustomerOrderViewModel p)
-            //{
-            //    if (CurrentCustomerOrderId == -1)
-            //    {
-
-            //        CustomerOrder s = new CustomerOrder
-            //        {
-            //            CustomerId = currentCustomer,
-            //            OrderNumber = currentOrderNumber,
-            //            DateOrdered = currentDateOrdered,
-            //            CustomerOrderStatusId = currentCustomerOrderStatus,
-            //            CarrierId = currentCarrier,
-            //            Driver = currentDriver,
-            //            DsSlipNumber = currentDsSlipNumber,
-            //            DeliveryReqDate = currentDeliveryReqDate,
-            //            SpecialInstructions = currentSpecialInstructions,
-            //            //hard coded for now
-            //            OrderSourceId = 1,
-            //            InsertTimestamp = DateTime.Now,
-            //            InsertUserId = User.Identity.Name,
-            //            UpdateTimestamp = DateTime.Now,
-            //            UpdateUserId = User.Identity.Name,
-
-            //        };
-
-            //        _context.CustomerOrders.Add(s);
-            //        _context.SaveChanges();
-            //        CurrentCustomerOrderId = s.CustomerOrderId;
-            //    }
-            //    else
-            //    {
-            //        CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
-            //        s.CustomerId = currentCustomer;
-            //        s.OrderNumber = currentOrderNumber;
-            //        s.DateOrdered = currentDateOrdered;
-            //        s.CarrierId = currentCarrier;
-            //        s.CustomerOrderStatusId = currentCustomerOrderStatus;
-            //        s.Driver = currentDriver;
-            //        s.DsSlipNumber = currentDsSlipNumber;
-            //        s.DeliveryReqDate = currentDeliveryReqDate;
-            //        s.SpecialInstructions = currentSpecialInstructions;
-            //        s.UpdateTimestamp = DateTime.Now;
-            //        s.UpdateUserId = User.Identity.Name;
-            //        _context.SaveChanges();
-            //    }
-            //    Product c = _context.Products.Single(a => a.Description == p.ProductDesc);
-            //    CustomerOrderDetail r = new CustomerOrderDetail
-            //    {
-            //        CustomerOrderId = CurrentCustomerOrderId,
-            //        ProductId = c.ProductId,
-            //        QtyOrdered = p.QtyOrdered,
-            //        Notes = p.Notes,
-            //        InsertTimestamp = DateTime.Now,
-            //        InsertUserId = User.Identity.Name,
-            //        UpdateTimestamp = DateTime.Now,
-            //        UpdateUserid = User.Identity.Name,
-
-
-            //    };
-
-            //    _context.CustomerOrderDetails.Add(r);
-            //    _context.SaveChanges();
-
-            //    return Json(true);
-            //}
+          
             public JsonResult Delete(long id)
             {
                 CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
@@ -195,28 +136,17 @@ namespace WETT.Controllers
 
                 return Json(true);
             }
-            //public JsonResult SaCode()
-            //{
-            //    if (CurrentCustomerOrderId != -1)
-            //    {
-            //        CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
-            //        var headerInfo = new
-            //        {
-            //            customer = r.CustomerId,
-            //            orderNumber = r.OrderNumber,
-            //            dateOrdered = r.DateOrdered.ToShortDateString(),
-            //            customerOrderStatus = r.CustomerOrderStatusId,
-            //            carrier = r.CarrierId,
-            //            driver = r.Driver,
-            //            dsSlipNumber = r.DsSlipNumber,
-            //            deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
-            //            specialInstructions = r.SpecialInstructions,
-            //        };
-            //        return Json(headerInfo);
-            //    }
-            //    return Json(null);
-            //}
-            public IActionResult CreateHeader(string data)
+
+            public IActionResult CreateSearch(string data)
+            {
+                showPage = true;
+                var li = data.Split("/");
+                orderNumber = li[0];
+               
+
+                return Json(true);
+            }
+        public IActionResult CreateHeader(string data)
             {
                 //var li = data.Split("/");
 

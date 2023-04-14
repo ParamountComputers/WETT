@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph.SecurityNamespace;
 using WETT.Data;
 using WETT.Models;
 using BindAttribute = Microsoft.AspNetCore.Mvc.BindAttribute;
@@ -57,12 +59,22 @@ namespace WETT.Controllers
             var products = from a in _context.ProductMasters
                            join b in _context.ProductRegulatorLiq on a.ProductId equals b.ProductId
                            join c in _context.Suppliers on a.SupplierId equals c.SupplierId
-                           select new ProductRegulatorLiq
+                           select new ProductLiq
                            {
+                              
+                               ProductId = a.ProductId,
+                               Description= a.Description,
+                               SupplierId = a.SupplierId,
+                               LobCode = a.LobCode,
                                Sku = b.Sku,
-                               ProductId = b.ProductId,
-                               Description= b.Description,
-                              // Supplier = a.Supplier
+                               Description2 = b.Description,
+                               SingleWeight = b.SingleWeight,
+                               ContainerWeight = b.ContainerWeight,
+                               CaseWeight = b.CaseWeight,
+                               PackSize = b.PackSize,
+                               HlSingle = b.HlSingle,
+                               HlContainer = b.HlContainer,
+                               HlCase = b.HlCase
                            };
                             
 
@@ -90,7 +102,7 @@ namespace WETT.Controllers
 
             //return View(await products.AsNoTracking().ToListAsync());
             int pageSize = 3;
-            return View(await PaginatedList<ProductRegulatorLiq>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<ProductLiq>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
 

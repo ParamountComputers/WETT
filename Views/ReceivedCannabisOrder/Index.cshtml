@@ -5,11 +5,11 @@
     ViewData["Title"] = "ReceivedCannabisOrder";
 }
 
+
 <div class="text-center">
-    <h2 class="display-4">Received Cannabis Order</h2>
+    <h4 class="display-5">Received Cannabis Order</h4>
 </div>
 <body>
-
     <div class="searchInput">
         <label class="Label" for="orderNumber">Order #:</label>
         <input type="text" class="input" id="orderNumber" />
@@ -81,9 +81,10 @@
                         }
                     },
                     { label: 'Product ID(SKU)', name: 'productSku', fixed: true, width: 125, edittype: 'text', editoptions: { readonly: 'readonly' } },
-                    { label: 'Stock Qty', name: 'stockQty', fixed: true, width: 100, editable: true, edittype: 'text', editoptions: { readonly: 'readonly' } },
-                    { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: true, edittype: 'text', editrules: { number: true } },
-                    { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                    { label: 'Stock Qty', name: 'stockQty', fixed: true, width: 100, editable: false, edittype: 'text', editoptions: { readonly: 'readonly' } },
+                    { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: false, edittype: 'text', editrules: { number: true } },
+                   // { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                    { label: 'Qty Fulfilled', name: 'qtyFulfilled', editable: true, edittype: 'text', editrules: { custom: true, custom_func: qtyFulfilled } },
                     { label: 'Notes', name: 'notes', editable: true, fixed: true, width: 450, edittype: 'text' }
 
                 ],
@@ -120,24 +121,24 @@
                     afterSubmit: function () {
                     },
                     beforeSubmit: function () {
-                        var customer = $("#customer").val();
-                        var orderNumber = $("#orderNumber").val();
-                        var dateOrdered = $("#dateOrdered").val();
-                        var customerOrderStatus = $("#customerOrderStatus").val();
-                        var driver = $("#driver").val();
-                        var dsSlipNumber = $("#dsSlipNumber").val();
-                        var deliveryReqDate = $("#deliveryReqDate").val();
-                        var specialInstructions = $("#specialInstructions").val();
-                        var carrier = $("#carrier").val();
-                        $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier, function () { });
-                        $.ajaxSetup({ "async": true });
+                        //var customer = $("#customer").val();
+                        //var orderNumber = $("#orderNumber").val();
+                        //var dateOrdered = $("#dateOrdered").val();
+                        //var customerOrderStatus = $("#customerOrderStatus").val();
+                        //var driver = $("#driver").val();
+                        //var dsSlipNumber = $("#dsSlipNumber").val();
+                        //var deliveryReqDate = $("#deliveryReqDate").val();
+                        //var specialInstructions = $("#specialInstructions").val();
+                        //var carrier = $("#carrier").val();
+                        //$.getJSON('ReceivedCannabisOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier, function () { });
+                        //$.ajaxSetup({ "async": true });
                     },
                     closeAfterAdd: true,
                     recreateForm: true,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
                     },
-                    url: 'CustomerOrder/Add'
+                    url: 'ReceivedCannabisOrder/Add'
                 });
 
         });
@@ -150,8 +151,12 @@
         $("#search").on('click', function () {
             var orderNumber = $("#orderNumber").val();
             $.ajaxSetup({ "async": false });
-            $.getJSON('ReceivedCannabisOrder/CreateProductName?data=' + orderNumber, function () { });
+            $.getJSON('ReceivedCannabisOrder/CreateSearch?data=' + orderNumber, function () { });
             $.ajaxSetup({ "async": true });
+
+            $('#ReceivedCannabisOrder').setGridParam({ page: 1 }).trigger("reloadGrid");
+
+
         });
         function IsProduct(value, colname) {
             var containsProduct = false;
@@ -181,6 +186,15 @@
 
         }
 
+        function qtyFulfilled(value, colname) {
+            var qtyOrdered = $("#ReceivedCannabisOrder").jqGrid("getCol", "qtyOrdered")
+            if (isNumeric(value)) {
+                if (qtyOrdered > value) {
+                    return [false, "pending less than fulfilled"];
+                }
+            }
+            return [true, ""];
+        }
 
         function getProductSku(value) {
             var ProductSku = "";

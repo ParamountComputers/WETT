@@ -29,7 +29,7 @@ public partial class CustomerOrder
 
     public DateTime DeliveryReqDate { get; set; }
 
-    public string SpecialInstructions { get; set; }
+    public string? SpecialInstructions { get; set; }
 
     public string InsertUserId { get; set; }
 

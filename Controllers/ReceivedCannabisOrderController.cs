@@ -114,10 +114,10 @@ namespace WETT.Controllers
             }
             public JsonResult Update(CustomerOrderViewModel p)
             {
-                ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+                //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
                 CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
-                r.ProductId = p.ProductID;
-                r.QtyOrdered = p.QtyOrdered;
+              //  r.ProductId = p.ProductID;
+              //  r.QtyOrdered = p.QtyOrdered;
                 r.QtyFulfilled = p.QtyFulfilled;
                 r.Notes = p.Notes;
                 r.UpdateTimestamp = DateTime.Now;

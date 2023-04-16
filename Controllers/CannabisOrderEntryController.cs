@@ -266,7 +266,6 @@ namespace WETT.Controllers
         public IActionResult CreateCustomerOrderStatusList()
         {
             var invAdjData = from a in _context.CustomerOrderStatuses
-                             orderby a.Description
                              select new
                              {
                                  value = a.CustomerOrderStatusId,

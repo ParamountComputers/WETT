@@ -86,7 +86,7 @@ namespace WETT.Controllers
             
 
 
-                int totalRecords = CustomerOrderData.Count();
+            int totalRecords = CustomerOrderData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
 

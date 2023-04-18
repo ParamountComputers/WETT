@@ -59,7 +59,10 @@
     font-size: 12px;
     width: 70px;
 }
-
+.Labelshort2 {
+    font-size: 12px;
+    width: 85px;
+}
 .Gap1 {
     width:10px;
     display:inline-block;
@@ -76,6 +79,10 @@
     width: 80px;
     display: inline-block;
 }
+.Gap41 {
+    width: 115px;
+    display: inline-block;
+}
 .Gap4 {
     width: 120px;
     display: inline-block;
@@ -84,7 +91,10 @@
     width: 155px;
     display: inline-block;
 }
-
+.Gap55 {
+    width: 55px;
+    display: inline-block;
+}
 .Gap6 {
     width: 205px;
     display: inline-block;

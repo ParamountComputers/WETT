@@ -5,6 +5,8 @@ namespace WETT.Models
     public class CanCustSummViewModel
     {
         public long CustomerOrderID { get; set; }
+        public long CustomerID { get; set; }
+        public long SupplierID { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime? DelveryDate { get; set; }
         public string OrderNumber { get; set; }

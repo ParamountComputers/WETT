@@ -13,9 +13,12 @@ namespace WETT.Controllers
     {
         public static Boolean showPage;
         //public static string searchDate = DateTime.Today.ToShortDateString();
-        public static string startSearchDate = "";
-        public static string endSearchDate = "";
+        public static string startSearchDate = DateTime.UtcNow.ToShortDateString();
+        public static string endSearchDate = DateTime.UtcNow.ToShortDateString();
         public static long StatusOrderId;
+        public static long CustomerIDVar;
+        public static string OrderNum;
+        public static long SupplierIDVar;
         public static long carrierId;
         //public static string Notes;
         //public static long CurrentHeaderId;
@@ -36,10 +39,11 @@ namespace WETT.Controllers
                          {
                              CustomerOrderID = a.CustomerOrderId,
                              OrderDate = a.DateOrdered,
-                           //  DelveryDate = a.DeliveryReqDate,
                              OrderNumber = a.OrderNumber,
                              LOBCode = a.LobCode,
+                             CustomerID = a.CustomerId,
                              Customer = b.Name,
+                             SupplierID = -1,
                              City = b.City,
                              Instructions = a.SpecialInstructions,
                              Status = c.Description
@@ -52,20 +56,19 @@ namespace WETT.Controllers
 
         public JsonResult GetAll(JqGridViewModel request)
         {
-
-
             var AllCanCustomerSummaryData = from a in _context.CustomerOrders
                          join b in _context.Customers on a.CustomerId equals b.CustomerId
                          join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode.Trim() == "CAN"
+                         where a.CustomerOrderStatusId == StatusOrderId && a.LobCode.Trim() == "CAN"  && a.DateOrdered >=DateTime.Parse(startSearchDate) && a.DateOrdered <= DateTime.Parse(endSearchDate)
                          select new CanCustSummViewModel
                          {
                              CustomerOrderID = a.CustomerOrderId,
                              OrderDate = a.DateOrdered,
-                          //   DelveryDate = a.DeliveryReqDate,
                              OrderNumber = a.OrderNumber,
                              LOBCode = a.LobCode,
+                             CustomerID = a.CustomerId,
                              Customer = b.Name,
+                             SupplierID = -1,
                              City = b.City,
                              Instructions = a.SpecialInstructions,
                              Status = c.Description
@@ -75,7 +78,51 @@ namespace WETT.Controllers
             var CanCustomerSummaryData = AllCanCustomerSummaryData;
             if (showPage != false)
             {
-               CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate));
+                CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderDate >= DateTime.Parse(startSearchDate) && x.OrderDate <= DateTime.Parse(endSearchDate));
+                if (CustomerIDVar != -1)
+                {
+                    if (OrderNum != "")
+                    {
+                        if (SupplierIDVar != -1)
+                        {
+                            // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar && x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
+                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
+                        }
+                        else
+                        {
+                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
+                        }
+                    }
+                    else
+                    {
+                        if (SupplierIDVar != -1)
+                        {
+                            // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar &&  x.CustomerID == CustomerIDVar);
+                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.CustomerID == CustomerIDVar);
+                        }
+                        else
+                        {
+                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.CustomerID == CustomerIDVar);
+                        }
+                       
+                    }
+                }
+                else if (OrderNum != "")
+                {
+                    if (SupplierIDVar != -1)
+                    {
+                        // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar && x.OrderNumber == OrderNum );
+                        CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum);
+                    }
+                    else
+                    {
+                        CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum);
+                    }
+                }
+                else if (SupplierIDVar != -1)
+                {
+                   // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar);
+                }
             }
 
 
@@ -129,6 +176,9 @@ namespace WETT.Controllers
             startSearchDate = li[0];
             endSearchDate = li[1];
             StatusOrderId = (long)Convert.ToDouble(li[2]);
+            CustomerIDVar = (long)Convert.ToDouble(li[3]); 
+            OrderNum = li[4];
+            SupplierIDVar = (long)Convert.ToDouble(li[5]); 
            // carrierId = (long)Convert.ToDouble(li[3]);
 
             return Json(true);
@@ -153,6 +203,30 @@ namespace WETT.Controllers
                              {
                                  value = a.CustomerOrderStatusId,
                                  text = a.Description
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateCustomerList()
+        {
+            var invAdjData = from a in _context.Customers
+                             orderby a.Name
+                             select new
+                             {
+                                 value = a.CustomerId,
+                                 text = a.Name
+                             };
+            return Json(invAdjData);
+        }
+        public IActionResult CreateSupplierList()
+        {
+            var invAdjData = from a in _context.Suppliers
+                             where a.ActiveFlag == "Y"
+                             orderby a.Name
+                             select new
+                             {
+                                 value = a.SupplierId,
+                                 text = a.Name
+
                              };
             return Json(invAdjData);
         }

@@ -9,25 +9,36 @@
     <h4 class="display-5">Cannabis Customer Summary</h4>
 </div>
 <body>
-  <div class="searchDate">
-      <label for="startDate" class="Label" >Start Order Date:</label>
-      <input type="date"id='startDate' class="Date" name="startDate" />
-  </div>
-  <div class="Gap2"></div>
-  <div class="searchDate">
-      <label for="endDate" class="Label" >End Order Date:</label>
-      <input type="date"id='endDate' class="Date" name="endDate" />
-  </div>
-  <div class="Gap2"></div>
-  <div class="searchDropdown2"> 
-      <label for="StatusDropdown"  class="Label">Status:</label>
-      <select class="form-control dropDownInput" id="StatusDropdown" name="StatusDropdown"></select> 
-  </div>
-  @*<div class="Gap1"></div>
-  <div class="searchDropdown"> 
-          <label for="carrierDropdown"  class="Label">Carrier:</label>
-          <select class="form-control dropDownInput" id="carrierDropdown" name="carrierDropdown"></select> 
-    </div>*@
+      <div class="searchDate">
+           <label for="startDate" class="Label" >Start Order Date:</label>
+           <input type="date"id='startDate' class="Date" name="startDate" />
+      </div>
+      <div class="Gap2"></div>
+      <div class="searchDate">
+           <label for="endDate" class="Label" >End Order Date:</label>
+           <input type="date"id='endDate' class="Date" name="endDate" />
+      </div>
+      <div class="Gap41"></div>
+      <div class="searchDropdown">
+        <label for="StatusDropdown" class="Label">Status:</label>
+           <select class="form-control dropDownInput" id="StatusDropdown" name="StatusDropdown"></select> 
+      </div>
+    <div></div>
+      <div class="searchInput">
+           <label class="Label" for="orderNumber">Order #:</label>
+           <input type="text" class="input" id="orderNumber" />
+      </div>
+      <div class="Gap2"></div>
+      <div class="searchDropdown2">
+           <label for="customer" class="Label">Customer:</label>
+           <select class="form-control dropDownInput2" id="customer" name="Customer"></select>
+      </div>
+      <div class="Gap2"></div>
+      <div class="searchDropdown2">
+           <label for="supplier" class="Label">Supplier:</label>
+           <select class="form-control dropDownInput2" id="supplier" name="Supplier"></select>
+      </div>
+    <div></div>
 </body>
 
 <table id="CanCustomerSummary"></table>
@@ -174,7 +185,35 @@
                }  
                $("#StatusDropdown").html(s);  
            }  
-       });  
+       });
+       $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                    url: "CannabisCustSumm/CreateCustomerList",
+                data: "{}",
+                success: function (data) {
+                        var s = '<option value="-1"> </option>';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                    }
+                    $("#customer").html(s);
+                }
+            });
+        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                    url: "CannabisCustSumm/CreateSupplierList",
+                data: "{}",
+                success: function (data) {
+                        var s = '<option value="-1"> </option>';;
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                    }
+                    $("#supplier").html(s);
+                }
+            });
+        });
    });
        $('#CanCustomerSummary').setGridWidth(parseInt($(window).width()) - 20);
        
@@ -191,18 +230,22 @@
          date = today.toString();
          return date;
         }
+        
     
-            function SaveHeader()
-    {
+        function SaveHeader()
+        {
         var endDate = $("#endDate").val();
         var startDate = $("#startDate").val();
         var Status = $("#StatusDropdown").val();
+        var Customer = $("#customer").val();
+        var OrderNum = $('#orderNumber').val();
+        var Supplier = $('#supplier').val();
        // var Carrier = $("#carrierDropdown").val();
         if(startDate != "" && endDate !="" && Status != -1)
             {
                     header = true;
                     $.ajaxSetup( { "async": false } );
-                    $.getJSON('CannabisCustSumm/CreateSearch?data=' + startDate + '/' + endDate + '/' + Status , function (data) { });
+                $.getJSON('CannabisCustSumm/CreateSearch?data=' + startDate + '/' + endDate + '/' + Status + '/' + Customer + '/' + OrderNum + '/' + Supplier, function (data) { });
                     $.ajaxSetup( { "async": true } );
             }
         else if(Status==-1 && startDate== "" && endDate =="")

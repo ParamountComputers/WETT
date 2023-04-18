@@ -248,7 +248,7 @@ namespace WETT.Controllers
                              select new
                              {
                                  value = a.CustomerId,
-                                 text = a.Name
+                                 text = a.MbllCustomerNo + " - " + a.Name
                              };
             return Json(invAdjData);
         }

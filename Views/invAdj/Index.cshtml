@@ -21,7 +21,8 @@
       <label for="comments" class="Label" >Notes:</label>
       <input type="text" class="NotesInput"id="comments" name="comments"/>
   </div>
-    <div class="Gap6"></div>
+    <div class="Gap2"></div>
+    <div class="Gap1"></div>
   <div class="SaCode">
       <label for="saCode"  class="Label">SA Code:</label>
       <input type="text" class="SaCodeInput" id="saCode" readonly/>
@@ -90,7 +91,6 @@
                                     source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
                                         $('#invAdj').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
                                         $('input#productSku').val(getProductSku(ui.item.value));
-
                                     }
                                 });
                             }
@@ -251,8 +251,10 @@
                 {
                     for (var i = 0; i < data.length; i++) 
                     {
+
                         if(value === data[i].value)
                         {
+
                             Supplier= data[i].text;
                         }
                     } 
@@ -265,6 +267,7 @@
 
        function getProductSku(value) 
        {
+           var ProductSku="";
             $.ajaxSetup( { "async": false } );
             $.getJSON('InvAdj/CreateProductSkuList', function(data) 
             {
@@ -274,6 +277,7 @@
                     {
                         if(data[i].value== value)
                         {
+                            console.log(data[i].text);
                             ProductSku=data[i].text;
                         }  
                     }
@@ -281,7 +285,7 @@
 
             });
             $.ajaxSetup( { "async": true } );
-            return ProductSku.toString(); 
+            return ProductSku; 
        }
 
         function getProductName() {

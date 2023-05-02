@@ -200,15 +200,15 @@ namespace WETT.Controllers
         }
         public JsonResult SaCode()
         {
-            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-            var headerInfo = new
-            {
-                comments = r.Comments,
-                sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString()
-            };
             if (CurrentSaCode != null)
             {
+                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+                var headerInfo = new
+                {
+                    comments = r.Comments,
+                    sacode = CurrentSaCode,
+                    date = r.Date.ToShortDateString()
+                };
                 return Json(headerInfo);
             }
             return Json(null);
@@ -254,10 +254,11 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductRegulatorLiq
+            var invAdjData = from a in _context.ProductMasters
+                             join b in _context.ProductRegulatorLiq on a.ProductId equals b.ProductId
                              select new
                              {
-                                 text = a.Sku,
+                                 text = b.Sku,
                                  value = a.Description
                              };
             return Json(invAdjData);

@@ -15,7 +15,7 @@ namespace WETT.Controllers
         //public static string searchDate = DateTime.Today.ToShortDateString();
         public static string startSearchDate="";
         public static string endSearchDate="";
-        public static long inventoryTxType;
+        public static long inventoryTxTypeId;
         //public static string Notes;
         //public static long CurrentHeaderId;
         private readonly WETT_DBContext _context;
@@ -26,10 +26,10 @@ namespace WETT.Controllers
         public async Task<IActionResult> Index()
         {
             showPage = false;
-            inventoryTxType = -1;
+            InvTxSummaryController.inventoryTxTypeId = -1;
             var result = from a in _context.InventoryTxes 
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                         where c.InventoryTxTypeId == inventoryTxType
+                         where c.InventoryTxTypeId == inventoryTxTypeId
                          select new InvTxSummaryViewModel
                          {
                              InventoryTxId = a.InventoryTxId,
@@ -49,7 +49,7 @@ namespace WETT.Controllers
 
             var AllInvTxSummaryData = from a in _context.InventoryTxes
                                 join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
-                                where c.InventoryTxTypeId== inventoryTxType
+                                where c.InventoryTxTypeId== inventoryTxTypeId
                                       select new InvTxSummaryViewModel
                                 {
                                     InventoryTxId = a.InventoryTxId,
@@ -59,7 +59,7 @@ namespace WETT.Controllers
                                     SaCode = a.StockAdjCode
 
                                 };
-            if (inventoryTxType == 0)
+            if (inventoryTxTypeId == 0)
             {
                 AllInvTxSummaryData = from a in _context.InventoryTxes
                                       join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -175,7 +175,7 @@ namespace WETT.Controllers
             var li = data.Split("/");
             startSearchDate = li[0];
             endSearchDate= li[1];
-            inventoryTxType= (long)Convert.ToDouble(li[2]);
+            inventoryTxTypeId= (long)Convert.ToDouble(li[2]);
 
             return Json(true);
         }

@@ -218,7 +218,8 @@ namespace WETT.Controllers
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
-            currentCustomer = (long)Convert.ToDouble(li[0]);
+            Customer r = _context.Customers.Single(e => e.Name == li[0]);
+            currentCustomer = r.CustomerId;
             currentOrderNumber = li[1];
             currentDateOrdered = DateTime.Parse(li[2]);
             currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);

@@ -14,9 +14,9 @@
         <input type="date" id='dateOrdered' class="Date" name="dateOrdered" />
     </div>
     <div class="Gap66"></div>
-    <div class="searchInput220">
+    <div class="searchInput2">
         <label class="Label" for="orderNumber">Order #:</label>
-        <input type="text" class="input" id="orderNumber" />
+        <input type="text" class="input2" id="orderNumber" />
     </div>
     <div class="Gap2"></div>
     <div class="searchDropdown">
@@ -24,9 +24,9 @@
         <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
     </div>
     <div></div>
-    <div class="searchDropdown2">
+    <div class="searchInput220">
         <label for="customer" class="Label">Customer:</label>
-        <select class="form-control dropDownInput2" id="customer" name="Customer"></select>
+        <input type="text" class="input" id="customer" autocomplete="off" />
     </div>
     <div class="searchDropdown2">
         <label for="supplier" class="Label">Supplier:</label>
@@ -34,9 +34,9 @@
     </div>
     <div class="Notes">
         <label class="Label" for="specialInstructions">Special Notes:</label>
-        <input type="text" class="NotesInput" id="specialInstructions" />
+        <input type="text" class="input" id="specialInstructions" />
     </div>
-   
+
 </body>
 <table id="CannabisOrderEntry"></table>
 <div id="jqGridPager"></div>
@@ -158,6 +158,9 @@
                 });
 
         });
+        $("#customer").autocomplete({
+            source: getCustomer()
+        });
         $(document).ready(function () {
             $('#dateOrdered').val(date());
             $('#deliveryReqDate').val(date());
@@ -166,20 +169,6 @@
         $('#CannabisOrderEntry').setGridWidth(parseInt($(window).width()) - 20);
         $("#newPage").on('click', function () {
             window.location.replace("CannabisOrderEntry");
-        });
-        $(document).ready(function () {
-            $.ajax({
-                type: "GET",
-                url: "CannabisOrderEntry/CreateCustomerList",
-                data: "{}",
-                success: function (data) {
-                    var s = '';
-                    for (var i = 0; i < data.length; i++) {
-                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
-                    }
-                    $("#customer").html(s);
-                }
-            });
         });
         $(document).ready(function () {
             $.ajax({
@@ -264,19 +253,36 @@
 
         }
 
+        //function getCustomer() {
+        //    var CustomerList = [];
+        //    $.ajaxSetup({ "async": false });
+        //    $.getJSON('CannabisOrderEntry/CreateCustomerList', function (data) {
+        //        if (data != null) {
+        //            for (var i = 0; i < data.length; i++) {
+        //                CustomerList[data[i].value] = data[i].text;
+
+        //            }
+        //        }//if
+
+        //    });
+        //    $.ajaxSetup({ "async": true });
+        //    console.log(CustomerList);
+        //    return CustomerList;
+
+        //}
         function getCustomer() {
-            var CustomerList = {};
-            $.ajaxSetup({ "async": false });
+            var CustomerList = [];
+            $.ajaxSetup({ "async": true });
             $.getJSON('CannabisOrderEntry/CreateCustomerList', function (data) {
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
-                        CustomerList[data[i].value] = data[i].text;
-
-                    }
+                        CustomerList[i] = data[i].text;
+                       }
                 }//if
 
             });
             $.ajaxSetup({ "async": true });
+
             console.log(CustomerList);
             return CustomerList;
 

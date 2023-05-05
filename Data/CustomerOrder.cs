@@ -18,6 +18,7 @@ public partial class CustomerOrder
     public string OrderNumber { get; set; }
 
     public DateTime DateOrdered { get; set; }
+    //public DateTime DateReceived { get; set; }
 
     public long CustomerOrderStatusId { get; set; }
 

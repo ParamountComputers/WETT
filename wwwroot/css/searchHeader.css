@@ -41,6 +41,10 @@
     width: 230px;
     display: inline-block;
 }
+.searchInput3 {
+    width: 150px;
+    display: inline-block;
+}
 .input3 {
     border: 1px solid black;
     border-radius: 8px;

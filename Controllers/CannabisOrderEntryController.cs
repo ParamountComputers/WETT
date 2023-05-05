@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using WETT.Data;
 using WETT.Models;
@@ -14,11 +17,13 @@ namespace WETT.Controllers
         public static long currentCustomer;
         public static string currentOrderNumber;
         public static DateTime currentDateOrdered;
+        public static DateTime currentReceivedDate;
         public static long currentCustomerOrderStatus;
         public static string currentSpecialInstructions;
         public static long currentCarrier;
         public static long CurrentCustomerOrderId;
         public static long currentSupplierId;
+        public static IQueryable<CustomerList> customerList;
         private readonly WETT_DBContext _context;
 
         public CannabisOrderEntryController(WETT_DBContext context)
@@ -133,6 +138,7 @@ namespace WETT.Controllers
                     CustomerId = currentCustomer,
                     OrderNumber = currentOrderNumber,
                     DateOrdered = currentDateOrdered,
+                    //DateReceived = currentReceivedDate,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
                     //CarrierId = currentCarrier,
                     SpecialInstructions = currentSpecialInstructions,
@@ -157,6 +163,7 @@ namespace WETT.Controllers
                 s.CustomerId = currentCustomer;
                 s.OrderNumber = currentOrderNumber;
                 s.DateOrdered = currentDateOrdered;
+                //s.DateReceived = currentReceivedDate;
                //s.CarrierId = currentCarrier;
                 s.CustomerOrderStatusId = currentCustomerOrderStatus;
                 s.SpecialInstructions = currentSpecialInstructions;
@@ -218,18 +225,28 @@ namespace WETT.Controllers
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
-            Customer r = _context.Customers.Single(e => e.Name == li[0]);
-            currentCustomer = r.CustomerId;
-            currentOrderNumber = li[1];
-            currentDateOrdered = DateTime.Parse(li[2]);
+            //CustomerList r = customerList.Single(x => x.text == li[0]);
+            //currentCustomer = r.value;
             currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
+            currentOrderNumber = li[1];
+            if (li[2] != ""){
+                currentDateOrdered = DateTime.Parse(li[2]);
+            }
+            if (li[6] != "")
+            {
+                currentReceivedDate = DateTime.Parse(li[6]);
+            }
             currentSpecialInstructions = li[4];
             currentSupplierId = (long)Convert.ToDouble(li[5]);
+            var mllb = li[0].Split(" ");
+            Customer r = _context.Customers.Single(x => x.MbllCustomerNo == (long)Convert.ToDouble(mllb[0]));
+            currentCustomer = r.CustomerId;
             return Json(true);
+            
         }
         public IActionResult CreateSupplierList()
         {
-            var invAdjData = from a in _context.Suppliers
+            var supplier = from a in _context.Suppliers
                              where a.ActiveFlag == "Y"
                              orderby a.Name
                              select new
@@ -238,41 +255,41 @@ namespace WETT.Controllers
                                  text = a.Name
                                 
                              };
-            return Json(invAdjData);
+            return Json(supplier);
         }
 
 
         public IActionResult CreateCustomerList()
         {
-            var invAdjData = from a in _context.Customers
-                             orderby a.Name
-                             select new
-                             {
-                                 value = a.CustomerId,
-                                 text = a.MbllCustomerNo + " - " + a.Name
-                             };
-            return Json(invAdjData);
+            customerList = from a in _context.Customers
+                               // orderby a.Name
+                           select new CustomerList
+                           {
+                               value = a.CustomerId,
+                               text = a.MbllCustomerNo + " - " + a.Name
+                           };
+            return Json(customerList);
         }
         public IActionResult CreateCarrierList()
         {
-            var invAdjData = from a in _context.Carriers
+            var carrier = from a in _context.Carriers
                              orderby a.Name
                              select new
                              {
                                  value = a.CarrierId,
                                  text = a.Name
                              };
-            return Json(invAdjData);
+            return Json(carrier);
         }
         public IActionResult CreateCustomerOrderStatusList()
         {
-            var invAdjData = from a in _context.CustomerOrderStatuses
+            var orderStatus = from a in _context.CustomerOrderStatuses
                              select new
                              {
                                  value = a.CustomerOrderStatusId,
                                  text = a.Description
                              };
-            return Json(invAdjData);
+            return Json(orderStatus);
         }
         public IActionResult CreateProductName()
         {
@@ -291,7 +308,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductMasters
+            var sku = from a in _context.ProductMasters
                              join b in _context.ProductRegulatorCan on a.ProductId equals b.ProductId
                              orderby a.Description
                              select new
@@ -300,11 +317,11 @@ namespace WETT.Controllers
                                  value = a.Description
 
                              };
-            return Json(invAdjData);
+            return Json(sku);
         }
         public IActionResult CreateStockQtyList()
         {
-            var invAdjData = from a in _context.ProductMasters
+            var stkQty = from a in _context.ProductMasters
                              join d in _context.Inventories on a.ProductId equals d.ProductId
                              where d.InventoryLocationId == 1
                              select new
@@ -313,7 +330,7 @@ namespace WETT.Controllers
                                  value = a.Description
 
                              };
-            return Json(invAdjData);
+            return Json(stkQty);
         }
     }
 }

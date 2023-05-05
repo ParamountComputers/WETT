@@ -14,27 +14,41 @@
         <input type="date" id='dateOrdered' class="Date" name="dateOrdered" />
     </div>
     <div class="Gap66"></div>
-    <div class="searchInput2">
+    <div class="searchDate">
+        <label for="receivedDate" class="Label">Received Date:</label>
+        <input type="date" id='receivedDate' class="Date" name="receivedDate" />
+    </div>
+    <div class="Gap66"></div>
+    <div class="searchInput220">
         <label class="Label" for="orderNumber">Order #:</label>
-        <input type="text" class="input2" id="orderNumber" />
+        <input type="text" class="input" id="orderNumber" />
     </div>
     <div class="Gap2"></div>
-    <div class="searchDropdown">
-        <label for="customerOrderStatus" class="Label">Order Status:</label>
-        <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
+    <div class="searchInput220">
+        <label class="Label" for="specialInstructions">Special Notes:</label>
+        <input type="text" class="input" id="specialInstructions" />
     </div>
     <div></div>
+    <div class="searchDate">
+        <label for="shippedDate" class="Label">Shipped Date:</label>
+        <input type="date" id='shippedDate' class="Date" name="shippedDate" />
+    </div>
+    <div class="Gap66"></div>
+    @*<select class="form-control basicAutoSelect" name="simple_select"
+            placeholder="type to search..."
+            data-url="CannabisOrderEntry/CreateCustomerList" autocomplete="off"></select>*@
     <div class="searchInput220">
         <label for="customer" class="Label">Customer:</label>
         <input type="text" class="input" id="customer" autocomplete="off" />
     </div>
+    <div class="Gap2"></div>
     <div class="searchDropdown2">
         <label for="supplier" class="Label">Supplier:</label>
         <select class="form-control dropDownInput2" id="supplier" name="Supplier"></select>
     </div>
-    <div class="Notes">
-        <label class="Label" for="specialInstructions">Special Notes:</label>
-        <input type="text" class="input" id="specialInstructions" />
+    <div class="searchDropdown">
+        <label for="customerOrderStatus" class="Label">Order Status:</label>
+        <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
     </div>
 
 </body>
@@ -55,6 +69,7 @@
         $.jgrid.defaults.responsive = true;
         var header = false;
         var curRowId = -1;
+        var customerList=[];
         $(document).ready(function () {
             $("#CannabisOrderEntry").jqGrid({
                 url: 'CannabisOrderEntry/GetAll',
@@ -130,23 +145,46 @@
                     zIndex: 99,
                     afterShowForm: function () {
                         var idSelector = $.jgrid.jqID(this.p.id);
-                        //if(header==false) {
-                        //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
-                        //alert("Error: Need Header");
-                        //}
+                        var customer = $("#customer").val();
+                        var isCustomer = false;
+                        console.log(customerList);
+                        console.log(customerList.length);
+                        console.log(customerList[0]);
+                        for (var i = 0; i < customerList.length; i++) {
+                            if (customer == customerList[i]) {
+                                        isCustomer = true;
+                            }
+                        }
+                        if (isCustomer == false) {
+                            $.jgrid.hideModal("#editmod" + idSelector, { gbox: "#gbox_" + idSelector });
+                            alert("Error: Need Actual Customer");
+                        }
                     },
                     //onclickSubmit: function (){
                     //},
                     afterSubmit: function () {
                     },
                     beforeSubmit: function () {
+                        var customerOrderStatus = $("#customerOrderStatus").val();
+                        var dateOrdered="";
+                        var dateReceived="";
+                        var shippingDate="";
+                        if(customerOrderStatus==1){
+                            dateOrdered = $("#dateOrdered").val();
+                        }else if (customerOrderStatus==6){
+                            dateOrdered = $("#dateOrdered").val();
+                            dateReceived = $("#receivedDate").val();
+                        }else {
+                            dateOrdered = $("#dateOrdered").val();
+                            dateReceived = $("#receivedDate").val();
+                            shippingDate = $("#shippingDate").val();
+                        }
                         var customer = $("#customer").val();
                         var orderNumber = $("#orderNumber").val();
-                        var dateOrdered = $("#dateOrdered").val();
-                        var customerOrderStatus = $("#customerOrderStatus").val();
                         var specialInstructions = $("#specialInstructions").val();
                         var supplier = $("#supplier").val();
-                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier, function () { });
+                        $.ajaxSetup({ "async": false });
+                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier + '/' + dateReceived, function () { });
                         $.ajaxSetup({ "async": true });
                     },
                     closeAfterAdd: true,
@@ -158,14 +196,36 @@
                 });
 
         });
+        //$("#.basicAutoSelect").autocomplete();
         $("#customer").autocomplete({
             source: getCustomer()
         });
         $(document).ready(function () {
             $('#dateOrdered').val(date());
-            $('#deliveryReqDate').val(date());
+            $('#receivedDate').val(date());
+            $('#shippedDate').val(date());
+            $("#receivedDate").prop("readonly", true);
+            $("#shippedDate").prop("readonly", true);
         });
-
+        $("#newPage").on('click', function () {
+            window.location.replace("CannabisOrderEntry");
+        });
+        $("#customerOrderStatus").on('change', function () {
+            var customerOrderStatus = $("#customerOrderStatus").val();
+            if (customerOrderStatus == 1) {
+                $("#receivedDate").prop("readonly", true);
+                $("#shippedDate").prop("readonly", true);
+                $("#dateOrdered").prop("readonly", false);
+            } else if (customerOrderStatus == 6) {
+                $("#receivedDate").prop("readonly", false);
+                $("#shippedDate").prop("readonly", true);
+                $("#dateOrdered").prop("readonly", false);
+            } else {
+                $("#receivedDate").prop("readonly", false);
+                $("#shippedDate").prop("readonly", false);
+                $("#dateOrdered").prop("readonly", false);
+            }
+        });
         $('#CannabisOrderEntry').setGridWidth(parseInt($(window).width()) - 20);
         $("#newPage").on('click', function () {
             window.location.replace("CannabisOrderEntry");
@@ -282,8 +342,7 @@
 
             });
             $.ajaxSetup({ "async": true });
-
-            console.log(CustomerList);
+            customerList= CustomerList;
             return CustomerList;
 
         }

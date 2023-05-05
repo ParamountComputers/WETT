@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Views\CustomerOrder\" />
   </ItemGroup>
 
   <ItemGroup>

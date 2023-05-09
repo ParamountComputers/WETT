@@ -322,6 +322,9 @@ public partial class WETT_DBContext : DbContext
             entity.Property(e => e.DateOrdered)
                 .HasPrecision(0)
                 .HasColumnName("Date Ordered");
+            entity.Property(e => e.DateReceived)
+                .HasPrecision(0)
+                .HasColumnName("Date Received");
             entity.Property(e => e.DeliveryReqDate)
                 .HasColumnType("date")
                 .HasColumnName("Delivery Req Date");

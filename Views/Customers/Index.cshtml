@@ -9,14 +9,18 @@
     <h4 class="display-5">Maintain Customers</h4>
 </div>
 <body>
-    <div class="searchInput2"> 
+    <div class="searchDropdown2">
+        <label for="lob" class="Label">Line Of business:</label>
+        <select class="form-control dropDownInput2" id="lob" name="lob"></select>
+    </div>
+    <div class="gap66"></div>
+    <div class="searchInput"> 
       <label for="customerName" class="Label" >Customer Name:</label>
-      <input type="text" class="input2" id="customerName" name="customerName"/>
+      <input type="text" class="input" id="customerName" name="customerName"/>
   </div>
 </body>
 <table id="customers"></table>
 <div id="jqGridPager"></div>
-
 @section scripts {
 <script type="text/javascript">
 

@@ -154,7 +154,7 @@ namespace WETT.Controllers
         public JsonResult Update(CanCustSummViewModel p)
         {
             //Customer s = _context.Customers.Single(a => a.Name == p.Customer);
-            CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerId == p.CustomerOrderID);
+            CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerOrderId == p.CustomerOrderID);
             //r.DateOrdered = p.OrderDate;
             //r.DeliveryReqDate = p.DelveryDate;
             //r.OrderNumber = p.OrderNumber;

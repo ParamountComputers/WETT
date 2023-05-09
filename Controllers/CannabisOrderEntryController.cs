@@ -138,7 +138,7 @@ namespace WETT.Controllers
                     CustomerId = currentCustomer,
                     OrderNumber = currentOrderNumber,
                     DateOrdered = currentDateOrdered,
-                    //DateReceived = currentReceivedDate,
+                    DateReceived = currentReceivedDate,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
                     //CarrierId = currentCarrier,
                     SpecialInstructions = currentSpecialInstructions,
@@ -163,7 +163,7 @@ namespace WETT.Controllers
                 s.CustomerId = currentCustomer;
                 s.OrderNumber = currentOrderNumber;
                 s.DateOrdered = currentDateOrdered;
-                //s.DateReceived = currentReceivedDate;
+                s.DateReceived = currentReceivedDate;
                //s.CarrierId = currentCarrier;
                 s.CustomerOrderStatusId = currentCustomerOrderStatus;
                 s.SpecialInstructions = currentSpecialInstructions;
@@ -205,12 +205,14 @@ namespace WETT.Controllers
         {
             if (CurrentCustomerOrderId != -1)
             {
+                Customer t = _context.Customers.Single(e => e.CustomerId == 1);
                 CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
                 var headerInfo = new
                 {
                     customer = r.CustomerId,
                     orderNumber = r.OrderNumber,
                     dateOrdered = r.DateOrdered.ToShortDateString(),
+                    dateReceived = r.DateReceived,
                     customerOrderStatus = r.CustomerOrderStatusId,
                     carrier = r.CarrierId,
                     driver = r.Driver,
@@ -225,8 +227,15 @@ namespace WETT.Controllers
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
-            //CustomerList r = customerList.Single(x => x.text == li[0]);
-            //currentCustomer = r.value;
+            //customerList = from a in _context.Customers
+            //                   // orderby a.Name
+            //               select new CustomerList
+            //               {
+            //                   value = a.CustomerId,
+            //                   text = a.MbllCustomerNo + " - " + a.Name
+            //               };
+            //CustomerList n = customerList.Single(x => x.text == li[0]);
+            //currentCustomer = n.value;
             currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
             currentOrderNumber = li[1];
             if (li[2] != ""){
@@ -239,8 +248,15 @@ namespace WETT.Controllers
             currentSpecialInstructions = li[4];
             currentSupplierId = (long)Convert.ToDouble(li[5]);
             var mllb = li[0].Split(" ");
-            Customer r = _context.Customers.Single(x => x.MbllCustomerNo == (long)Convert.ToDouble(mllb[0]));
-            currentCustomer = r.CustomerId;
+            customerList = from a in _context.Customers
+                           where a.MbllCustomerNo == (long)Convert.ToDouble(mllb[0])
+                           select new CustomerList
+                           {
+                               value = a.CustomerId,
+                               text = a.MbllCustomerNo + "" //+ " - " + a.Name
+                           };
+            CustomerList r = customerList.Single(x => x.text == mllb[0]);
+            currentCustomer = r.value;
             return Json(true);
             
         }
@@ -262,7 +278,7 @@ namespace WETT.Controllers
         public IActionResult CreateCustomerList()
         {
             customerList = from a in _context.Customers
-                               // orderby a.Name
+                           orderby a.Name
                            select new CustomerList
                            {
                                value = a.CustomerId,

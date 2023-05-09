@@ -34,9 +34,17 @@
         <input type="date" id='shippedDate' class="Date" name="shippedDate" />
     </div>
     <div class="Gap66"></div>
-    @*<select class="form-control basicAutoSelect" name="simple_select"
-            placeholder="type to search..."
-            data-url="CannabisOrderEntry/CreateCustomerList" autocomplete="off"></select>*@
+    <div class="searchDropdown2">
+        <label for="customer" class="Label">Customer:</label>
+        <select class="searchDropdown2 selectpicker" id="test" data-live-search="true">
+@*        <option value="ketchup mustard">Hot Dog, Fries and a Soda</option>
+        <option value="mustard">Burger, Shake and a Smile</option>
+        <option value="frosting">Sugar, Spice and all things nice</option>*@
+    </select>
+    </div>
+
+    @*  <select class="form-control basicAutoSelect" id ="test"name="simple_select" data-url="CannabisOrderEntry/CreateCustomerList"
+            placeholder="type to search..." autocomplete="on"></select>*@
     <div class="searchInput220">
         <label for="customer" class="Label">Customer:</label>
         <input type="text" class="input" id="customer" autocomplete="off" />
@@ -44,7 +52,7 @@
     <div class="Gap2"></div>
     <div class="searchDropdown2">
         <label for="supplier" class="Label">Supplier:</label>
-        <select class="form-control dropDownInput2" id="supplier" name="Supplier"></select>
+        <select class="form-control dropDownInput2" data-live-search="true" id="supplier" name="Supplier"></select>
     </div>
     <div class="searchDropdown">
         <label for="customerOrderStatus" class="Label">Order Status:</label>
@@ -145,11 +153,11 @@
                     zIndex: 99,
                     afterShowForm: function () {
                         var idSelector = $.jgrid.jqID(this.p.id);
+                        var customerTest = $("#test").item;
+                        console.log(customerTest);
                         var customer = $("#customer").val();
                         var isCustomer = false;
                         console.log(customerList);
-                        console.log(customerList.length);
-                        console.log(customerList[0]);
                         for (var i = 0; i < customerList.length; i++) {
                             if (customer == customerList[i]) {
                                         isCustomer = true;
@@ -196,14 +204,19 @@
                 });
 
         });
-        //$("#.basicAutoSelect").autocomplete();
+        //$('.basicAutoSelect').autoComplete({
+        //    minLength: 1,
+        //    autoSelect: true,
+        //    select: function (event, ui) {
+        //        console.log(ui.item.id);
+        //        return false;
+        //    }
+        //});
         $("#customer").autocomplete({
             source: getCustomer()
         });
         $(document).ready(function () {
             $('#dateOrdered').val(date());
-            $('#receivedDate').val(date());
-            $('#shippedDate').val(date());
             $("#receivedDate").prop("readonly", true);
             $("#shippedDate").prop("readonly", true);
         });
@@ -213,14 +226,24 @@
         $("#customerOrderStatus").on('change', function () {
             var customerOrderStatus = $("#customerOrderStatus").val();
             if (customerOrderStatus == 1) {
+                $('#dateOrdered').val(date());
+                $('#receivedDate').val("yy-MM-dd");
+                $('#shippedDate').val("yy-MM-dd");
                 $("#receivedDate").prop("readonly", true);
                 $("#shippedDate").prop("readonly", true);
                 $("#dateOrdered").prop("readonly", false);
+                console.log($('#test').val());
             } else if (customerOrderStatus == 6) {
+                $('#dateOrdered').val(date());
+                $('#receivedDate').val(date());
+                $('#shippedDate').val("yy-MM-dd");
                 $("#receivedDate").prop("readonly", false);
                 $("#shippedDate").prop("readonly", true);
                 $("#dateOrdered").prop("readonly", false);
             } else {
+                $('#dateOrdered').val(date());
+                $('#receivedDate').val(date());
+                $('#shippedDate').val(date());
                 $("#receivedDate").prop("readonly", false);
                 $("#shippedDate").prop("readonly", false);
                 $("#dateOrdered").prop("readonly", false);
@@ -261,6 +284,20 @@
         $(document).ready(function () {
             $.ajax({
                 type: "GET",
+                url: "CannabisOrderEntry/CreateCustomerList",
+                data: "{}",
+                success: function (data) {
+                    console.log("hello");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#test").append('<option value="' + data[i].value + '">' + data[i].text + '</option>');
+                    }
+                    $("#test").selectpicker("refresh");
+                }
+            });
+        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
                 url: "CannabisOrderEntry/SaCode",
                 data: "{}",
                 success: function (data) {
@@ -269,6 +306,7 @@
                         $("#customer").val(data.customer);
                         $('#orderNumber').val(data.orderNumber);
                         $('#dateOrdered').val(data.dateOrdered);
+                        $('#receivedDate').val(data.dateReceived);
                         $('#customerOrderStatus').val(data.customerOrderStatus);
                         $('#specialInstructions').val(data.specialInstructions);
                         $('#supplier').val(data.supplier);

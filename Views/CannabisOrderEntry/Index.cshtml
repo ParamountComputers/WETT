@@ -34,21 +34,16 @@
         <input type="date" id='shippedDate' class="Date" name="shippedDate" />
     </div>
     <div class="Gap66"></div>
-    <div class="searchDropdown2">
+    <div class="searchInput220">
         <label for="customer" class="Label">Customer:</label>
-        <select class="searchDropdown2 selectpicker" id="test" data-live-search="true">
-@*        <option value="ketchup mustard">Hot Dog, Fries and a Soda</option>
-        <option value="mustard">Burger, Shake and a Smile</option>
-        <option value="frosting">Sugar, Spice and all things nice</option>*@
+        <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true">
     </select>
     </div>
-
-    @*  <select class="form-control basicAutoSelect" id ="test"name="simple_select" data-url="CannabisOrderEntry/CreateCustomerList"
-            placeholder="type to search..." autocomplete="on"></select>*@
+@*
     <div class="searchInput220">
         <label for="customer" class="Label">Customer:</label>
         <input type="text" class="input" id="customer" autocomplete="off" />
-    </div>
+    </div>*@
     <div class="Gap2"></div>
     <div class="searchDropdown2">
         <label for="supplier" class="Label">Supplier:</label>
@@ -78,6 +73,7 @@
         var header = false;
         var curRowId = -1;
         var customerList=[];
+        var productList =[];
         $(document).ready(function () {
             $("#CannabisOrderEntry").jqGrid({
                 url: 'CannabisOrderEntry/GetAll',
@@ -120,11 +116,14 @@
                                     source: getProductName($("#supplier").val()), autoFocus: true, minLength: 0, select: function (event, ui) {
                                         $('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
                                         $('input#productSku').val(getProductSku(ui.item.value));
+                                        //$('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productId', getProductSku(ui.item.value));
+                                       // $('input#productId').val(getProductSku(ui.item.value));
                                     }
                                 });
                             }
                         }
                     },
+                    { label: 'Product Code', name: 'productId', hidden: true, editable: true, editoptions: { readonly: 'readonly' }, key: true },
                     { label: 'Product ID', name: 'productSku', fixed: true, width: 125, edittype: 'text', editoptions: { readonly: 'readonly' } },
                     { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: true, edittype: 'text', editrules: { number: true } },
                    // { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
@@ -153,9 +152,8 @@
                     zIndex: 99,
                     afterShowForm: function () {
                         var idSelector = $.jgrid.jqID(this.p.id);
-                        var customerTest = $("#test").item;
+                        var customerTest = $("#customer").val();
                         console.log(customerTest);
-                        var customer = $("#customer").val();
                         var isCustomer = false;
                         console.log(customerList);
                         for (var i = 0; i < customerList.length; i++) {
@@ -212,9 +210,9 @@
         //        return false;
         //    }
         //});
-        $("#customer").autocomplete({
-            source: getCustomer()
-        });
+        //$("#customer").autocomplete({
+        //    source: getCustomer()
+        //});
         $(document).ready(function () {
             $('#dateOrdered').val(date());
             $("#receivedDate").prop("readonly", true);
@@ -289,9 +287,9 @@
                 success: function (data) {
                     console.log("hello");
                     for (var i = 0; i < data.length; i++) {
-                        $("#test").append('<option value="' + data[i].value + '">' + data[i].text + '</option>');
+                        $("#customer").append('<option value="' + data[i].value + '">' + data[i].text + '</option>');
                     }
-                    $("#test").selectpicker("refresh");
+                    $("#customer").selectpicker("refresh");
                 }
             });
         });
@@ -374,7 +372,7 @@
             $.getJSON('CannabisOrderEntry/CreateCustomerList', function (data) {
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
-                        CustomerList[i] = data[i].text;
+                        CustomerList[i] = data[i].value;
                        }
                 }//if
 
@@ -424,7 +422,7 @@
             $.ajaxSetup({ "async": true });
             $.getJSON('CannabisOrderEntry/CreateProductName', function (data) {
                 if (data != null) {
-
+                    productList =data;
 
                     for (var i = 0; i < data.length; i++) {
                      //   if (data[i].supplier == value) {
@@ -436,7 +434,7 @@
             });
             $.ajaxSetup({ "async": true });
 
-
+            //console.log(productList[0].value);
             return ProductNameList;
 
         }

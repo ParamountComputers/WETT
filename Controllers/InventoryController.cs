@@ -45,11 +45,11 @@ namespace WETT.Controllers
                          join b in _context.ProductMasters on a.ProductId equals b.ProductId
                          join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
                          join d in _context.Suppliers on b.SupplierId equals d.SupplierId
-                         join e in _context.ProductRegulatorLiq on a.ProductId equals e.ProductId
+                         join e in _context.ProductRegulatorLiqs on a.ProductId equals e.ProductId
                         select new InventoryViewModel
                          {
                              ProductId = a.ProductId,
-                             ProductName = b.Description,
+                             ProductName = e.Description,
                              ProductSku = e.Sku,
                              Supplier = d.Name,
                              InvLocationId = a.InventoryLocationId,
@@ -98,7 +98,7 @@ namespace WETT.Controllers
             }
 
             var product = await _context.ProductMasters
-                .Include(p => p.Supplier)
+                .Include(p => p.SupplierId)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -227,11 +227,11 @@ namespace WETT.Controllers
                               join b in _context.ProductMasters on a.ProductId equals b.ProductId
                               join c in _context.InventoryLocations on a.InventoryLocationId equals c.InventoryLocationId
                               join d in _context.Suppliers on b.SupplierId equals d.SupplierId
-                              join e in _context.ProductRegulatorLiq on a.ProductId equals e.ProductId
+                              join e in _context.ProductRegulatorLiqs on a.ProductId equals e.ProductId
                               select new InventoryViewModel
                               {
                                   ProductId = a.ProductId,
-                                  ProductName = b.Description,
+                                  ProductName = e.Description,
                                   ProductSku = e.Sku,
                                   Supplier = d.Name,
                                   InvLocationId = a.InventoryLocationId,
@@ -324,19 +324,21 @@ namespace WETT.Controllers
         public IActionResult CreateList()
         {
 
-            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join b in _context.ProductMasters on s.SupplierId equals b.SupplierId
+            var li = from a in _context.ProductMasters
+                     join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                     join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
+                     where b.ActiveFlag == "Y"
                      select new
                      {
-                         text = s.Name,
-                         value = b.Description
+                         text = b.Name,
+                         value = c.Description
 
                      };
             return Json(li);
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductRegulatorLiq
+            var invAdjData = from a in _context.ProductRegulatorLiqs
                              select new
                              {
                                  text = a.Sku,
@@ -347,10 +349,11 @@ namespace WETT.Controllers
         public IActionResult CreateProductName()
         {
             var invAdjData = from a in _context.ProductMasters
+                             join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
                              select new
                              {
                                  value = a.SupplierId,
-                                 text = a.Description
+                                 text = b.Description
                              };
             return Json(invAdjData);
         }

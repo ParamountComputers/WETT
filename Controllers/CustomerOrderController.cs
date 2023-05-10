@@ -42,7 +42,7 @@ namespace WETT.Controllers
             var result = from a in _context.CustomerOrders
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                           join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                          join d in _context.ProductRegulatorLiq on b.ProductId equals d.ProductId
+                                          join d in _context.ProductRegulatorLiqs on b.ProductId equals d.ProductId
                                           where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ"
                          select new CustomerOrderViewModel
                                           {
@@ -50,7 +50,7 @@ namespace WETT.Controllers
                                               CustomerOrderID = a.CustomerOrderId,
                                               ProductID = c.ProductId,
                                               ProductSku = d.Sku,
-                                              ProductDesc = c.Description,
+                                              ProductDesc = d.Description,
                                               StockQty = 0,
                                               QtyOrdered = b.QtyOrdered,
                                               Notes = b.Notes
@@ -64,7 +64,7 @@ namespace WETT.Controllers
             var AllCustomerOrderData = from a in _context.CustomerOrders
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                       join d in _context.ProductRegulatorLiq on b.ProductId equals d.ProductId
+                                       join d in _context.ProductRegulatorLiqs on b.ProductId equals d.ProductId
                                        where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ"
                                        select new CustomerOrderViewModel
                                           {
@@ -72,7 +72,7 @@ namespace WETT.Controllers
                                               CustomerOrderID = a.CustomerOrderId,
                                               ProductID = c.ProductId,
                                               ProductSku = d.Sku,
-                                              ProductDesc = c.Description,
+                                              ProductDesc = d.Description,
                                               StockQty = 0,
                                               QtyOrdered = b.QtyOrdered,
                                               Notes = b.Notes
@@ -113,7 +113,8 @@ namespace WETT.Controllers
         }
         public JsonResult Update(CustomerOrderViewModel p)
         {
-            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+            //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
                 r.ProductId = s.ProductId;
                 r.QtyOrdered = p.QtyOrdered;
@@ -170,7 +171,8 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-            ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+            //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
             CustomerOrderDetail r = new CustomerOrderDetail
             {
                 CustomerOrderId = CurrentCustomerOrderId,
@@ -272,12 +274,13 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
                              where a.LobCode.Trim() == "LIQ" //&& b.SupplierId == currentSupplierId
-                             orderby a.Description
+                             orderby c.Description
                              select new
                              {
                                  label = a.ProductId,
-                                 value = a.Description
+                                 value = c.Description
 
 
                              };
@@ -285,13 +288,12 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductMasters
-                             join b in _context.ProductRegulatorCan on a.ProductId equals b.ProductId
-                             orderby a.Description
+            var invAdjData = from b in _context.ProductRegulatorLiqs
+                             orderby b.Description
                              select new
                              {
                                  text = b.Sku,
-                                 value = a.Description
+                                 value = b.Description
 
                              };
             return Json(invAdjData);
@@ -299,12 +301,13 @@ namespace WETT.Controllers
         public IActionResult CreateStockQtyList()
         {
             var invAdjData = from a in _context.ProductMasters
+                             join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
                              join d in _context.Inventories on a.ProductId equals d.ProductId
                              where d.InventoryLocationId == 1
                              select new
                              {
                                  text = d.Count,
-                                 value = a.Description
+                                 value = c.Description
 
                              };
             return Json(invAdjData);

@@ -33,7 +33,7 @@ namespace WETT.Controllers
                          join e in _context.ProductMasters on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
-                         join h in _context.ProductRegulatorLiq on b.ProductId equals h.ProductId
+                         join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
                          where a.InventoryTxId == InventoryTxCurrentId
                          select new SaStockReceivedViewModel
                          {
@@ -42,7 +42,7 @@ namespace WETT.Controllers
                              SupplierName = f.Name,
                              InventoryTxId = b.InventoryTxId,
                              ProductId = e.ProductId,
-                             ProductName = e.Description,
+                             ProductName = h.Description,
                              InventoryLocationId = d.InventoryLocationId,
                              Amount = b.Amount,
                              Comments = b.Comments,
@@ -64,7 +64,7 @@ namespace WETT.Controllers
                                          join e in _context.ProductMasters on b.ProductId equals e.ProductId
                                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                          join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
-                                         join h in _context.ProductRegulatorLiq on b.ProductId equals h.ProductId
+                                         join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
                                          where a.InventoryTxId == InventoryTxCurrentId
                                          select new SaStockReceivedViewModel
                                          {
@@ -73,7 +73,7 @@ namespace WETT.Controllers
                                              SupplierName = f.Name,
                                              InventoryTxId = b.InventoryTxId,
                                              ProductId = e.ProductId,
-                                             ProductName = e.Description,
+                                             ProductName = h.Description,
                                              InventoryLocationId = d.InventoryLocationId,
                                              Amount = b.Amount,
                                              Comments = b.Comments,
@@ -151,8 +151,9 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-                ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-                InventoryTxDetail r = new InventoryTxDetail
+            //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
+            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            InventoryTxDetail r = new InventoryTxDetail
                 {
                     Comments = p.Comments,
                     ToInventoryLocationId = CurrentToLocation,
@@ -202,7 +203,8 @@ namespace WETT.Controllers
         public JsonResult Update(SaStockReceivedViewModel p)
         {
 
-            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
+            //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
+            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = CurrentToLocation;
             r.ProductId = s.ProductId;
@@ -237,7 +239,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductRegulatorLiq
+            var invAdjData = from a in _context.ProductRegulatorLiqs
                              select new
                              {
                                  text = a.Sku,
@@ -249,10 +251,11 @@ namespace WETT.Controllers
         public IActionResult CreateProductName()
         {
             var invAdjData = from a in _context.ProductMasters
+                             join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
                              select new
                              {
                                  value =a.SupplierId,
-                                 text = a.Description,
+                                 text = b.Description,
 
                              };
             return Json(invAdjData);

@@ -53,9 +53,7 @@ public partial class Customer
 
     public string ContactEmail { get; set; }
 
-    public bool DeletedFlag { get; set; }
-
-    public DateTime? DeletedDate { get; set; }
+    public bool ActiveFlag { get; set; }
 
     public string InsertUserId { get; set; }
 
@@ -68,6 +66,8 @@ public partial class Customer
     public virtual CallFrequency CallFrequency { get; set; }
 
     public virtual Cdo Cdos { get; set; }
+
+    public virtual ICollection<CustomerLob> CustomerLobs { get; } = new List<CustomerLob>();
 
     public virtual ICollection<CustomerOrder> CustomerOrders { get; } = new List<CustomerOrder>();
 

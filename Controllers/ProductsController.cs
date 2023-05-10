@@ -57,24 +57,24 @@ namespace WETT.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var products = from a in _context.ProductMasters
-                           join b in _context.ProductRegulatorLiq on a.ProductId equals b.ProductId
+                           join b in _context.ProductRegulatorCans on a.ProductId equals b.ProductId
                            join c in _context.Suppliers on a.SupplierId equals c.SupplierId
                            select new ProductLiq
                            {
                               
                                ProductId = a.ProductId,
-                               Description= a.Description,
+                               Description= b.Description,
                                SupplierId = a.SupplierId,
                                LobCode = a.LobCode,
                                Sku = b.Sku,
-                               Description2 = b.Description,
-                               SingleWeight = b.SingleWeight,
-                               ContainerWeight = b.ContainerWeight,
-                               CaseWeight = b.CaseWeight,
-                               PackSize = b.PackSize,
-                               HlSingle = b.HlSingle,
-                               HlContainer = b.HlContainer,
-                               HlCase = b.HlCase
+                               Description2 = b.Description2,
+                               //SingleWeight = b.SingleWeight,
+                               //ContainerWeight = b.ContainerWeight,
+                               //CaseWeight = b.CaseWeight,
+                               //PackSize = b.PackSize,
+                               //HlSingle = b.HlSingle,
+                               //HlContainer = b.HlContainer,
+                               //HlCase = b.HlCase
                            };
                             
 
@@ -115,7 +115,7 @@ namespace WETT.Controllers
             }
 
             var product = await _context.ProductMasters
-                .Include(p => p.Supplier)
+                .Include(p => p.SupplierId)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -238,9 +238,9 @@ namespace WETT.Controllers
         }
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.ProductMasters;
+            var wETT_DBContext = _context.ProductRegulatorCans;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var productData = _context.ProductMasters.ToList();
+            var productData = _context.ProductRegulatorCans.ToList();
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -285,7 +285,7 @@ namespace WETT.Controllers
         public JsonResult Update(Product p)
         {
 
-            ProductRegulatorLiq r = _context.ProductRegulatorLiq.Single(e => e.ProductId == p.ProductId);
+            ProductRegulatorLiq r = _context.ProductRegulatorLiqs.Single(e => e.ProductId == p.ProductId);
             //r.SupplierId = p.SupplierId;
             r.Sku = p.Sku;
             r.Description = p.Description;

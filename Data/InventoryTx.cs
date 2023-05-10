@@ -17,6 +17,8 @@ public partial class InventoryTx
 
     public long? SupplierId { get; set; }
 
+    public long? CustomerOrderId { get; set; }
+
     public long? TruckingCompanyId { get; set; }
 
     public long? ShippingLocationId { get; set; }
@@ -44,6 +46,8 @@ public partial class InventoryTx
     public string UpdateUserId { get; set; }
 
     public DateTime UpdateTimestamp { get; set; }
+
+    public virtual CustomerOrder CustomerOrder { get; set; }
 
     public virtual InventoryLocation FromInventoryLocation { get; set; }
 

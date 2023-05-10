@@ -45,7 +45,7 @@ namespace WETT.Controllers
             var result = from a in _context.CustomerOrders
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                         join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
+                         join d in _context.ProductRegulatorCans on b.ProductId equals d.ProductId
                          where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN" //&& c.SupplierId == currentSupplierId
                          select new CustomerOrderViewModel
                          {
@@ -53,7 +53,7 @@ namespace WETT.Controllers
                              CustomerOrderID = a.CustomerOrderId,
                              ProductID = c.ProductId,
                              ProductSku = d.Sku,
-                             ProductDesc = c.Description,
+                             ProductDesc = d.Description,
                              QtyOrdered = b.QtyOrdered,
                              //QtyFulfilled = b.QtyFulfilled,
                              Notes = b.Notes
@@ -67,7 +67,7 @@ namespace WETT.Controllers
             var AllCustomerOrderData = from a in _context.CustomerOrders
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                       join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
+                                       join d in _context.ProductRegulatorCans on b.ProductId equals d.ProductId
                                        where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN" //&& c.SupplierId == currentSupplierId
                                        select new CustomerOrderViewModel
                                        {
@@ -75,7 +75,7 @@ namespace WETT.Controllers
                                            CustomerOrderID = a.CustomerOrderId,
                                            ProductID = c.ProductId,
                                            ProductSku = d.Sku,
-                                           ProductDesc = c.Description,
+                                           ProductDesc = d.Description,
                                            QtyOrdered = b.QtyOrdered,
                                            //QtyFulfilled= b.QtyFulfilled,
                                            Notes = b.Notes
@@ -116,7 +116,7 @@ namespace WETT.Controllers
         }
         public JsonResult Update(CustomerOrderViewModel p)
         {
-            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
             r.ProductId = s.ProductId;
             r.QtyOrdered = p.QtyOrdered;
@@ -171,7 +171,7 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-            ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
+            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
             CustomerOrderDetail r = new CustomerOrderDetail
             {
                 CustomerOrderId = CurrentCustomerOrderId,
@@ -247,16 +247,17 @@ namespace WETT.Controllers
             }
             currentSpecialInstructions = li[4];
             currentSupplierId = (long)Convert.ToDouble(li[5]);
-            var mllb = li[0].Split(" ");
-            customerList = from a in _context.Customers
-                           where a.MbllCustomerNo == (long)Convert.ToDouble(mllb[0])
-                           select new CustomerList
-                           {
-                               value = a.CustomerId,
-                               text = a.MbllCustomerNo + "" //+ " - " + a.Name
-                           };
-            CustomerList r = customerList.Single(x => x.text == mllb[0]);
-            currentCustomer = r.value;
+            currentCustomer = (long)Convert.ToDouble(li[0]);
+            //var mllb = li[0].Split(" ");
+            //customerList = from a in _context.Customers
+            //               where a.MbllCustomerNo == (long)Convert.ToDouble(mllb[0])
+            //               select new CustomerList
+            //               {
+            //                   value = a.CustomerId,
+            //                   text = a.MbllCustomerNo + "" //+ " - " + a.Name
+            //               };
+            //CustomerList r = customerList.Single(x => x.text == mllb[0]);
+            //currentCustomer = r.value;
             return Json(true);
             
         }
@@ -311,12 +312,13 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             join c in _context.ProductRegulatorCans on a.ProductId equals c.ProductId
                              where a.LobCode.Trim() == "CAN" //&& b.SupplierId == currentSupplierId
-                             orderby a.Description
+                             orderby c.Description
                              select new
                              {
                                  label = a.ProductId,
-                                 value = a.Description,
+                                 value = c.Description,
                                  supplier =  b.SupplierId
 
                              };
@@ -324,12 +326,11 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var sku = from a in _context.ProductMasters
-                             join b in _context.ProductRegulatorCan on a.ProductId equals b.ProductId
+            var sku = from a in _context.ProductRegulatorCans
                              orderby a.Description
                              select new
                              {
-                                 text = b.Sku,
+                                 text = a.Sku,
                                  value = a.Description
 
                              };
@@ -339,11 +340,12 @@ namespace WETT.Controllers
         {
             var stkQty = from a in _context.ProductMasters
                              join d in _context.Inventories on a.ProductId equals d.ProductId
-                             where d.InventoryLocationId == 1
+                         join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
+                         where d.InventoryLocationId == 1
                              select new
                              {
                                  text = d.Count,
-                                 value = a.Description
+                                 value = c.Description
 
                              };
             return Json(stkQty);

@@ -15,11 +15,15 @@ public partial class CustomerOrder
 
     public string RegulatorCode { get; set; }
 
+    public long? SupplierId { get; set; }
+
     public string OrderNumber { get; set; }
 
     public DateTime DateOrdered { get; set; }
-    
+
     public DateTime DateReceived { get; set; }
+
+    public DateTime DateShipped { get; set; }
 
     public long CustomerOrderStatusId { get; set; }
 
@@ -31,7 +35,7 @@ public partial class CustomerOrder
 
     public DateTime DeliveryReqDate { get; set; }
 
-    public string? SpecialInstructions { get; set; }
+    public string SpecialInstructions { get; set; }
 
     public string InsertUserId { get; set; }
 
@@ -49,5 +53,9 @@ public partial class CustomerOrder
 
     public virtual CustomerOrderStatus CustomerOrderStatus { get; set; }
 
+    public virtual ICollection<InventoryTx> InventoryTxes { get; } = new List<InventoryTx>();
+
     public virtual OrderSource OrderSource { get; set; }
+
+    public virtual Supplier Supplier { get; set; }
 }

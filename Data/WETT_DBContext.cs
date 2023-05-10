@@ -23,6 +23,8 @@ public partial class WETT_DBContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
+    public virtual DbSet<CustomerLob> CustomerLobs { get; set; }
+
     public virtual DbSet<CustomerOrder> CustomerOrders { get; set; }
 
     public virtual DbSet<CustomerOrderDetail> CustomerOrderDetails { get; set; }
@@ -57,9 +59,9 @@ public partial class WETT_DBContext : DbContext
 
     public virtual DbSet<ProductMaster> ProductMasters { get; set; }
 
-    public virtual DbSet<ProductRegulatorCan> ProductRegulatorCan { get; set; }
+    public virtual DbSet<ProductRegulatorCan> ProductRegulatorCans { get; set; }
 
-    public virtual DbSet<ProductRegulatorLiq> ProductRegulatorLiq { get; set; }
+    public virtual DbSet<ProductRegulatorLiq> ProductRegulatorLiqs { get; set; }
 
     public virtual DbSet<Segment> Segments { get; set; }
 
@@ -206,6 +208,7 @@ public partial class WETT_DBContext : DbContext
             entity.ToTable("Customer");
 
             entity.Property(e => e.CustomerId).HasColumnName("Customer Id");
+            entity.Property(e => e.ActiveFlag).HasColumnName("Active Flag");
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.CallFrequencyId).HasColumnName("Call Frequency Id");
             entity.Property(e => e.CdosId).HasColumnName("CDOS Id");
@@ -227,10 +230,6 @@ public partial class WETT_DBContext : DbContext
                 .HasMaxLength(1)
                 .IsFixedLength()
                 .HasColumnName("Customer Type Code");
-            entity.Property(e => e.DeletedDate)
-                .HasPrecision(0)
-                .HasColumnName("Deleted Date");
-            entity.Property(e => e.DeletedFlag).HasColumnName("Deleted Flag");
             entity.Property(e => e.InsertTimestamp)
                 .HasPrecision(0)
                 .HasColumnName("Insert Timestamp");
@@ -311,6 +310,26 @@ public partial class WETT_DBContext : DbContext
                 .HasConstraintName("FK_Customer_Territory");
         });
 
+        modelBuilder.Entity<CustomerLob>(entity =>
+        {
+            entity.HasKey(e => new { e.CustomerId, e.LobCode });
+
+            entity.ToTable("Customer LOB");
+
+            entity.HasIndex(e => e.CustomerId, "IX_Customer LOB");
+
+            entity.Property(e => e.CustomerId).HasColumnName("Customer Id");
+            entity.Property(e => e.LobCode)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("LOB Code");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.CustomerLobs)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Customer LOB_Customer");
+        });
+
         modelBuilder.Entity<CustomerOrder>(entity =>
         {
             entity.ToTable("Customer Order");
@@ -325,6 +344,9 @@ public partial class WETT_DBContext : DbContext
             entity.Property(e => e.DateReceived)
                 .HasPrecision(0)
                 .HasColumnName("Date Received");
+            entity.Property(e => e.DateShipped)
+                .HasPrecision(0)
+                .HasColumnName("Date Shipped");
             entity.Property(e => e.DeliveryReqDate)
                 .HasColumnType("date")
                 .HasColumnName("Delivery Req Date");
@@ -353,6 +375,7 @@ public partial class WETT_DBContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("Regulator Code");
             entity.Property(e => e.SpecialInstructions).HasColumnName("Special Instructions");
+            entity.Property(e => e.SupplierId).HasColumnName("Supplier Id");
             entity.Property(e => e.UpdateTimestamp)
                 .HasPrecision(0)
                 .HasColumnName("Update Timestamp");
@@ -380,6 +403,10 @@ public partial class WETT_DBContext : DbContext
                 .HasForeignKey(d => d.OrderSourceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer Order_Order Source");
+
+            entity.HasOne(d => d.Supplier).WithMany(p => p.CustomerOrders)
+                .HasForeignKey(d => d.SupplierId)
+                .HasConstraintName("FK_Customer Order_Supplier");
         });
 
         modelBuilder.Entity<CustomerOrderDetail>(entity =>
@@ -529,6 +556,7 @@ public partial class WETT_DBContext : DbContext
             entity.HasIndex(e => e.StockAdjCode, "IX_Stock_Adj_Code").IsUnique();
 
             entity.Property(e => e.InventoryTxId).HasColumnName("Inventory Tx Id");
+            entity.Property(e => e.CustomerOrderId).HasColumnName("Customer Order Id");
             entity.Property(e => e.Date).HasPrecision(0);
             entity.Property(e => e.FromInventoryLocationId).HasColumnName("From Inventory Location Id");
             entity.Property(e => e.InsertTimestamp)
@@ -573,6 +601,10 @@ public partial class WETT_DBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("Update UserId");
+
+            entity.HasOne(d => d.CustomerOrder).WithMany(p => p.InventoryTxes)
+                .HasForeignKey(d => d.CustomerOrderId)
+                .HasConstraintName("FK_Inventory Tx_Customer Order");
 
             entity.HasOne(d => d.FromInventoryLocation).WithMany(p => p.InventoryTxFromInventoryLocations)
                 .HasForeignKey(d => d.FromInventoryLocationId)
@@ -813,7 +845,7 @@ public partial class WETT_DBContext : DbContext
             entity.ToTable("Product Master");
 
             entity.Property(e => e.ProductId).HasColumnName("Product Id");
-            entity.Property(e => e.Description).HasMaxLength(100);
+            entity.Property(e => e.ActiveFlag).HasColumnName("Active Flag");
             entity.Property(e => e.InsertTimestamp).HasColumnName("Insert Timestamp");
             entity.Property(e => e.InsertUserId)
                 .IsRequired()
@@ -832,22 +864,17 @@ public partial class WETT_DBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("Update UserId");
-
-            entity.HasOne(d => d.Supplier).WithMany(p => p.ProductMasters)
-                .HasForeignKey(d => d.SupplierId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Product Master_Supplier");
         });
 
         modelBuilder.Entity<ProductRegulatorCan>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Regulator_CAN");
+            entity.HasKey(e => new { e.ProductId, e.RegulatorCode }).HasName("PK_Product_Regulator_CAN");
 
             entity
                 .ToTable("Product Regulator CAN")
                 .ToTable(tb => tb.IsTemporal(ttb =>
                     {
-                        ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_1101246978", "dbo");
+                        ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_665769429", "dbo");
                         ttb
                             .HasPeriodStart("SysStartTime")
                             .HasColumnName("SysStartTime");
@@ -857,23 +884,30 @@ public partial class WETT_DBContext : DbContext
                     }));
 
             entity.Property(e => e.ProductId).HasColumnName("Product Id");
-            entity.Property(e => e.RetailerCode)
+            entity.Property(e => e.RegulatorCode)
                 .HasMaxLength(4)
                 .IsFixedLength()
-                .HasColumnName("Retailer Code");
+                .HasColumnName("Regulator Code");
+            entity.Property(e => e.ActiveFlag).HasColumnName("Active Flag");
             entity.Property(e => e.Description)
                 .IsRequired()
                 .HasMaxLength(100);
+            entity.Property(e => e.Description2).IsRequired();
             entity.Property(e => e.InsertUserId)
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("Insert UserId");
+            entity.Property(e => e.ProvinceCode)
+                .IsRequired()
+                .HasMaxLength(2)
+                .IsFixedLength()
+                .HasColumnName("Province Code");
             entity.Property(e => e.Sku)
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("SKU");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductRetailerCans)
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductRegulatorCans)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product Regulator CAN_Product Master");
@@ -881,13 +915,13 @@ public partial class WETT_DBContext : DbContext
 
         modelBuilder.Entity<ProductRegulatorLiq>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.RetailerCode }).HasName("PK_Product Regulator_LIQ");
+            entity.HasKey(e => new { e.ProductId, e.RegulatorCode }).HasName("PK_Product Regulator_LIQ");
 
             entity
                 .ToTable("Product Regulator LIQ")
                 .ToTable(tb => tb.IsTemporal(ttb =>
                     {
-                        ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_957246465", "dbo");
+                        ttb.UseHistoryTable("MSSQL_TemporalHistoryFor_777769828", "dbo");
                         ttb
                             .HasPeriodStart("SysStartTime")
                             .HasColumnName("SysStartTime");
@@ -897,10 +931,11 @@ public partial class WETT_DBContext : DbContext
                     }));
 
             entity.Property(e => e.ProductId).HasColumnName("Product Id");
-            entity.Property(e => e.RetailerCode)
+            entity.Property(e => e.RegulatorCode)
                 .HasMaxLength(4)
                 .IsFixedLength()
-                .HasColumnName("Retailer Code");
+                .HasColumnName("Regulator Code");
+            entity.Property(e => e.ActiveFlag).HasColumnName("Active Flag");
             entity.Property(e => e.CaseWeight)
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("Case Weight");
@@ -910,6 +945,7 @@ public partial class WETT_DBContext : DbContext
             entity.Property(e => e.Description)
                 .IsRequired()
                 .HasMaxLength(100);
+            entity.Property(e => e.Description2).IsRequired();
             entity.Property(e => e.HlCase)
                 .HasColumnType("decimal(8, 5)")
                 .HasColumnName("HL Case");
@@ -925,6 +961,11 @@ public partial class WETT_DBContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("Insert UserId");
             entity.Property(e => e.PackSize).HasColumnName("Pack Size");
+            entity.Property(e => e.ProvinceCode)
+                .IsRequired()
+                .HasMaxLength(2)
+                .IsFixedLength()
+                .HasColumnName("Province Code");
             entity.Property(e => e.SingleWeight)
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("Single Weight");
@@ -933,11 +974,11 @@ public partial class WETT_DBContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("SKU");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductRetailerLiqs)
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductRegulatorLiqs)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Product_Product Master");
-            entity.ToTable(tb => tb.HasTrigger("TriggerName"));
+                .HasConstraintName("FK_Product_Regulator_LIQ Product_Master");
+                entity.ToTable(tb => tb.HasTrigger("TriggerName"));
         });
 
         modelBuilder.Entity<Segment>(entity =>
@@ -1021,6 +1062,11 @@ public partial class WETT_DBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("Insert UserId");
+            entity.Property(e => e.LobCode)
+                .IsRequired()
+                .HasMaxLength(3)
+                .IsFixedLength()
+                .HasColumnName("LOB Code");
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(100);

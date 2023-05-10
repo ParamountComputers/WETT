@@ -15,10 +15,16 @@
     width: 210px;
     display: inline-block;
 }
-.selectpicker {
-    width: 280px !important;
+/*.bootstrap-select {
+    width: 100px !important;
     background: #FFF;
     color: #000;
+}*/
+div.dropdown.bootstrap-select.searchDropdown2 {
+    border-width: 1px;
+    text-align: left;
+    width: 110px !important;
+    font-size: 12px;
 }
 .input {
     border: 1px solid black;

@@ -7,11 +7,15 @@ public partial class ProductRegulatorLiq
 {
     public long ProductId { get; set; }
 
-    public string RetailerCode { get; set; }
+    public string RegulatorCode { get; set; }
+
+    public string ProvinceCode { get; set; }
 
     public string Sku { get; set; }
 
     public string Description { get; set; }
+
+    public string Description2 { get; set; }
 
     public decimal SingleWeight { get; set; }
 
@@ -26,6 +30,8 @@ public partial class ProductRegulatorLiq
     public decimal HlContainer { get; set; }
 
     public decimal HlCase { get; set; }
+
+    public bool ActiveFlag { get; set; }
 
     public string InsertUserId { get; set; }
 

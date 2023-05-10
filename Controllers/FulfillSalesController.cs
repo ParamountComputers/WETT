@@ -454,7 +454,7 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
-                             join c in _context.ProductRegulatorLiq on a.ProductId equals c.ProductId
+                             join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
                              select new
                              {
                                  text = c.Sku,
@@ -467,9 +467,11 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                             join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
+                             orderby c.Description
                              select new
                              {
-                                 text = a.Description,
+                                 text = c.Description,
                                  value = b.Name,
                                  id = a.ProductId
 

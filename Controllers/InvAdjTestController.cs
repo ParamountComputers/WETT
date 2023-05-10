@@ -35,18 +35,17 @@ namespace WETT.Controllers
                          join e in _context.ProductMasters on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                         join h in _context.ProductRegulatorLiq on b.ProductId equals h.ProductId 
-                         where a.InventoryTxId == InventoryTxCurrentId 
+                         join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
+                         where a.InventoryTxId == InventoryTxCurrentId
                          select new invAdjViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
                              InventoryTxDetailId = b.InventoryTxDetailId,
-                             
                              ProductSku = h.Sku,
                              SupplierName = f.Name,
                              SupplierId = f.SupplierId,
                              ProductId = e.ProductId,
-                             ProductName = e.Description,
+                             ProductName = h.Description,
                              InventoryLocationId = d.InventoryLocationId,
                              InventoryTxReasonsId = g.InventoryTxReasonId,
                              Amount = b.Amount,
@@ -68,7 +67,7 @@ namespace WETT.Controllers
                                 join e in _context.ProductMasters on b.ProductId equals e.ProductId
                                 join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                 join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
-                                join h in _context.ProductRegulatorLiq on b.ProductId equals h.ProductId
+                                join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
                                 where a.InventoryTxId == InventoryTxCurrentId
                                 select new invAdjViewModel
                                 {
@@ -78,7 +77,7 @@ namespace WETT.Controllers
                                     SupplierName = f.Name,
                                     SupplierId = f.SupplierId,
                                     ProductId = e.ProductId,
-                                    ProductName = e.Description,
+                                    ProductName = h.Description,
                                     InventoryLocationId = d.InventoryLocationId,
                                     InventoryTxReasonsId = g.InventoryTxReasonId,
                                     Amount = b.Amount,
@@ -126,7 +125,7 @@ namespace WETT.Controllers
         public JsonResult Update(invAdjViewModel p)
         {
             //updates the Inventory details to new entries 
-            ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
+            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = p.InventoryLocationId;
             r.ProductId = s.ProductId;
@@ -170,7 +169,8 @@ namespace WETT.Controllers
                 s.UpdateTimestamp = DateTime.Now;
                 _context.SaveChanges();
             }
-            ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
+            //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
+            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
@@ -201,15 +201,15 @@ namespace WETT.Controllers
         }
         public JsonResult SaCode()
         {
-            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-            var headerInfo = new
-            {
-                comments = r.Comments,
-                sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString()
-            };
             if (CurrentSaCode != null)
             {
+                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
+                var headerInfo = new
+                {
+                    comments = r.Comments,
+                    sacode = CurrentSaCode,
+                    date = r.Date.ToShortDateString()
+                };
                 return Json(headerInfo);
             }
             return Json(null);
@@ -231,33 +231,49 @@ namespace WETT.Controllers
         public IActionResult CreateList()
         {
 
+            var li = from a in _context.ProductMasters
+                     join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                     join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
+                     where b.ActiveFlag == "Y"
+                     select new
+                     {
+                         text = b.Name,
+                         value = c.Description
+
+                     };
+            return Json(li);
+        }
+        public IActionResult CreateSupplierList()
+        {
+
             var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
-                     join b in _context.ProductMasters on s.SupplierId equals b.SupplierId
                      select new
                      {
                          text = s.Name,
-                         value = b.Description
+                         value = s.SupplierId
 
                      };
             return Json(li);
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductRegulatorLiq
+            var invAdjData = from a in _context.ProductMasters
+                             join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
                              select new
                              {
-                                 text = a.Sku,
-                                 value = a.Description
+                                 text = b.Sku,
+                                 value = b.Description
                              };
             return Json(invAdjData);
         }
         public IActionResult CreateProductName()
         {
             var invAdjData = from a in _context.ProductMasters
+                             join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
                              select new
                              {
                                  value = a.SupplierId,
-                                 text = a.Description
+                                 text = b.Description
                              };
             return Json(invAdjData);
         }
@@ -283,4 +299,3 @@ namespace WETT.Controllers
         }
     }
 }
-

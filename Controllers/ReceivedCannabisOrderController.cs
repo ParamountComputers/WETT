@@ -37,7 +37,7 @@ namespace WETT.Controllers
                 var result = from a in _context.CustomerOrders
                              join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                              join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                             join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
+                             join d in _context.ProductRegulatorCans on b.ProductId equals d.ProductId
                              where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN"
                              select new CustomerOrderViewModel
                              {
@@ -45,7 +45,7 @@ namespace WETT.Controllers
                                  CustomerOrderID = a.CustomerOrderId,
                                  ProductID = c.ProductId,
                                  ProductSku = d.Sku,
-                                 ProductDesc = c.Description,
+                                 ProductDesc = d.Description,
                               //   StockQty = 0,
                                  QtyOrdered = b.QtyOrdered,
                                  QtyFulfilled= b.QtyFulfilled,
@@ -60,7 +60,7 @@ namespace WETT.Controllers
                 var AllCustomerOrderData = from a in _context.CustomerOrders
                                            join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                            join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                           join d in _context.ProductRegulatorCan on b.ProductId equals d.ProductId
+                                           join d in _context.ProductRegulatorCans on b.ProductId equals d.ProductId
                                            where a.LobCode.Trim() == "CAN" && a.OrderNumber == orderNumber //CurrentCustomerOrderId.ToString()
                                            select new CustomerOrderViewModel
                                            {
@@ -69,7 +69,7 @@ namespace WETT.Controllers
                                                OrderNumber = a.OrderNumber,
                                                ProductID = c.ProductId,
                                                ProductSku = d.Sku,
-                                               ProductDesc = c.Description,
+                                               ProductDesc = d.Description,
                                             //   StockQty = 0,
                                                QtyOrdered = b.QtyOrdered,
                                                QtyFulfilled = b.QtyFulfilled,
@@ -191,18 +191,19 @@ namespace WETT.Controllers
             {
                 var invAdjData = from a in _context.ProductMasters
                                  join b in _context.Suppliers on a.SupplierId equals b.SupplierId
+                                 join c in _context.ProductRegulatorCans on a.ProductId equals c.ProductId
                                  select new
                                  {
                                      label = a.ProductId,
-                                     value = a.Description
+                                     value = c.Description
 
 
                                  };
                 return Json(invAdjData);
             }
-            public IActionResult CreateProductSkuList()
+        public IActionResult CreateProductSkuList()
             {
-                var invAdjData = from a in _context.ProductRegulatorCan
+                var invAdjData = from a in _context.ProductRegulatorCans
                                  select new
                                  {
                                      text = a.Sku,
@@ -215,11 +216,12 @@ namespace WETT.Controllers
             {
                 var invAdjData = from a in _context.ProductMasters
                                  join d in _context.Inventories on a.ProductId equals d.ProductId
+                                 join c in _context.ProductRegulatorCans on a.ProductId equals c.ProductId
                                  where d.InventoryLocationId == 1
                                  select new
                                  {
                                      text = d.Count,
-                                     value = a.Description
+                                     value = c.Description
 
                                  };
                 return Json(invAdjData);

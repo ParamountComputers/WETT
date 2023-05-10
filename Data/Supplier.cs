@@ -9,6 +9,8 @@ public partial class Supplier
 
     public string SupplierCode { get; set; }
 
+    public string LobCode { get; set; }
+
     public string Name { get; set; }
 
     public string Address1 { get; set; }
@@ -47,7 +49,7 @@ public partial class Supplier
 
     public string ActiveFlag { get; set; }
 
-    public virtual ICollection<InventoryTx> InventoryTxes { get; } = new List<InventoryTx>();
+    public virtual ICollection<CustomerOrder> CustomerOrders { get; } = new List<CustomerOrder>();
 
-    public virtual ICollection<ProductMaster> ProductMasters { get; } = new List<ProductMaster>();
+    public virtual ICollection<InventoryTx> InventoryTxes { get; } = new List<InventoryTx>();
 }

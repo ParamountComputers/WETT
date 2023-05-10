@@ -1,0 +1,403 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "CustomerOrder";
+}
+
+<div class="text-center">
+    <h2 class="display-4">Customer Order</h2>
+</div>
+<body>
+   <div class="searchDate">
+      <label for="dateOrdered" class="Label" >Date Ordered:</label>
+      <input type="date"id='dateOrdered' class="Date" name="dateOrdered" />
+   </div>
+   <div class="searchDate">
+      <label for="deliveryReqDate" class="Label" >Delivery Req:</label>
+      <input type="date"id='deliveryReqDate' class="Date" name="deliveryReqDate" />
+  </div>
+  <div class="searchDropdown"> 
+      <label for="customerOrderStatus"  class="Label">Order Status:</label>
+      <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select> 
+  </div>
+  <div class="searchDropdown"> 
+      <label for="customer"  class="Label">Customer:</label>
+      <select class="form-control dropDownInput" id="customer" name="Customer"></select> 
+  </div>
+  <div></div>
+  <div class="searchDropdown"> 
+      <label for="carrier"  class="Label">Carrier:</label>
+      <select class="form-control dropDownInput" id="carrier" name="Carrier"></select> 
+  </div>
+  <div class="searchInput">
+         <label class="Label" for="specialInstructions">Special Notes:</label>
+         <input type="text" class="input" id="specialInstructions"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="orderNumber">Order #:</label>
+         <input type="text" class="input" id="orderNumber"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="driver">Driver:</label>
+         <input type="text" class="input" id="driver"/>
+    </div>
+    <div class="searchInput">
+         <label class="Label" for="dsSlipNumber">DS Slip Number:</label>
+         <input type="text" class="input" id="dsSlipNumber"/>
+    </div>
+</body>
+<table id="customerOrder"></table>
+<div id="jqGridPager"></div>
+<fieldset class="scheduler-border">
+ <div class="mb-3 row">
+    <div class="col-lg-12">
+          <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="newPage" type="button"> New Page </button>  
+    </div>
+ </div>
+</fieldset>
+@section scripts {
+
+<script type="text/javascript">
+
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+     $.jgrid.defaults.responsive = true;
+    var header = false;
+    var curRowId = -1;
+    $(document).ready(function() {
+       $("#customerOrder").jqGrid({
+               url: 'CustomerOrder/GetAll',
+               mtype: "GET",
+               guiStyle: "bootstrap",
+               iconSet: "fontAwesome",
+               idPrefix: "gb1_",
+               datatype: "json",
+               ajaxSelectOptions: {
+                          type: "GET", 
+                          contentType: 'application/json; charset=utf-8',
+                          dataType: "json",
+                          cache: false,
+                      },
+               autowidth:true,
+               colModel: [
+                   {
+                        label: "Edit Actions",
+                        name: "actions",
+                        width: 100,
+                        formatter: "actions",
+                        fixed:true,
+                        formatoptions: {
+                            keys: true,
+                            editOptions: { },
+                            addOptions: { },
+                            delOptions: { url: 'CustomerOrder/Delete' }
+                        }
+                    },
+                   { label: 'Customer Order Detail Id',name: 'customerOrderDetailID', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Customer Order Id',name: 'customerOrderID', hidden:true,editable: true,editoptions: { readonly: 'readonly'}},
+                   { label: 'Product Desc',name: 'productDesc',fixed:true,width:150,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
+                    editoptions: { 
+                    dataInit: function(elem) {
+                    curRowId = $('#customerOrder').getGridParam('selrow');   
+                    $(elem).select();
+                    $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
+                    $('#customerOrder').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
+                    $('input#productSku').val(getProductSku(ui.item.value));  
+                    $('#customerOrder').jqGrid('setCell',curRowId,'stockQty',getProductSku(ui.item.value));
+                    $('input#stockQty').val(getStockQty(ui.item.value)); 
+                    } });   
+                    }
+                   }},
+                   { name: 'productId',hidden:true,  editoptions: { readonly: 'readonly' }, key: true },
+                   { label: 'Product ID(SKU)',name: 'productSku',fixed:true,width:125,edittype:'text', editoptions: {readonly: 'readonly'}},
+                   { label: 'Stock Qty',name: 'stockQty',fixed:true,width:100, editable: true,edittype:'text',editoptions: {readonly: 'readonly'}},
+                   { label: 'Qty Ordered',name: 'qtyOrdered',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                  // { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
+                   { label: 'Notes',name: 'notes', editable: true,fixed:true,width:450,edittype:'text'}
+                                                                                            
+                 ], 
+               viewrecords: true,
+               height: 388.5,
+               rowHeight: 20,
+               rowNum: 15,
+               pager: "#jqGridPager",
+               editurl: 'CustomerOrder/Update',              
+
+           })
+               
+
+
+
+           $('#customerOrder').navGrid('#jqGridPager',
+               // the buttons to appear on the toolbar of the grid
+               { edit: false,add:true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+              
+               {
+                  
+               },
+               {
+              zIndex:99,
+              afterShowForm: function () {
+              var idSelector = $.jgrid.jqID(this.p.id);
+              //if(header==false) {
+              //$.jgrid.hideModal("#editmod" + idSelector, {gbox: "#gbox_" + idSelector});
+              //alert("Error: Need Header");
+              //}
+              },
+               //onclickSubmit: function (){
+               //},
+               afterSubmit:function(){
+               },
+               beforeSubmit :function (){
+               var customer = $("#customer").val();
+               var orderNumber = $("#orderNumber").val();
+               var dateOrdered = $("#dateOrdered").val();
+               var customerOrderStatus = $("#customerOrderStatus").val();
+               var driver = $("#driver").val();
+               var dsSlipNumber = $("#dsSlipNumber").val();
+               var deliveryReqDate = $("#deliveryReqDate").val();
+               var specialInstructions = $("#specialInstructions").val();
+               var carrier = $("#carrier").val();
+               $.getJSON('CustomerOrder/CreateHeader?data='+customer+'/'+orderNumber+'/'+dateOrdered+'/'+customerOrderStatus+'/'+driver+'/'+dsSlipNumber+'/'+deliveryReqDate+'/'+specialInstructions+'/'+carrier, function(){});
+               $.ajaxSetup( { "async": true } );
+               },
+               closeAfterAdd: true,
+               recreateForm: true,
+               errorTextFormat: function (data) {
+                      return 'Error: ' + data.responseText
+                   },
+                   url: 'CustomerOrder/Add'
+               });
+               
+       });
+       $(document).ready(function () {  
+           $('#dateOrdered').val(date());
+            $('#deliveryReqDate').val(date());
+       });
+      
+       $('#customerOrder').setGridWidth(parseInt($(window).width()) - 20); 
+       $("#newPage").on('click', function () {
+           window.location.replace("CustomerOrder");
+       });
+        $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "CustomerOrder/CreateCustomerList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#customer").html(s);    
+           }  
+       });  
+   });
+           $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "CustomerOrder/CreateCarrierList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#carrier").html(s);    
+           }  
+       });  
+   });
+           $(document).ready(function () {  
+       $.ajax({  
+           type: "GET",  
+           url: "CustomerOrder/CreatetCustomerOrderStatusList",  
+           data: "{}",  
+           success: function (data) {  
+               var s = '';  
+               for (var i = 0; i < data.length; i++) {  
+                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
+               }  
+               $("#customerOrderStatus").html(s);    
+           }  
+       });  
+   });
+       $(document).ready(function () {  
+           $.ajax({  
+               type: "GET",  
+               url: "CustomerOrder/SaCode",  
+               data: "{}",  
+               success: function (data) {  
+                   if(data!=null)
+                   {
+                      header= true;
+                      $("#customer").val(data.customer);
+                      $('#orderNumber').val(data.orderNumber);
+                      $('#dateOrdered').val(data.dateOrdered);
+                      $('#customerOrderStatus').val(data.customerOrderStatus);
+                      $('#driver').val(data.driver);
+                      $('#carrier').val(data.carrier);
+                      $('#dsSlipNumber').val(data.dsSlipNumber);
+                      $('#deliveryReqDate').val(data.deliveryReqDate);
+                      $('#specialInstructions').val(data.specialInstructions);
+                   }
+               }  
+           });  
+       });
+        function date()
+        {
+         var date;
+         var currentDate = new Date();
+         var day = ("0" + currentDate.getDate()).slice(-2);
+         var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+         var today = currentDate.getFullYear() + "-" + (month) + "-" + (day);
+         date = today.toString();
+         return date;
+        }
+                      function IsProduct(value,colname)
+       {
+           var containsProduct = false;
+                   $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreateProductName', function(data) {
+        if (data != null) {
+
+
+            for (var i = 0; i < data.length; i++) 
+            {
+         if(value== data[i].value)
+         {
+             
+           containsProduct = true;
+               
+         }
+            }
+         }//if
+
+            });
+            if(containsProduct==true)
+            {
+              $.ajaxSetup( { "async": true } );
+              return [true,""];
+            }
+            else{
+            $.ajaxSetup( { "async": true } );
+            return [false,"Please Enter Valid Product"];
+            }
+
+      }
+
+
+       function getCarrier() {
+        var CarrierList= {};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreateCarrierList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+             CarrierList[data[i].value]=data[i].text;
+                 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+
+           return CarrierList; 
+
+        }
+                 function getCustomer() {
+        var CustomerList= {};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreatetCustomerList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+             CustomerList[data[i].value]=data[i].text;
+                 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            console.log(CustomerList);
+           return CustomerList; 
+
+        }
+                 function getCustomerOrderStatus() {
+        var CustomerOrderStatusList= {};
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreatetCustomerOrderStatusList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+             CustomerOrderStatusList[data[i].value]=data[i].text;
+                 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+
+           return CustomerOrderStatusList; 
+
+        }
+                      function getProductSku(value) {
+        var ProductSku ="";
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreateProductSkuList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+                if(data[i].value== value)
+                {
+
+             ProductSku=data[i].text;
+                } 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return ProductSku.toString(); 
+
+        }
+         function getProductName() {
+         var ProductNameList= [];
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreateProductName', function(data) {
+        if (data != null) {
+
+
+            for (var i = 0; i < data.length; i++) 
+            {
+                ProductNameList[i]=data[i].value;
+            }
+         }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+            
+
+           return ProductNameList; 
+
+        }
+        function getStockQty(value) {
+        var StockQty ="";
+        $.ajaxSetup( { "async": false } );
+        $.getJSON('CustomerOrder/CreateStockQtyList', function(data) {
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+                if(data[i].value== value)
+                {
+
+             StockQty=data[i].text;
+                } 
+              }
+            }//if
+
+            });
+            $.ajaxSetup( { "async": true } );
+           return StockQty; 
+
+        }
+
+</script>
+}
+
+<div>Graph API result</div>
+<div>@ViewData["GraphApiResult"]</div>

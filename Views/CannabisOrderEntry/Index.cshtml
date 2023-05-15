@@ -36,8 +36,7 @@
     <div class="Gap66"></div>
     <div class="searchInput220">
         <label for="customer" class="Label">Customer:</label>
-        <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true">
-    </select>
+        <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
     </div>
 @*
     <div class="searchInput220">
@@ -47,7 +46,7 @@
     <div class="Gap2"></div>
     <div class="searchDropdown2">
         <label for="supplier" class="Label">Supplier:</label>
-        <select class="form-control dropDownInput2" data-live-search="true" id="supplier" name="Supplier"></select>
+        <select class="form-control dropDownInput2"  id="supplier" name="Supplier"></select>
     </div>
     <div class="searchDropdown">
         <label for="customerOrderStatus" class="Label">Order Status:</label>
@@ -74,6 +73,8 @@
         var curRowId = -1;
         var customerList=[];
         var productList =[];
+        var productIdList = [];
+        var currProduct;
         $(document).ready(function () {
             $("#CannabisOrderEntry").jqGrid({
                 url: 'CannabisOrderEntry/GetAll',
@@ -107,27 +108,30 @@
                     { label: 'Customer Order Detail Id', name: 'customerOrderDtlsID', hidden: true, editable: true, editoptions: { readonly: 'readonly' }, key: true },
                     { label: 'Customer Order Id', name: 'customerOrderID', hidden: true, editable: true, editoptions: { readonly: 'readonly' } },
                     {
-                        label: 'Product Desc', name: 'productDesc', fixed: true, width: 150, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
+                        label: 'Product Desc', name: 'productDesc', fixed: true, width: 300, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
                         editoptions: {
                             dataInit: function (elem) {
                                 curRowId = $('#CannabisOrderEntry').getGridParam('selrow');
                                 $(elem).select();
+                                name=$("#supplier").val();
                                 $(elem).autocomplete({
-                                    source: getProductName($("#supplier").val()), autoFocus: true, minLength: 0, select: function (event, ui) {
-                                        $('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productSku', getProductSku(ui.item.value));
-                                        $('input#productSku').val(getProductSku(ui.item.value));
-                                        //$('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productId', getProductSku(ui.item.value));
-                                       // $('input#productId').val(getProductSku(ui.item.value));
+                                    source: getProductName(), autoFocus: true, minLength: 0, select: function (event, ui) {
+                                       // $('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productID', getProductList(ui.item.value));
+                                        $('input#productID').val(getProductList(ui.item.value));
+                                        //$("#CannabisOrderEntry").jqGrid('setColProp', 'productSku', { editable: false });
+                                       // $("#CannabisOrderEntry").setCell(curRowId, 'productSku', getProductSku(ui.item.value));
+                                   
                                     }
+
                                 });
                             }
                         }
                     },
-                    { label: 'Product Code', name: 'productId', hidden: true, editable: true, editoptions: { readonly: 'readonly' }, key: true },
-                    { label: 'Product ID', name: 'productSku', fixed: true, width: 125, edittype: 'text', editoptions: { readonly: 'readonly' } },
-                    { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: true, edittype: 'text', editrules: { number: true } },
+                   // { label: 'Product Sku', name: 'productSku',editable: true, fixed: true, editype: 'text', width: 125, edittype: 'text', editoptions: { readonly: 'readonly' }},
+                   { label: 'Product ID', name: 'productID', editable: true, hidden:true,editype: 'text', editoptions: { readonly: 'readonly' } },
+                    { label: 'Qty Ordered', name: 'qtyOrdered', fixed: true, width: 100, editable: true, edittype: 'text'},//, editrules: { number: true } },
                    // { label: 'Qty Fulfilled',name: 'qtyFulfilled',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
-                    { label: 'Notes', name: 'notes', editable: true, fixed: true, width: 450, edittype: 'text' }
+                    { label: 'Notes', name: 'notes', editable: true, fixed: true, width: 500, edittype: 'text' }
 
                 ],
                 viewrecords: true,
@@ -135,6 +139,14 @@
                 rowHeight: 20,
                 rowNum: 15,
                 pager: "#jqGridPager",
+                onCellSelect: function(rowid, icol, cellcontent, e) { 
+                alert("hello");
+                },
+                //serializeRowData: function(){
+                //    //$('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productID', getProductList(currProduct));
+                //   // $("#CannabisOrderEntry").setCell(curRowId, 'productSku', getProductSku(currProduct));
+                //    alert("before save");
+                //},
                 editurl: 'CannabisOrderEntry/Update',
 
             });
@@ -146,16 +158,13 @@
                 { edit: false, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
 
                 {
-
                 },
                 {
                     zIndex: 99,
                     afterShowForm: function () {
                         var idSelector = $.jgrid.jqID(this.p.id);
-                        var customerTest = $("#customer").val();
-                        console.log(customerTest);
+                        var customer = $("#customer").val();
                         var isCustomer = false;
-                        console.log(customerList);
                         for (var i = 0; i < customerList.length; i++) {
                             if (customer == customerList[i]) {
                                         isCustomer = true;
@@ -198,6 +207,7 @@
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
                     },
+
                     url: 'CannabisOrderEntry/Add'
                 });
 
@@ -217,6 +227,7 @@
             $('#dateOrdered').val(date());
             $("#receivedDate").prop("readonly", true);
             $("#shippedDate").prop("readonly", true);
+            var test =getCustomer();
         });
         $("#newPage").on('click', function () {
             window.location.replace("CannabisOrderEntry");
@@ -285,7 +296,6 @@
                 url: "CannabisOrderEntry/CreateCustomerList",
                 data: "{}",
                 success: function (data) {
-                    console.log("hello");
                     for (var i = 0; i < data.length; i++) {
                         $("#customer").append('<option value="' + data[i].value + '">' + data[i].text + '</option>');
                     }
@@ -322,6 +332,7 @@
             return date;
         }
         function IsProduct(value, colname) {
+            //////////////////////////////////////////////////////////////////////////pass supplier list lower product list size//////////////////////////////////////////////////////////////////////////////
             var containsProduct = false;
             $.ajaxSetup({ "async": false });
             $.getJSON('CannabisOrderEntry/CreateProductName', function (data) {
@@ -368,8 +379,10 @@
         //}
         function getCustomer() {
             var CustomerList = [];
-            $.ajaxSetup({ "async": true });
+            var List = [];
+            $.ajaxSetup({ "async": false });
             $.getJSON('CannabisOrderEntry/CreateCustomerList', function (data) {
+                
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
                         CustomerList[i] = data[i].value;
@@ -378,7 +391,7 @@
 
             });
             $.ajaxSetup({ "async": true });
-            customerList= CustomerList;
+            customerList = CustomerList;
             return CustomerList;
 
         }
@@ -417,24 +430,54 @@
             return ProductSku.toString();
 
         }
-        function getProductName(value) {
-            var ProductNameList = [];
-            $.ajaxSetup({ "async": true });
+        function getProductList(value) {
+            var ProductList ="" ;
+            $.ajaxSetup({ "async": false });
             $.getJSON('CannabisOrderEntry/CreateProductName', function (data) {
                 if (data != null) {
-                    productList =data;
-
                     for (var i = 0; i < data.length; i++) {
-                     //   if (data[i].supplier == value) {
-                            ProductNameList[i] = data[i].value;
-                     //   }
+                        if (data[i].value == value) {
+                            ProductList = data[i].label;
+                        }
                     }
                 }//if
 
             });
             $.ajaxSetup({ "async": true });
+            return ProductList.toString();
 
-            //console.log(productList[0].value);
+        }
+        ////function getProductList(value) {
+        ////    var isProduct = false;
+        ////    var productId ="";
+        ////    for(var i=0; i<productList.length;i++){
+        ////        if (productList[i] == value) {
+        ////            productId = productIdList[i];
+        ////        }
+        ////    }
+        ////    return productId.toString();
+
+        ////}
+        function getProductName() {
+            var ProductNameList = [];
+            //must be false if wanted to run sequentially
+            $.ajaxSetup({ "async": false });
+            $.getJSON('CannabisOrderEntry/CreateProductName', function (data) {
+                if (data != null) {
+                    productList =data;
+                    var count=0;
+                    for (var i = 0; i < data.length; i++) {
+                        if (name == data[i].supplier) {
+                            ProductNameList[count] = data[i].value;
+                            productIdList[count]= data[i].label;
+                            count++;
+                        }
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+            productList = ProductNameList;
             return ProductNameList;
 
         }

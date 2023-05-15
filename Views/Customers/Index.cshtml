@@ -9,15 +9,15 @@
     <h4 class="display-5">Maintain Customers</h4>
 </div>
 <body>
+    <div class="Notes">
+        <label for="customerName" class="Label">Customer Name:</label>
+      <input type="text" class="NotesInput" id="customerName" name="customerName"/>
+  </div>
+    <div class="Gap2"></div>
     <div class="searchDropdown2">
-        <label for="lob" class="Label">Line Of business:</label>
+        <label for="lob" class="Label">Line Of buss:</label>
         <select class="form-control dropDownInput2" id="lob" name="lob"></select>
     </div>
-    <div class="gap66"></div>
-    <div class="searchInput"> 
-      <label for="customerName" class="Label" >Customer Name:</label>
-      <input type="text" class="input" id="customerName" name="customerName"/>
-  </div>
 </body>
 <table id="customers"></table>
 <div id="jqGridPager"></div>
@@ -113,6 +113,12 @@
            SearchBySupplierName();
        });
 
+        $(document).ready(function () {
+                    var s = '';
+                    s += '<option value="0"> Liquor </option>';
+                    s += '<option value="1"> Cannabis </option>';
+            $("#lob").html(s);
+        });
     function SearchBySupplierName()
     {
         //  Fetch the text from our <input> control

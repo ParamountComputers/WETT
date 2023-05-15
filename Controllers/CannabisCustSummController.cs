@@ -85,8 +85,8 @@ namespace WETT.Controllers
                     {
                         if (SupplierIDVar != -1)
                         {
-                            // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar && x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
-                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
+                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar && x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
+                            //CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum && x.CustomerID == CustomerIDVar);
                         }
                         else
                         {
@@ -97,8 +97,8 @@ namespace WETT.Controllers
                     {
                         if (SupplierIDVar != -1)
                         {
-                            // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar &&  x.CustomerID == CustomerIDVar);
-                            CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.CustomerID == CustomerIDVar);
+                             CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar &&  x.CustomerID == CustomerIDVar);
+                            //CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.CustomerID == CustomerIDVar);
                         }
                         else
                         {
@@ -111,8 +111,8 @@ namespace WETT.Controllers
                 {
                     if (SupplierIDVar != -1)
                     {
-                        // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar && x.OrderNumber == OrderNum );
-                        CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum);
+                        CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar && x.OrderNumber == OrderNum );
+                        //CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.OrderNumber == OrderNum);
                     }
                     else
                     {
@@ -121,7 +121,7 @@ namespace WETT.Controllers
                 }
                 else if (SupplierIDVar != -1)
                 {
-                   // CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar);
+                    CanCustomerSummaryData = CanCustomerSummaryData.Where(x => x.SupplierID == SupplierIDVar);
                 }
             }
 

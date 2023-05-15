@@ -170,12 +170,12 @@ namespace WETT.Controllers
                 _context.SaveChanges();
             }
             //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+           // ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
                 ToInventoryLocationId = p.InventoryLocationId,
-                ProductId = c.ProductId,
+                ProductId = p.ProductId,
                 Amount = p.Amount,
                 InventoryTxId = InventoryTxCurrentId,
                 InventoryTxReasonId = p.InventoryTxReasonsId,

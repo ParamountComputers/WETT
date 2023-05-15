@@ -68,7 +68,7 @@ namespace WETT.Controllers
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
                                        join d in _context.ProductRegulatorCans on b.ProductId equals d.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN" //&& c.SupplierId == currentSupplierId
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN"  //&& c.SupplierId == currentSupplierId
                                        select new CustomerOrderViewModel
                                        {
                                            CustomerOrderDtlsID = b.CustomerOrderDetailId,
@@ -116,9 +116,10 @@ namespace WETT.Controllers
         }
         public JsonResult Update(CustomerOrderViewModel p)
         {
-            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
+            var a = p.ProductDesc.Split(" ");
+            ProductRegulatorCan c = _context.ProductRegulatorCans.Single(b => b.Sku == a[0]);
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
-            r.ProductId = s.ProductId;
+            r.ProductId = c.ProductId;
             r.QtyOrdered = p.QtyOrdered;
             r.QtyFulfilled = p.QtyFulfilled;
             r.Notes = p.Notes;
@@ -171,11 +172,10 @@ namespace WETT.Controllers
                 s.UpdateUserId = User.Identity.Name;
                 _context.SaveChanges();
             }
-            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
             CustomerOrderDetail r = new CustomerOrderDetail
             {
                 CustomerOrderId = CurrentCustomerOrderId,
-                ProductId = c.ProductId,
+                ProductId = p.ProductID,
                 QtyOrdered = p.QtyOrdered,
                 QtyFulfilled= p.QtyFulfilled,
                 Notes = p.Notes,
@@ -203,6 +203,7 @@ namespace WETT.Controllers
         }
         public JsonResult SaCode()
         {
+            ////////////////////////////////////////////////must fix to work with status
             if (CurrentCustomerOrderId != -1)
             {
                 Customer t = _context.Customers.Single(e => e.CustomerId == 1);
@@ -310,19 +311,19 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.ProductMasters
+            var ProductList = from a in _context.ProductMasters
                              join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                              join c in _context.ProductRegulatorCans on a.ProductId equals c.ProductId
-                             where a.LobCode.Trim() == "CAN" //&& b.SupplierId == currentSupplierId
+                             where a.LobCode.Trim() == "CAN"  && a.ActiveFlag == true//&& b.SupplierId == currentSupplierId
                              orderby c.Description
                              select new
                              {
-                                 label = a.ProductId,
-                                 value = c.Description,
+                                 label = c.ProductId,
+                                 value = c.Sku + " - " +c.Description,
                                  supplier =  b.SupplierId
 
                              };
-            return Json(invAdjData);
+            return Json(ProductList);
         }
         public IActionResult CreateProductSkuList()
         {

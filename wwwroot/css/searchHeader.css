@@ -1,4 +1,7 @@
-﻿.searchDate {
+﻿button.btn.dropdown-toggle.btn-light {
+    font-size: 12px !important;
+}
+.searchDate {
     width:210px;
     display: inline-block;
 }
@@ -24,7 +27,7 @@ div.dropdown.bootstrap-select.searchDropdown2 {
     border-width: 1px;
     text-align: left;
     width: 110px !important;
-    font-size: 12px;
+
 }
 .input {
     border: 1px solid black;
@@ -52,6 +55,8 @@ div.dropdown.bootstrap-select.searchDropdown2 {
     width: 230px;
     display: inline-block;
 }
+
+
 .searchInput3 {
     width: 150px;
     display: inline-block;
@@ -90,12 +95,17 @@ div.dropdown.bootstrap-select.searchDropdown2 {
     width: 45px;
     display: inline-block;
 }
+
 .Gap3 {
     width: 80px;
     display: inline-block;
 }
 .Gap41 {
     width: 115px;
+    display: inline-block;
+}
+.Gap42 {
+    width: 100px;
     display: inline-block;
 }
 .Gap4 {
@@ -118,6 +128,7 @@ div.dropdown.bootstrap-select.searchDropdown2 {
     width: 240px;
     display: inline-block;
 }
+
 .Notes {
     width: 425px;
     display: inline-block;

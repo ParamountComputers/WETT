@@ -141,10 +141,12 @@ namespace WETT.Controllers
                     DateOrdered = currentDateOrdered,
                     DateReceived = currentReceivedDate,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
+                    SupplierId= currentSupplierId,
                     //CarrierId = currentCarrier,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
                     LobCode = "CAN",
+                    RegulatorCode = "MBLL",
                     OrderSourceId = 1,
                     CarrierId = 1,
                     InsertTimestamp = DateTime.Now,
@@ -212,12 +214,10 @@ namespace WETT.Controllers
                     customer = r.CustomerId,
                     orderNumber = r.OrderNumber,
                     dateOrdered = r.DateOrdered.ToShortDateString(),
-                    dateReceived = r.DateReceived,
+                    dateReceived = r.DateReceived.ToShortDateString(),
+                    supplier= r.SupplierId,
+                    shippedDate = r.DateShipped.ToShortDateString(),    
                     customerOrderStatus = r.CustomerOrderStatusId,
-                    carrier = r.CarrierId,
-                    driver = r.Driver,
-                    dsSlipNumber = r.DsSlipNumber,
-                    deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
                     specialInstructions = r.SpecialInstructions,
                 };
                 return Json(headerInfo);

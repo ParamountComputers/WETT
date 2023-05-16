@@ -69,7 +69,6 @@
 
         $.jgrid.defaults.styleUI = 'Bootstrap';
         $.jgrid.defaults.responsive = true;
-        var header = false;
         var curRowId = -1;
         var customerList=[];
         var productList =[];
@@ -218,7 +217,7 @@
             $('#dateOrdered').val(date());
             $("#receivedDate").prop("readonly", true);
             $("#shippedDate").prop("readonly", true);
-            var test =getCustomer();
+            var test = getCustomer();
         });
         $("#newPage").on('click', function () {
             window.location.replace("CannabisOrderEntry");
@@ -301,14 +300,22 @@
                 data: "{}",
                 success: function (data) {
                     if (data != null) {
-                        header = true;
                         $("#customer").val(data.customer);
                         $('#orderNumber').val(data.orderNumber);
-                        $('#dateOrdered').val(data.dateOrdered);
-                        $('#receivedDate').val(data.dateReceived);
                         $('#customerOrderStatus').val(data.customerOrderStatus);
                         $('#specialInstructions').val(data.specialInstructions);
                         $('#supplier').val(data.supplier);
+                        if(data.customerOrderStatus==1) {
+                            $('#receivedDate').val(data.dateReceived);
+                        } else if (data.customerOrderStatus) {
+                            $('#receivedDate').val(data.dateReceived);
+                            $('#dateOrdered').val(data.dateOrdered);
+                        } else if (data.customerOrderStatus) {
+                            $('#shippedDate').val(data.shippedDate);
+                            $('#dateOrdered').val(data.dateOrdered);
+                            $('#receivedDate').val(data.dateReceived);
+                        }
+                        
                     }
                 }
             });

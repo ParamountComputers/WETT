@@ -27,7 +27,7 @@ namespace WETT.Controllers
         //GET: Products
          public async Task<IActionResult> Index()
         {
-            currentLob="";
+            currentLob="LIQ";
             var wETT_DBContext = _context.Suppliers.Where(a => a.ActiveFlag == "Y");
             return View(await wETT_DBContext.ToListAsync());
         }
@@ -46,11 +46,7 @@ namespace WETT.Controllers
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
 
-            var supplierData = (_context.Suppliers.Where(a=> a.ActiveFlag=="Y")).ToList();
-            if (currentLob != "")
-            {
-                supplierData = supplierData.Where(a => a.LobCode.Trim() ==currentLob).ToList();
-            }
+            var supplierData = (_context.Suppliers.Where(a=> a.ActiveFlag=="Y" && a.LobCode.Trim() == currentLob)).ToList();
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -153,15 +149,10 @@ namespace WETT.Controllers
         }
         public IActionResult SelectLob(string data)
         {
-            if (data == "-1")
-            {
-                currentLob = "";
-            } else if (data == "0")
-            {
+            if (data == "0") {
                 currentLob = "LIQ";
             }
-            else
-            {
+            else {
                 currentLob = "CAN";
             }
 

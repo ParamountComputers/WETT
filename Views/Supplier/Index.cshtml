@@ -108,6 +108,7 @@
                $.ajaxSetup( { "async": false } );
                $.getJSON('Supplier/SelectLob?data=' + currentLob, function () { });
                $.ajaxSetup( { "async": true } ); 
+               $("#supplier").trigger("reloadGrid");
         });
 
     function SearchBySupplierName()

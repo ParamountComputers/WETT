@@ -9,10 +9,15 @@
     <h4 class="display-5">Maintain Suppliers</h4>
 </div>
 <body>
-    <div class="searchInput2"> 
-      <label for="supplierName" class="Label" >Supplier Name:</label>
-      <input type="text" class="input2" id="supplierName" name="supplierName"/>
-  </div>
+    <div class="Notes">
+        <label for="supplierName" class="Label">Supplier Name:</label>
+        <input type="text" class="NotesInput" id="supplierName" name="supplierName" />
+    </div>
+    <div class="Gap2"></div>
+    <div class="searchDropdown2">
+        <label for="lob" class="Label">Line Of buss:</label>
+        <select class="form-control dropDownInput2" id="lob" name="lob"></select>
+    </div>
 </body>
 <table id="supplier"></table>
 <div id="jqGridPager"></div>
@@ -88,11 +93,22 @@
 
        });
         
-        $('#supplier').setGridWidth(60);
-
+        $('#supplier').setGridWidth(60);         
        $("#supplierName").on('change keyup paste', function () {
            SearchBySupplierName();
        });
+      $(document).ready(function () {
+                    var s = '';
+                    s += '<option value="0"> Liquor </option>';
+                    s += '<option value="1"> Cannabis </option>';
+            $("#lob").html(s);
+        });
+        $("#lob").on('change', function () {
+            var currentLob = $("#lob").val();
+               $.ajaxSetup( { "async": false } );
+               $.getJSON('Supplier/SelectLob?data=' + currentLob, function () { });
+               $.ajaxSetup( { "async": true } ); 
+        });
 
     function SearchBySupplierName()
     {

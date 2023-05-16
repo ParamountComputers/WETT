@@ -52,8 +52,8 @@ namespace WETT.Controllers
                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
                              CustomerOrderID = a.CustomerOrderId,
                              ProductID = c.ProductId,
-                             ProductSku = d.Sku,
-                             ProductDesc = d.Description,
+                             //ProductSku = d.Sku,
+                             ProductDesc = d.Sku +" - "+ d.Description,
                              QtyOrdered = b.QtyOrdered,
                              //QtyFulfilled = b.QtyFulfilled,
                              Notes = b.Notes
@@ -74,8 +74,8 @@ namespace WETT.Controllers
                                            CustomerOrderDtlsID = b.CustomerOrderDetailId,
                                            CustomerOrderID = a.CustomerOrderId,
                                            ProductID = c.ProductId,
-                                           ProductSku = d.Sku,
-                                           ProductDesc = d.Description,
+                                          // ProductSku = d.Sku,
+                                           ProductDesc = d.Sku + " - " + d.Description,
                                            QtyOrdered = b.QtyOrdered,
                                            //QtyFulfilled= b.QtyFulfilled,
                                            Notes = b.Notes
@@ -206,7 +206,6 @@ namespace WETT.Controllers
             ////////////////////////////////////////////////must fix to work with status
             if (CurrentCustomerOrderId != -1)
             {
-                Customer t = _context.Customers.Single(e => e.CustomerId == 1);
                 CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
                 var headerInfo = new
                 {

@@ -34,11 +34,6 @@
         <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
     </div>
    <div class="Gap42"></div>
-    @*     <div class="searchInput">
-        <label class="Label" for="orderNumber">Order #:</label>
-        <input type="text" class="input" id="orderNumber" />
-    </div>
-    <div class="Gap41"></div>*@
       <div class="searchDropdown2">
            <label for="supplier" class="Label">Supplier:</label>
            <select class="form-control dropDownInput2" id="supplier" name="Supplier"></select>
@@ -96,45 +91,44 @@
                     },
                    { label: 'Customer Order Id',name: 'customerOrderID',hidden:true, editable: true,key: true},
                     {
-                        label: 'Order Date', name: 'orderDate', fixed: true, width: 120, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { readonly: 'readonly' }
+                        label: 'Order Date', name: 'orderDate', fixed: true, width: 120, formatter: 'date', formatoptions: { newformat: 'Y-m-d' },  editable: true
                     },
                   // { label: 'Delivery Date',name: 'delveryDate',fixed:true,width:120,editoptions: { readonly: 'readonly'}},
                    { label: 'LOB', name: 'lobCode', fixed: true, width: 100, editoptions: { readonly: 'readonly' } },
                    { label: 'Order Number',name: 'orderNumber',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
-                   { label: 'Customer',name: 'customer',fixed:true,width:150,editoptions: { readonly: 'readonly'}},
+                   { label: 'Customer',name: 'customer',fixed:true,width:200,editoptions: { readonly: 'readonly'}},
                    { label: 'City',name: 'city',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
                   // { label: 'Carrier',name: 'carrier',fixed:true,width:100,editoptions: { readonly: 'readonly'}},
-                   { label: 'Instructions',name: 'instructions',fixed:true,width:280,edittype:'text', editable: true},
-                   { label: 'Status',name: 'status',fixed:true,width:100,editoptions: { readonly: 'readonly'}}
+                    { label: 'Instructions', name: 'instructions', fixed: true, width: 280, edittype: 'text', editable: true },
+                    { label: 'Status', name: 'orderStatusId', fixed: true, width: 100, editable: true, edittype: "select", editrules: { required: true }, formatter: 'select', editoptions: { value: getStatus() } },
 
 
-                 ],  
-               viewrecords: true,
-               height: 388.5,
-               rowHeight: 20,
-               rowNum: 15,
-               pager: "#jqGridPager",
+                ],
+                viewrecords: true,
+                height: 388.5,
+                rowHeight: 20,
+                rowNum: 15,
+                pager: "#jqGridPager",
                 editurl: 'CannabisCustSumm/Update',
-                ondblClickRow: function(rowid) {
-                var cellVal = $('#CanCustomerSummary').jqGrid ('getCell', rowid, 'customerOrderID');
-                var LOBVal = $('#CanCustomerSummary').jqGrid('getCell', rowid, 'lobCode');
-                if (LOBVal == "LIQ       ") {
-                    window.open("CustomerOrder?CustomerOrderID=" + cellVal);
-                }
+                ondblClickRow: function (rowid) {
+                    var cellVal = $('#CanCustomerSummary').jqGrid('getCell', rowid, 'customerOrderID');
+                    var LOBVal = $('#CanCustomerSummary').jqGrid('getCell', rowid, 'lobCode');
+                    if (LOBVal == "LIQ       ") {
+                        window.open("CustomerOrder?CustomerOrderID=" + cellVal);
+                    }
                     else if (LOBVal == "CAN       ") {
-                    window.open("CannabisOrderEntry?CustomerOrderID=" + cellVal);
+                        window.open("CannabisOrderEntry?CustomerOrderID=" + cellVal);
+                    }
+                    // window.open("CustomerOrder?CustomerOrderID=" + LOBVal + cellVal);
+
                 }
-                  // window.open("CustomerOrder?CustomerOrderID=" + LOBVal + cellVal);
-                console.log(cellVal);
 
-               }
-
-           })
+            })
                
 
 
 
-           $('#CanCustomerSummary').navGrid('#jqGridPager',
+           $('#CannabisCustSumm').navGrid('#jqGridPager',
                // the buttons to appear on the toolbar of the grid
                { edit: false,add:false, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
               
@@ -194,7 +188,7 @@
             $(document).ready(function () {
                 $.ajax({
                     type: "GET",
-                    url: "CannabisOrderEntry/CreateCustomerList",
+                    url: "CannabisCustSumm/CreateCustomerList",
                     data: "{}",
                     success: function (data) {
                         $("#customer").append('<option value="-1">Customers...</option>');
@@ -281,7 +275,7 @@
             {
                 alert("Error: Enter A End Date");
             }
-    $('#CanCustomerSummary').setGridParam({ page: 1 }).trigger("reloadGrid");
+            $('#CanCustomerSummary').setGridParam({ page: 1 }).trigger("reloadGrid");
 
     }
 
@@ -339,6 +333,22 @@
         //   return ReasonsList; 
 
         //}
+        function getStatus() {
+            var StatusList = {};
+            alert("test");
+            $.ajaxSetup({ "async": false });
+            $.getJSON('CannabisCustSumm/CreateStatusList', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        StatusList[data[i].value] = data[i].text;
+
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+            return StatusList;
+        }
 
 </script>
 }

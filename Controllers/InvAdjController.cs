@@ -288,13 +288,13 @@ namespace WETT.Controllers
         }
         public IActionResult CreateReasonsList()
         {
-            var invAdjData = from a in _context.InventoryTxReasons
+            var Reasons = from a in _context.InventoryTxReasons
                              select new
                              {
                                  value = a.InventoryTxReasonId,
                                  text = a.Description
                              };
-            return Json(invAdjData);
+            return Json(Reasons);
         }
     }
 }

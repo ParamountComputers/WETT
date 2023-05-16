@@ -46,7 +46,8 @@ namespace WETT.Controllers
                              SupplierID = -1,
                              City = b.City,
                              Instructions = a.SpecialInstructions,
-                             Status = c.Description
+                            // Status = c.Description,
+                             OrderStatusId = c.CustomerOrderStatusId
 
 
                          };
@@ -71,7 +72,8 @@ namespace WETT.Controllers
                              SupplierID = -1,
                              City = b.City,
                              Instructions = a.SpecialInstructions,
-                             Status = c.Description
+                             //Status = c.Description,
+                             OrderStatusId = c.CustomerOrderStatusId
 
 
                          };
@@ -155,7 +157,7 @@ namespace WETT.Controllers
         {
             //Customer s = _context.Customers.Single(a => a.Name == p.Customer);
             CustomerOrder r = _context.CustomerOrders.Single(a => a.CustomerOrderId == p.CustomerOrderID);
-            //r.DateOrdered = p.OrderDate;
+             r.DateOrdered = p.OrderDate;
             //r.DeliveryReqDate = p.DelveryDate;
             //r.OrderNumber = p.OrderNumber;
             //r.CustomerId = s.CustomerId;
@@ -198,28 +200,28 @@ namespace WETT.Controllers
 
         public IActionResult CreateStatusList()
         {
-            var invAdjData = from a in _context.CustomerOrderStatuses
+            var orderStatus = from a in _context.CustomerOrderStatuses
                              select new
                              {
                                  value = a.CustomerOrderStatusId,
                                  text = a.Description
                              };
-            return Json(invAdjData);
+            return Json(orderStatus);
         }
         public IActionResult CreateCustomerList()
         {
-            var invAdjData = from a in _context.Customers
+            var customer = from a in _context.Customers
                              orderby a.Name
                              select new
                              {
                                  value = a.CustomerId,
                                  text = a.Name
                              };
-            return Json(invAdjData);
+            return Json(customer);
         }
         public IActionResult CreateSupplierList()
         {
-            var invAdjData = from a in _context.Suppliers
+            var Supplier = from a in _context.Suppliers
                              where a.ActiveFlag == "Y"
                              orderby a.Name
                              select new
@@ -228,7 +230,7 @@ namespace WETT.Controllers
                                  text = a.Name
 
                              };
-            return Json(invAdjData);
+            return Json(Supplier);
         }
     }
 }

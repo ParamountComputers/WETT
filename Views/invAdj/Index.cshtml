@@ -136,6 +136,7 @@
                //onclickSubmit: function (){
                //},
                afterSubmit:function(){
+                        $.ajaxSetup({ "async": false });
                 $.getJSON('InvAdj/DisplaySACode', function(data){
                 $("#saCode").val(data);
                 });
@@ -144,6 +145,7 @@
                beforeSubmit :function (){
                var currentDate = $("#date").val();
                var notes = $("#comments").val();
+               $.ajaxSetup( { "async": false } );
                $.getJSON('InvAdj/CreateHeader?data='+currentDate+'/'+notes, function(){});
                $.ajaxSetup( { "async": true } );
                },

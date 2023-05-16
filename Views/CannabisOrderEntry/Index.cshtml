@@ -119,8 +119,7 @@
                                        // $('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productID', getProductList(ui.item.value));
                                         $('input#productID').val(getProductList(ui.item.value));
                                         //$("#CannabisOrderEntry").jqGrid('setColProp', 'productSku', { editable: false });
-                                       // $("#CannabisOrderEntry").setCell(curRowId, 'productSku', getProductSku(ui.item.value));
-                                   
+                                       // $("#CannabisOrderEntry").setCell(curRowId, 'productSku', getProductSku(ui.item.value));                                   
                                     }
 
                                 });
@@ -139,14 +138,6 @@
                 rowHeight: 20,
                 rowNum: 15,
                 pager: "#jqGridPager",
-                onCellSelect: function(rowid, icol, cellcontent, e) { 
-                alert("hello");
-                },
-                //serializeRowData: function(){
-                //    //$('#CannabisOrderEntry').jqGrid('setCell', curRowId, 'productID', getProductList(currProduct));
-                //   // $("#CannabisOrderEntry").setCell(curRowId, 'productSku', getProductSku(currProduct));
-                //    alert("before save");
-                //},
                 editurl: 'CannabisOrderEntry/Update',
 
             });
@@ -430,6 +421,7 @@
             return ProductSku.toString();
 
         }
+        //sets product Id
         function getProductList(value) {
             var ProductList ="" ;
             $.ajaxSetup({ "async": false });
@@ -478,6 +470,7 @@
             });
             $.ajaxSetup({ "async": true });
             productList = ProductNameList;
+
             return ProductNameList;
 
         }

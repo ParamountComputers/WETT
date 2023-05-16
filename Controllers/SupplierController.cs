@@ -7,12 +7,14 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace WETT.Controllers
 {
     public class SupplierController : Controller
     {
         private Supplier db = new Supplier();
+        public static string currentLob;
 
         //ty add
         private readonly WETT_DBContext _context;
@@ -25,7 +27,8 @@ namespace WETT.Controllers
         //GET: Products
          public async Task<IActionResult> Index()
         {
-            var wETT_DBContext = _context.Suppliers;
+            currentLob="";
+            var wETT_DBContext = _context.Suppliers.Where(a => a.ActiveFlag == "Y");
             return View(await wETT_DBContext.ToListAsync());
         }
 
@@ -42,7 +45,12 @@ namespace WETT.Controllers
         {
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
+
             var supplierData = (_context.Suppliers.Where(a=> a.ActiveFlag=="Y")).ToList();
+            if (currentLob != "")
+            {
+                supplierData = supplierData.Where(a => a.LobCode.Trim() ==currentLob).ToList();
+            }
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -132,6 +140,7 @@ namespace WETT.Controllers
         public JsonResult Add(Supplier s)
         {
             s.ActiveFlag = "Y";
+            s.LobCode = currentLob;
             s.InsertTimestamp = DateTime.Now;
             s.InsertUserId = User.Identity.Name;
             s.UpdateTimestamp = DateTime.Now;
@@ -139,6 +148,22 @@ namespace WETT.Controllers
 
             _context.Suppliers.Add(s);
             _context.SaveChanges();
+
+            return Json(true);
+        }
+        public IActionResult SelectLob(string data)
+        {
+            if (data == "-1")
+            {
+                currentLob = "";
+            } else if (data == "0")
+            {
+                currentLob = "LIQ";
+            }
+            else
+            {
+                currentLob = "CAN";
+            }
 
             return Json(true);
         }

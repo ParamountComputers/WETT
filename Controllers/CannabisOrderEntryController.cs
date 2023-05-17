@@ -193,11 +193,18 @@ namespace WETT.Controllers
             _context.SaveChanges();
 
             return Json(true);
+
         }
         public JsonResult Delete(int id)
         {
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
             _context.CustomerOrderDetails.Remove(r);
+            _context.SaveChanges();
+            if (_context.CustomerOrderDetails.Where(w => w.CustomerOrderId.Equals(r.CustomerOrderId)).Any()== false) {
+                CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == r.CustomerOrderId);
+                CurrentCustomerOrderId = -1;
+                _context.CustomerOrders.Remove(s);
+            }
             _context.SaveChanges();
 
 

@@ -214,7 +214,7 @@ namespace WETT.Controllers
                              orderby a.Name
                              select new
                              {
-                                 value = a.CustomerId,
+                                 value = a.MbllCustomerNo + " - " + a.CustomerId,
                                  text = a.Name
                              };
             return Json(customer);

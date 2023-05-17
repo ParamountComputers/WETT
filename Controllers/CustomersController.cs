@@ -23,7 +23,7 @@ namespace WETT.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var wETT_DBContext = _context.Customers.Where(w=>w.ActiveFlag== false);
+            var wETT_DBContext = _context.Customers.Where(w=>w.ActiveFlag== true);
             return View(await wETT_DBContext.ToListAsync());
         }
 
@@ -31,7 +31,7 @@ namespace WETT.Controllers
         {
             var wETT_DBContext = _context.Customers;
 
-            var customerData = (_context.Customers.Where(w => w.ActiveFlag == false)).ToList(); 
+            var customerData = (_context.Customers.Where(w => w.ActiveFlag == true)).ToList(); 
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -100,13 +100,14 @@ namespace WETT.Controllers
         {
             Customer r = _context.Customers.Single(e => e.CustomerId == id);
             //r.DeletedDate= DateTime.Today;
-            r.ActiveFlag = true;
+            r.ActiveFlag = false;
             _context.SaveChanges();
             return Json(true);
         }
 
         public JsonResult Add(Customer s)
         {
+            s.ActiveFlag = true;
             s.InsertUserId = User.Identity.Name;
             s.InsertTimestamp = DateTime.Now;
             s.UpdateUserId = User.Identity.Name;

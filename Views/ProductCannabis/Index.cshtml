@@ -119,9 +119,8 @@
 
         function getSupplierNames() {
           var SupplierList= {};
-
         $.ajaxSetup( { "async": false } );
-        $.getJSON('ProductCannabis/CreateList', function(data) {
+            $.getJSON('ProductCannabis/CreateSupplierList', function (data) {
         if (data != null) {
             for (var i = 0; i < data.length; i++) {
              SupplierList[data[i].value]=data[i].text;
@@ -131,6 +130,7 @@
             });
             $.ajaxSetup( { "async": true } );
            return SupplierList; 
+           
 
         }
 

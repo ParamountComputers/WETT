@@ -337,6 +337,7 @@
                 data: "{}",
                 success: function (data) {
                     if (data != null) {
+                        alert("Shipped " + data.shippedDate + "Ordered" + data.dateOrdered + "Received " + data.dateReceived);
                         $("#customer").val(data.customer);
                         $("#customer").selectpicker("refresh");
                         $('#orderNumber').val(data.orderNumber);

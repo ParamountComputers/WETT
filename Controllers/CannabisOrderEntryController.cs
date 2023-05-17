@@ -217,14 +217,16 @@ namespace WETT.Controllers
             {
                 CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
                 var DateOrdered = (r.DateOrdered).ToString().Split(" ");
+                var DateShipped = (r.DateShipped).ToString().Split(" ");
+                var DateReceived = (r.DateReceived).ToString().Split(" ");
                 var headerInfo = new
                 {
                     customer = r.CustomerId,
                     orderNumber = r.OrderNumber,
                     dateOrdered = DateOrdered[0],
-                    dateReceived = r.DateReceived.ToShortDateString(),
+                    dateReceived = DateReceived[0],
                     supplier= r.SupplierId,
-                    shippedDate = r.DateShipped.ToShortDateString(),    
+                    shippedDate = DateShipped[0],    
                     customerOrderStatus = r.CustomerOrderStatusId,
                     specialInstructions = r.SpecialInstructions,
                 };

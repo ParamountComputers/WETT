@@ -9,51 +9,52 @@
     <h4 class="display-5">Cannabis Order Entry</h4>
 </div>
 <body>
-<div id="searchHeader">
-    <div class="searchDate">
-        <label for="dateOrdered" class="Label">Date Ordered:</label>
-        <input type="date" id='dateOrdered' class="Date" name="dateOrdered" />
+    <div id="searchHeader">
+        <div class="searchDropdown2">
+            <label for="supplier" class="Label">Supplier:</label>
+            <select class="form-control dropDownInput2" id="supplier" name="Supplier"></select>
+        </div>
+        <div></div>
+        <div class="searchDate">
+            <label for="dateOrdered" class="Label">Date Ordered:</label>
+            <input type="date" id='dateOrdered' class="Date" name="dateOrdered" />
+        </div>
+        <div class="Gap66"></div>
+        <div class="searchDate">
+            <label for="receivedDate" class="Label">Received Date:</label>
+            <input type="date" id='receivedDate' class="Date" name="receivedDate" />
+        </div>
+        <div class="Gap66"></div>
+        <div class="searchDate">
+            <label for="shippedDate" class="Label">Shipped Date:</label>
+            <input type="date" id='shippedDate' class="Date" name="shippedDate" />
+        </div>
+        <div class="Gap66"></div>
+        <div class="searchDropdown">
+            <label for="customerOrderStatus" class="Label">Order Status:</label>
+            <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
+        </div>
+        <div></div>
+        <div class="searchInput220">
+            <label class="Label" for="orderNumber">Order #:</label>
+            <input type="text" class="input" id="orderNumber" />
+        </div>
+        <div class="Gap67"></div>
+        <div class="searchInput220">
+            <label for="customer" class="Label">Customer:</label>
+            <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
+        </div>
+        <div class="Gap67"></div>
+        <div class="searchInput220">
+            <label class="Label" for="probill">probill #:</label>
+            <input type="text" class="input" id="probill" />
+        </div>
+        <div class="Gap66"></div>
+        <div class="searchInput220">
+            <label class="Label" for="specialInstructions">Special Notes:</label>
+            <input type="text" class="input" id="specialInstructions" />
+        </div>
     </div>
-    <div class="Gap66"></div>
-    <div class="searchDate">
-        <label for="receivedDate" class="Label">Received Date:</label>
-        <input type="date" id='receivedDate' class="Date" name="receivedDate" />
-    </div>
-    <div class="Gap66"></div>
-    <div class="searchInput220">
-        <label class="Label" for="orderNumber">Order #:</label>
-        <input type="text" class="input" id="orderNumber" />
-    </div>
-    <div class="Gap2"></div>
-    <div class="searchInput220">
-        <label class="Label" for="specialInstructions">Special Notes:</label>
-        <input type="text" class="input" id="specialInstructions" />
-    </div>
-    <div></div>
-    <div class="searchDate">
-        <label for="shippedDate" class="Label">Shipped Date:</label>
-        <input type="date" id='shippedDate' class="Date" name="shippedDate" />
-    </div>
-    <div class="Gap66"></div>
-    <div class="searchInput220">
-        <label for="customer" class="Label">Customer:</label>
-        <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
-    </div>
-@*
-    <div class="searchInput220">
-        <label for="customer" class="Label">Customer:</label>
-        <input type="text" class="input" id="customer" autocomplete="off" />
-    </div>*@
-    <div class="Gap2"></div>
-    <div class="searchDropdown2">
-        <label for="supplier" class="Label">Supplier:</label>
-        <select class="form-control dropDownInput2"  id="supplier" name="Supplier"></select>
-    </div>
-    <div class="searchDropdown">
-        <label for="customerOrderStatus" class="Label">Order Status:</label>
-        <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select>
-    </div>
-</div>
 </body>
 <table id="CannabisOrderEntry"></table>
 <div id="jqGridPager"></div>

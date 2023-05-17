@@ -223,10 +223,10 @@ namespace WETT.Controllers
                 {
                     customer = r.CustomerId,
                     orderNumber = r.OrderNumber,
-                    dateOrdered = DateOrdered[0],
-                    dateReceived = DateReceived[0],
-                    supplier= r.SupplierId,
-                    shippedDate = DateShipped[0],    
+                    dateOrdered = r.DateOrdered.ToString("yyyy-MM-dd"),
+                    dateReceived = r.DateReceived.ToString("yyyy-MM-dd"),
+                    supplier = r.SupplierId,
+                    shippedDate = r.DateShipped.ToString("yyyy-MM-dd"),    
                     customerOrderStatus = r.CustomerOrderStatusId,
                     specialInstructions = r.SpecialInstructions,
                 };

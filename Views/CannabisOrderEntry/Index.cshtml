@@ -10,10 +10,6 @@
 </div>
 <body>
     <div id="searchHeader">
-        <div class="searchDropdown2">
-            <label for="supplier" class="Label">Supplier:</label>
-            <select class="form-control dropDownInput2" id="supplier" name="Supplier"></select>
-        </div>
         <div></div>
         <div class="searchDate">
             <label for="dateOrdered" class="Label">Date Ordered:</label>
@@ -39,21 +35,26 @@
             <label class="Label" for="orderNumber">Order #:</label>
             <input type="text" class="input" id="orderNumber" />
         </div>
-        <div class="Gap67"></div>
-        <div class="searchInput220">
-            <label for="customer" class="Label">Customer:</label>
-            <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
-        </div>
-        <div class="Gap67"></div>
-        <div class="searchInput220">
+
+@*        <div class="searchInput220">
             <label class="Label" for="probill">probill #:</label>
             <input type="text" class="input" id="probill" />
-        </div>
-        <div class="Gap66"></div>
+        </div>*@
+        <div class="Gap55"></div>
         <div class="searchInput220">
             <label class="Label" for="specialInstructions">Special Notes:</label>
             <input type="text" class="input" id="specialInstructions" />
         </div>
+        <div class="Gap55"></div>
+        <div class="searchInput220">
+            <label for="customer" class="Label">Customer:</label>
+            <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
+        </div>
+        <div class="Gap56"></div>
+        <div class="searchDropdown">
+        <label for="supplier" class="Label">Supplier:</label>
+        <select class="form-control dropDownInput" id="supplier" name="supplier"></select>
+    </div>
     </div>
 </body>
 <table id="CannabisOrderEntry"></table>
@@ -338,7 +339,6 @@
                 data: "{}",
                 success: function (data) {
                     if (data != null) {
-                        alert("Shipped " + data.shippedDate + "Ordered" + data.dateOrdered + "Received " + data.dateReceived);
                         $("#customer").val(data.customer);
                         $("#customer").selectpicker("refresh");
                         $('#orderNumber').val(data.orderNumber);

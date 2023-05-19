@@ -121,7 +121,11 @@ div.dropdown.bootstrap-select.searchDropdown2 {
     display: inline-block;
 }
 .Gap55 {
-    width: 55px;
+    width: 45px;
+    display: inline-block;
+}
+.Gap56 {
+    width: 42px;
     display: inline-block;
 }
 .Gap6 {

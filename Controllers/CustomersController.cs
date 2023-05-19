@@ -23,6 +23,7 @@ namespace WETT.Controllers
 
         public async Task<IActionResult> Index()
         {
+
             var wETT_DBContext = _context.Customers.Where(w=>w.ActiveFlag== true);
             return View(await wETT_DBContext.ToListAsync());
         }
@@ -41,10 +42,13 @@ namespace WETT.Controllers
                 {
                     switch (rule.field)
                     {
+                        //case "LOB":
+                        //    customerData = customerData.Where(w => w.Name.Contains("")).ToList();
+                        //    break;
                         case "name":
                             customerData = customerData.Where(w => w.Name.Contains(rule.data)).ToList();
-
                             break;
+                       
                     }
                 }
 
@@ -75,21 +79,35 @@ namespace WETT.Controllers
             return Json(jsonData);
         }
 
-        public JsonResult Update(Supplier s)
+        public JsonResult Update(Customer s)
         {
-
-            Supplier r = _context.Suppliers.Single(e => e.SupplierId == s.SupplierId);
-            r.SupplierCode = s.SupplierCode;
+            Customer r = _context.Customers.Single(e => e.CustomerId == s.CustomerId);
+            r.CustomerTypeCode = s.CustomerTypeCode;
+            r.CustomerSourceId = s.CustomerSourceId;
+            r.CallFrequencyId = s.CallFrequencyId;
+            r.TerritoryId = s.TerritoryId;
+            r.SegmentId = s.SegmentId;
+            r.CdosId = s.CdosId;
+            r.MbllCustomerNo = s.MbllCustomerNo;
+            r.LicenceNumber = s.LicenceNumber;
+            r.CustomerStatusCode = s.CustomerStatusCode;
             r.Name = s.Name;
-            r.Address1 = s.Address1;
-            r.Address2 = s.Address2;
+            r.Address =  s.Address;
             r.City = s.City;
             r.Province = s.Province;
             r.PostalCode = s.PostalCode;
-            r.GeneralPhone = s.GeneralPhone;
-            r.Contact1Name = s.Contact1Name;
-            r.UpdateUserId = User.Identity.Name;
+            r.Country = s.Country;
+            r.ContactName = s.ContactName;
+            r.Phone1Type = s.Phone1Type;
+            r.Phone1 = s.Phone1;
+            r.Phone2Type = s.Phone2Type;
+            r.Phone2 = s.Phone2;
+            r.Phone3Type = s.Phone3Type;
+            r.Phone3 = s.Phone3;
+            r.ContactEmail = s.ContactEmail;
+            r.ActiveFlag = true;
             r.UpdateTimestamp = DateTime.Now;
+            r.UpdateUserId = User.Identity.Name;
             _context.SaveChanges();
 
 
@@ -167,5 +185,6 @@ namespace WETT.Controllers
                              };
             return Json(invAdjData);
         }
+
     }
 }

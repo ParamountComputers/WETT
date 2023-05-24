@@ -25,9 +25,9 @@ namespace WETT.Controllers
 
 
         //GET: Products
-         public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            currentLob="LIQ";
+            currentLob = "LIQ";
             var wETT_DBContext = _context.Suppliers.Where(a => a.ActiveFlag == "Y");
             return View(await wETT_DBContext.ToListAsync());
         }
@@ -46,7 +46,7 @@ namespace WETT.Controllers
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
 
-            var supplierData = (_context.Suppliers.Where(a=> a.ActiveFlag=="Y" && a.LobCode.Trim() == currentLob)).ToList();
+            var supplierData = (_context.Suppliers.Where(a => a.ActiveFlag == "Y" && a.LobCode.Trim() == currentLob)).ToList();
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -61,7 +61,7 @@ namespace WETT.Controllers
                             break;
                     }
                 }
-            
+
             int totalRecords = supplierData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
             int currentPageIndex = request.page - 1;
@@ -92,10 +92,10 @@ namespace WETT.Controllers
         public JsonResult Update(Supplier s)
         {
 
-            Supplier r= _context.Suppliers.Single(e => e.SupplierId == s.SupplierId);
+            Supplier r = _context.Suppliers.Single(e => e.SupplierId == s.SupplierId);
             r.SupplierCode = s.SupplierCode;
             r.Name = s.Name;
-            r.Address1= s.Address1;
+            r.Address1 = s.Address1;
             r.Address2 = s.Address2;
             r.City = s.City;
             r.Province = s.Province;
@@ -111,8 +111,8 @@ namespace WETT.Controllers
             return Json(true);
         }
 
-         public JsonResult Delete(int id)
-         {
+        public JsonResult Delete(int id)
+        {
             Supplier r = _context.Suppliers.Single(e => e.SupplierId == id);
             r.ActiveFlag = "N";
             _context.SaveChanges();
@@ -135,14 +135,42 @@ namespace WETT.Controllers
 
         public JsonResult Add(Supplier s)
         {
-            s.ActiveFlag = "Y";
-            s.LobCode = currentLob;
-            s.InsertTimestamp = DateTime.Now;
-            s.InsertUserId = User.Identity.Name;
-            s.UpdateTimestamp = DateTime.Now;
-            s.UpdateUserId = User.Identity.Name;
+            if (_context.Suppliers.Where(w => w.SupplierCode.Equals(s.SupplierCode)).Any() == true)
+            {
+                var supp = _context.Suppliers.Single(a => a.SupplierCode == s.SupplierCode);
+                if (supp.ActiveFlag == "N")
+                {
+                    supp.SupplierCode = s.SupplierCode;
+                    supp.Name = s.Name;
+                    supp.Address1 = s.Address1;
+                    supp.Address2 = s.Address2;
+                    supp.City = s.City;
+                    supp.Province = s.Province;
+                    supp.PostalCode = s.PostalCode;
+                    supp.GeneralPhone = s.GeneralPhone;
+                    supp.Contact1Name = s.Contact1Name;
+                    supp.UpdateTimestamp = DateTime.Now;
+                    supp.UpdateUserId = User.Identity.Name;
+                    supp.ActiveFlag = "Y";
+                    supp.LobCode = currentLob;
+                    supp.InsertTimestamp = DateTime.Now;
+                    supp.InsertUserId = User.Identity.Name;
+                    supp.UpdateTimestamp = DateTime.Now;
+                    supp.UpdateUserId = User.Identity.Name;
 
-            _context.Suppliers.Add(s);
+
+                }
+            }
+            else
+            {
+                s.ActiveFlag = "Y";
+                s.LobCode = currentLob;
+                s.InsertTimestamp = DateTime.Now;
+                s.InsertUserId = User.Identity.Name;
+                s.UpdateTimestamp = DateTime.Now;
+                s.UpdateUserId = User.Identity.Name;
+                _context.Suppliers.Add(s);
+            }
             _context.SaveChanges();
 
             return Json(true);

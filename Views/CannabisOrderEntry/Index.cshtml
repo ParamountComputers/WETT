@@ -57,6 +57,13 @@
     </div>
     </div>
 </body>
+<fieldset class="scheduler-border">
+    <div class="mb-3 row">
+        <div class="col-lg-12">
+            <button class="btn btn-secondary btn-lg btn-block" style="font-size:12px;" id="update" type="button"> Update Status </button>
+        </div>
+    </div>
+</fieldset>
 <table id="CannabisOrderEntry"></table>
 <div id="jqGridPager"></div>
 <fieldset class="scheduler-border">
@@ -180,6 +187,11 @@
                     //onclickSubmit: function (){
                     //},
                     afterSubmit: function () {
+                        //curRowId = $('#CannabisOrderEntry').getGridParam('selrow');
+                        //alert(curRowId);
+                        //var ret = $('#CannabisOrderEntry').jqGrid('getCell', curRowId, 'qtyOrdered');
+                        //alert(ret);
+
                     },
                     beforeSubmit: function () {
                         var customerOrderStatus = $("#customerOrderStatus").val();
@@ -200,9 +212,16 @@
                         var orderNumber = $("#orderNumber").val();
                         var specialInstructions = $("#specialInstructions").val();
                         var supplier = $("#supplier").val();
+                        //var records = $("#CannabisOrderEntry").jqGrid('getGridParam', 'records');
+                        //if (records>0){
+                        //    var row = $("#CannabisOrderEntry").getDataIDs()[0];
+                        //    var ret = jQuery("#CannabisOrderEntry").jqGrid('getRowData', row);
+                        //        ret = ret.customerOrderID;
+                        //    console.log(ret);
+                        //}
                         $('#supplier').attr("disabled", true);
                         $.ajaxSetup({ "async": false });
-                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier + '/' + dateReceived, function () { });
+                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier + '/' + dateReceived + '/' + shippingDate , function () { });
                         $.ajaxSetup({ "async": true });
                     },
                     closeAfterAdd: true,
@@ -237,29 +256,60 @@
         $("#newPage").on('click', function () {
             window.location.replace("CannabisOrderEntry");
         });
-        $("#searchHeader").on('change', function () {
-                                    var customerOrderStatus = $("#customerOrderStatus").val();
-                        var dateOrdered="";
-                        var dateReceived="";
-                        var shippingDate="";
-                        if(customerOrderStatus==1){
-                            dateOrdered = $("#dateOrdered").val();
-                        }else if (customerOrderStatus==6){
-                            dateOrdered = $("#dateOrdered").val();
-                            dateReceived = $("#receivedDate").val();
-                        }else {
-                            dateOrdered = $("#dateOrdered").val();
-                            dateReceived = $("#receivedDate").val();
-                            shippingDate = $("#shippingDate").val();
-                        }
-                        var customer = $("#customer").val();
-                        var orderNumber = $("#orderNumber").val();
-                        var specialInstructions = $("#specialInstructions").val();
-                        var supplier = $("#supplier").val();
-                        $.ajaxSetup({ "async": false });
-                        $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier + '/' + dateReceived, function () { });
-                        $.ajaxSetup({ "async": true });
+         $("#update").on('click', function () {
+            var customerOrderStatus = $("#customerOrderStatus").val();
+            var dateOrdered = "";
+            var dateReceived = "";
+            var shippingDate = "";
+            if (customerOrderStatus == 1) {
+                dateOrdered = $("#dateOrdered").val();
+            } else if (customerOrderStatus == 6) {
+                dateOrdered = $("#dateOrdered").val();
+                dateReceived = $("#receivedDate").val();
+            } else {
+                dateOrdered = $("#dateOrdered").val();
+                dateReceived = $("#receivedDate").val();
+                shippingDate = $("#shippingDate").val();
+            }
+            var customer = $("#customer").val();
+            var orderNumber = $("#orderNumber").val();
+            var specialInstructions = $("#specialInstructions").val();
+            var supplier = $("#supplier").val();
+            //var records = $("#CannabisOrderEntry").jqGrid('getGridParam', 'records');
+            //if (records>0){
+            //    var row = $("#CannabisOrderEntry").getDataIDs()[0];
+            //    var ret = jQuery("#CannabisOrderEntry").jqGrid('getRowData', row);
+            //        ret = ret.customerOrderID;
+            //    console.log(ret);
+            //}
+            $('#supplier').attr("disabled", true);
+            $.ajaxSetup({ "async": false });
+            $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + specialInstructions + '/' + supplier + '/' + dateReceived + '/' + shippingDate, function () { });
+            $.ajaxSetup({ "async": true });
         });
+        //$("#searchHeader").on('change', function () {
+        //                            var customerOrderStatus = $("#customerOrderStatus").val();
+        //                var dateOrdered="";
+        //                var dateReceived="";
+        //                var shippingDate="";
+        //                if(customerOrderStatus==1){
+        //                    dateOrdered = $("#dateOrdered").val();
+        //                }else if (customerOrderStatus==6){
+        //                    dateOrdered = $("#dateOrdered").val();
+        //                    dateReceived = $("#receivedDate").val();
+        //                }else {
+        //                    dateOrdered = $("#dateOrdered").val();
+        //                    dateReceived = $("#receivedDate").val();
+        //                    shippingDate = $("#shippingDate").val();
+        //                }
+        //                var customer = $("#customer").val();
+        //                var orderNumber = $("#orderNumber").val();
+        //                var specialInstructions = $("#specialInstructions").val();
+        //                var supplier = $("#supplier").val();
+        //                $.ajaxSetup({ "async": false });
+        //                $.getJSON('CannabisOrderEntry/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus +'/' + specialInstructions +  '/' + supplier + '/' + dateReceived, function () { });
+        //                $.ajaxSetup({ "async": true });
+        //});
         $("#customerOrderStatus").on('change', function () {
             var customerOrderStatus = $("#customerOrderStatus").val();
             if (customerOrderStatus == 1) {

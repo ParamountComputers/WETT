@@ -135,42 +135,14 @@ namespace WETT.Controllers
 
         public JsonResult Add(Supplier s)
         {
-            if (_context.Suppliers.Where(w => w.SupplierCode.Equals(s.SupplierCode)).Any() == true)
-            {
-                var supp = _context.Suppliers.Single(a => a.SupplierCode == s.SupplierCode);
-                if (supp.ActiveFlag == "N")
-                {
-                    supp.SupplierCode = s.SupplierCode;
-                    supp.Name = s.Name;
-                    supp.Address1 = s.Address1;
-                    supp.Address2 = s.Address2;
-                    supp.City = s.City;
-                    supp.Province = s.Province;
-                    supp.PostalCode = s.PostalCode;
-                    supp.GeneralPhone = s.GeneralPhone;
-                    supp.Contact1Name = s.Contact1Name;
-                    supp.UpdateTimestamp = DateTime.Now;
-                    supp.UpdateUserId = User.Identity.Name;
-                    supp.ActiveFlag = "Y";
-                    supp.LobCode = currentLob;
-                    supp.InsertTimestamp = DateTime.Now;
-                    supp.InsertUserId = User.Identity.Name;
-                    supp.UpdateTimestamp = DateTime.Now;
-                    supp.UpdateUserId = User.Identity.Name;
 
-
-                }
-            }
-            else
-            {
-                s.ActiveFlag = "Y";
-                s.LobCode = currentLob;
-                s.InsertTimestamp = DateTime.Now;
-                s.InsertUserId = User.Identity.Name;
-                s.UpdateTimestamp = DateTime.Now;
-                s.UpdateUserId = User.Identity.Name;
-                _context.Suppliers.Add(s);
-            }
+            s.ActiveFlag = "Y";
+            s.LobCode = currentLob;
+            s.InsertTimestamp = DateTime.Now;
+            s.InsertUserId = User.Identity.Name;
+            s.UpdateTimestamp = DateTime.Now;
+            s.UpdateUserId = User.Identity.Name;
+            _context.Suppliers.Add(s);
             _context.SaveChanges();
 
             return Json(true);

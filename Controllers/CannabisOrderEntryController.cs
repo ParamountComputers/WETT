@@ -17,6 +17,7 @@ namespace WETT.Controllers
         public static long currentCustomer;
         public static string currentOrderNumber;
         public static DateTime currentDateOrdered;
+        public static DateTime currentDateShipped;
         public static DateTime currentReceivedDate;
         public static long currentCustomerOrderStatus;
         public static string currentSpecialInstructions;
@@ -40,8 +41,7 @@ namespace WETT.Controllers
             {
                 CurrentCustomerOrderId = -1;
             }
-
-
+  
             var result = from a in _context.CustomerOrders
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
@@ -81,11 +81,11 @@ namespace WETT.Controllers
                                            Notes = b.Notes
                                        };
             var CustomerOrderData = AllCustomerOrderData;
-            if (CurrentCustomerOrderId != -1)
-            {
-                CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentCustomerOrderId);
+            //if (CurrentCustomerOrderId != -1)
+            //{
+            //    CustomerOrderData = CustomerOrderData.Where(w => w.CustomerOrderID == CurrentCustomerOrderId);
 
-            }
+            //}
 
 
 
@@ -131,49 +131,51 @@ namespace WETT.Controllers
 
         public JsonResult Add(CustomerOrderViewModel p)
         {
-            if (CurrentCustomerOrderId == -1)
-            {
+            //if (CurrentCustomerOrderId == -1)
+            //{
 
-                CustomerOrder s = new CustomerOrder
-                {
-                    CustomerId = currentCustomer,
-                    OrderNumber = currentOrderNumber,
-                    DateOrdered = currentDateOrdered,
-                    DateReceived = currentReceivedDate,
-                    CustomerOrderStatusId = currentCustomerOrderStatus,
-                    SupplierId= currentSupplierId,
-                    //CarrierId = currentCarrier,
-                    SpecialInstructions = currentSpecialInstructions,
-                    //hard coded for now
-                    LobCode = "CAN",
-                    RegulatorCode = "MBLL",
-                    OrderSourceId = 1,
-                    CarrierId = 1,
-                    InsertTimestamp = DateTime.Now,
-                    InsertUserId = User.Identity.Name,
-                    UpdateTimestamp = DateTime.Now,
-                    UpdateUserId = User.Identity.Name,
+            //    CustomerOrder s = new CustomerOrder
+            //    {
+            //        CustomerId = currentCustomer,
+            //        OrderNumber = currentOrderNumber,
+            //        DateOrdered = currentDateOrdered,
+            //        DateReceived = currentReceivedDate,
+            //        DateShipped = currentDateShipped,
+            //        CustomerOrderStatusId = currentCustomerOrderStatus,
+            //        SupplierId = currentSupplierId,
+            //        //CarrierId = currentCarrier,
+            //        SpecialInstructions = currentSpecialInstructions,
+            //        //hard coded for now
+            //        LobCode = "CAN",
+            //        RegulatorCode = "MBLL",
+            //        OrderSourceId = 1,
+            //        CarrierId = 1,
+            //        InsertTimestamp = DateTime.Now,
+            //        InsertUserId = User.Identity.Name,
+            //        UpdateTimestamp = DateTime.Now,
+            //        UpdateUserId = User.Identity.Name,
 
-                };
+            //    };
 
-                _context.CustomerOrders.Add(s);
-                _context.SaveChanges();
-                CurrentCustomerOrderId = s.CustomerOrderId;
-            }
-            else
-            {
-                CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
-                s.CustomerId = currentCustomer;
-                s.OrderNumber = currentOrderNumber;
-                s.DateOrdered = currentDateOrdered;
-                s.DateReceived = currentReceivedDate;
-               //s.CarrierId = currentCarrier;
-                s.CustomerOrderStatusId = currentCustomerOrderStatus;
-                s.SpecialInstructions = currentSpecialInstructions;
-                s.UpdateTimestamp = DateTime.Now;
-                s.UpdateUserId = User.Identity.Name;
-                _context.SaveChanges();
-            }
+            //    _context.CustomerOrders.Add(s);
+            //    _context.SaveChanges();
+            //    CurrentCustomerOrderId = s.CustomerOrderId;
+            //}
+            //else
+            //{
+            //    CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
+            //    s.CustomerId = currentCustomer;
+            //    s.DateShipped = currentDateShipped;
+            //    s.OrderNumber = currentOrderNumber;
+            //    s.DateOrdered = currentDateOrdered;
+            //    s.DateReceived = currentReceivedDate;
+            //    //s.CarrierId = currentCarrier;
+            //    s.CustomerOrderStatusId = currentCustomerOrderStatus;
+            //    s.SpecialInstructions = currentSpecialInstructions;
+            //    s.UpdateTimestamp = DateTime.Now;
+            //    s.UpdateUserId = User.Identity.Name;
+            //    _context.SaveChanges();
+            //}
             CustomerOrderDetail r = new CustomerOrderDetail
             {
                 CustomerOrderId = CurrentCustomerOrderId,
@@ -233,7 +235,6 @@ namespace WETT.Controllers
         }
         public IActionResult CreateHeader(string data)
         {
-            var li = data.Split("/");
             //customerList = from a in _context.Customers
             //                   // orderby a.Name
             //               select new CustomerList
@@ -243,28 +244,96 @@ namespace WETT.Controllers
             //               };
             //CustomerList n = customerList.Single(x => x.text == li[0]);
             //currentCustomer = n.value;
-            currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
-            currentOrderNumber = li[1];
-            if (li[2] != ""){
-                currentDateOrdered = DateTime.Parse(li[2]);
-            }
-            if (li[6] != "")
+
+            //var li = data.Split("/");
+
+            //currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
+            //currentOrderNumber = li[1];
+            //if (li[2] != "")
+            //{
+            //    currentDateOrdered = DateTime.Parse(li[2]);
+            //}
+            //if (li[6] != "")
+            //{
+            //    currentReceivedDate = DateTime.Parse(li[6]);
+            //}
+            //if (li[7] != "")
+            //{
+            //    currentDateShipped = DateTime.Parse(li[7]);
+            //}
+            //currentSpecialInstructions = li[4];
+            //currentSupplierId = (long)Convert.ToDouble(li[5]);
+            //currentCustomer = (long)Convert.ToDouble(li[0]);
+
+
+
+            var li = data.Split("/");
+            if (CurrentCustomerOrderId == -1)
             {
-                currentReceivedDate = DateTime.Parse(li[6]);
+
+                CustomerOrder s = new CustomerOrder
+                {
+                    CustomerId = (long)Convert.ToDouble(li[0]),
+                    OrderNumber = li[1],
+                    CustomerOrderStatusId = (long)Convert.ToDouble(li[3]),
+                    SupplierId = (long)Convert.ToDouble(li[5]),
+                    //CarrierId = currentCarrier,
+                    SpecialInstructions = li[4],
+                    //hard coded for now
+                    LobCode = "CAN",
+                    RegulatorCode = "MBLL",
+                    OrderSourceId = 1,
+                    CarrierId = 1,
+                    InsertTimestamp = DateTime.Now,
+                    InsertUserId = User.Identity.Name,
+                    UpdateTimestamp = DateTime.Now,
+                    UpdateUserId = User.Identity.Name,
+
+                };
+                if (li[2] != "")
+                {
+                    s.DateOrdered = DateTime.Parse(li[2]);
+                }
+                if (li[6] != "")
+                {
+                    s.DateReceived = DateTime.Parse(li[6]);
+                }
+                if (li[7] != "")
+                {
+                    s.DateShipped = DateTime.Parse(li[7]);
+                }
+
+                _context.CustomerOrders.Add(s);
+                _context.SaveChanges();
+                CurrentCustomerOrderId = s.CustomerOrderId;
             }
-            currentSpecialInstructions = li[4];
-            currentSupplierId = (long)Convert.ToDouble(li[5]);
-            currentCustomer = (long)Convert.ToDouble(li[0]);
-            //var mllb = li[0].Split(" ");
-            //customerList = from a in _context.Customers
-            //               where a.MbllCustomerNo == (long)Convert.ToDouble(mllb[0])
-            //               select new CustomerList
-            //               {
-            //                   value = a.CustomerId,
-            //                   text = a.MbllCustomerNo + "" //+ " - " + a.Name
-            //               };
-            //CustomerList r = customerList.Single(x => x.text == mllb[0]);
-            //currentCustomer = r.value;
+            else
+            {
+                CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
+                s.CustomerId = (long)Convert.ToDouble(li[0]);
+                s.OrderNumber = li[1];
+                if (li[2] != "")
+                {
+                    s.DateOrdered = DateTime.Parse(li[2]);
+                }
+                if (li[6] != "")
+                {
+                    s.DateReceived = DateTime.Parse(li[6]);
+                }
+                if (li[7] != "")
+                {
+                    s.DateShipped = DateTime.Parse(li[7]);
+                }
+                //s.CarrierId = currentCarrier;
+                s.CustomerOrderStatusId = (long)Convert.ToDouble(li[3]);
+                s.SpecialInstructions = li[4];
+                s.UpdateTimestamp = DateTime.Now;
+                s.UpdateUserId = User.Identity.Name;
+                _context.SaveChanges();
+            }
+
+
+
             return Json(true);
             
         }

@@ -184,7 +184,6 @@
                    if(data!=null)
                    {
                       header= true;
-                      alert(data.date);
                       $("#saCode").val(data.sacode);
                       $("#date").val(data.date);
                       $("#comments").val(data.comments);
@@ -280,7 +279,6 @@
                     {
                         if(data[i].value== value)
                         {
-                            console.log(data[i].text);
                             ProductSku=data[i].text;
                         }  
                     }
@@ -295,7 +293,7 @@
             var ProductNameList = [];
             $.ajaxSetup({ "async": false });
             var count = 0;
-            $.getJSON('SaStockReceived/CreateProductName', function (data) {
+            $.getJSON('InvAdj/CreateProductName', function (data) {
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
                         if (name == data[i].value) {
@@ -306,7 +304,6 @@
                 }//if
             });
             $.ajaxSetup({ "async": true });
-            console.log(ProductNameList);
             return ProductNameList;
         }
        function getLocation() 

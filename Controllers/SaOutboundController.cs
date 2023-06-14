@@ -25,10 +25,16 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string SaCode)
+        public async Task<IActionResult> Index(string InventoryTxId)
         {
-            CurrentSaCode = SaCode;
-            InventoryTxCurrentId = -1;
+            if (InventoryTxId != null)
+            {
+                InventoryTxCurrentId = (long)Convert.ToDouble(InventoryTxId);
+            }
+            else
+            {
+                InventoryTxCurrentId = -1;
+            }
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -81,13 +87,6 @@ namespace WETT.Controllers
                                     };
             var SaOutboundData = AllsaOutboundData;
 
-            if (CurrentSaCode != null)
-            {
-                SaOutboundData = SaOutboundData.Where(w => w.SaCode == CurrentSaCode);
-                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-                InventoryTxCurrentId = r.InventoryTxId;
-            }
-
 
             int totalRecords = SaOutboundData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -117,7 +116,7 @@ namespace WETT.Controllers
         public JsonResult Update(SaOutboundViewModel p)
         {
             //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            ProductRegulatorLiq s = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.FromInventoryLocationId = CurrentFromLocation;
             r.ProductId = s.ProductId;
@@ -130,7 +129,7 @@ namespace WETT.Controllers
         }
         public JsonResult Add(SaExciseDutyViewModel p)
         {
-            if (CurrentSaCode == null)
+            if (InventoryTxCurrentId == -1)
             {
                 InventoryTx s = new InventoryTx
                 {
@@ -171,7 +170,7 @@ namespace WETT.Controllers
                 _context.SaveChanges();
             }
             //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            ProductRegulatorLiq c = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,

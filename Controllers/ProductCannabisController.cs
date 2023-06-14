@@ -166,8 +166,8 @@ namespace WETT.Controllers
         {
 
             var SupplierList = from a in _context.Suppliers 
-                     where a.ActiveFlag == "Y"
-                     select new
+                     where a.ActiveFlag == "Y" && a.LobCode == "CAN"
+                               select new
                      {
                          text = a.Name,
                          value = a.SupplierId

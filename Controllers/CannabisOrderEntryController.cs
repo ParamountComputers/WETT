@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
@@ -14,34 +16,39 @@ namespace WETT.Controllers
 {
     public class CannabisOrderEntryController : Controller
     {
-        public static long currentCustomer;
-        public static string currentOrderNumber;
-        public static DateTime currentDateOrdered;
-        public static DateTime currentDateShipped;
-        public static DateTime currentReceivedDate;
-        public static long currentCustomerOrderStatus;
-        public static string currentSpecialInstructions;
-        public static long currentCarrier;
-        public static long CurrentCustomerOrderId;
-        public static long currentSupplierId;
-        public static IQueryable<CustomerList> customerList;
+        //public static long currentCustomer;
+        //public static string currentOrderNumber;
+        //public static DateTime currentDateOrdered;
+        //public static DateTime currentDateShipped;
+        //public static DateTime currentReceivedDate;
+        //public static long currentCustomerOrderStatus;
+        //public static string currentSpecialInstructions;
+        //public static long currentCarrier;
+        private static long CurrentCustomerOrderId;
+        //public static long currentSupplierId;
+        //public static IQueryable<CustomerList> customerList;
         private readonly WETT_DBContext _context;
 
-        public CannabisOrderEntryController(WETT_DBContext context)
+        public CannabisOrderEntryController( WETT_DBContext context)
         {
+           
             _context = context;
+            //CurrentCustomerOrderId = 1;
         }
+
         public async Task<IActionResult> Index(string CustomerOrderID)
         {
             if (CustomerOrderID != null)
             {
                 CurrentCustomerOrderId = (long)Convert.ToDouble(CustomerOrderID);
+               // ViewData["CurrentFilter"] = CurrentCustomerOrderId;
             }
             else
             {
+               // ViewData["CurrentFilter"] = CurrentCustomerOrderId;
                 CurrentCustomerOrderId = -1;
             }
-  
+
             var result = from a in _context.CustomerOrders
                          join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
@@ -58,12 +65,25 @@ namespace WETT.Controllers
                              //QtyFulfilled = b.QtyFulfilled,
                              Notes = b.Notes
                          };
+            //    bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
+
+            //    if (issearch)
+            //        foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //        {
+            //            switch (rule.field)
+            //            {
+            //                case "CustomerOrderID":
+            //                    result = (IQueryable<CustomerOrderViewModel>)result.Where(w => w.CustomerOrderID == (long)Convert.ToDouble(rule.data)).ToList();
+            //                    break;
+            //            }
+            //        }
             return View(result);
         }
 
 
         public JsonResult GetAll(JqGridViewModel request)
         {
+
             var AllCustomerOrderData = from a in _context.CustomerOrders
                                        join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on b.ProductId equals c.ProductId
@@ -87,7 +107,18 @@ namespace WETT.Controllers
 
             //}
 
+            bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
+            if (issearch)
+                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+                {
+                    switch (rule.field)
+                    {
+                        case "CustomerOrderID":
+                            CustomerOrderData = (IQueryable<CustomerOrderViewModel>)CustomerOrderData.Where(w => w.CustomerOrderID == (long)Convert.ToDouble(rule.data)).ToList();
+                            break;
+                    }
+                }
 
             int totalRecords = CustomerOrderData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -202,7 +233,9 @@ namespace WETT.Controllers
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(e => e.CustomerOrderDetailId == id);
             _context.CustomerOrderDetails.Remove(r);
             _context.SaveChanges();
-            if (_context.CustomerOrderDetails.Where(w => w.CustomerOrderId.Equals(r.CustomerOrderId)).Any()== false) {
+            //////// if currentCustomerOderId is static this works to remove the header on deletion on last details//////////////////////////////////
+            if (_context.CustomerOrderDetails.Where(w => w.CustomerOrderId.Equals(r.CustomerOrderId)).Any() == false)
+            {
                 CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == r.CustomerOrderId);
                 CurrentCustomerOrderId = -1;
                 _context.CustomerOrders.Remove(s);
@@ -214,7 +247,7 @@ namespace WETT.Controllers
         }
         public JsonResult SaCode()
         {
-            ////////////////////////////////////////////////must fix to work with status
+
             if (CurrentCustomerOrderId != -1)
             {
                 CustomerOrder r = _context.CustomerOrders.Single(e => e.CustomerOrderId == CurrentCustomerOrderId);
@@ -354,7 +387,7 @@ namespace WETT.Controllers
 
         public IActionResult CreateCustomerList()
         {
-            customerList = from a in _context.Customers
+            var customerList = from a in _context.Customers
                            orderby a.Name
                            select new CustomerList
                            {

@@ -57,8 +57,9 @@ namespace WETT.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var products = from a in _context.ProductMasters
-                           join b in _context.ProductRegulatorCans on a.ProductId equals b.ProductId
+                           join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
                            join c in _context.Suppliers on a.SupplierId equals c.SupplierId
+                           where b.ActiveFlag == true
                            select new ProductLiq
                            {
                               
@@ -68,13 +69,13 @@ namespace WETT.Controllers
                                LobCode = a.LobCode,
                                Sku = b.Sku,
                                Description2 = b.Description2,
-                               //SingleWeight = b.SingleWeight,
-                               //ContainerWeight = b.ContainerWeight,
-                               //CaseWeight = b.CaseWeight,
-                               //PackSize = b.PackSize,
-                               //HlSingle = b.HlSingle,
-                               //HlContainer = b.HlContainer,
-                               //HlCase = b.HlCase
+                               SingleWeight = b.SingleWeight,
+                               ContainerWeight = b.ContainerWeight,
+                               CaseWeight = b.CaseWeight,
+                               PackSize = b.PackSize,
+                               HlSingle = b.HlSingle,
+                               HlContainer = b.HlContainer,
+                               HlCase = b.HlCase
                            };
                             
 
@@ -238,9 +239,29 @@ namespace WETT.Controllers
         }
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var wETT_DBContext = _context.ProductRegulatorCans;
+           // var wETT_DBContext = _context.ProductRegulatorLiqs;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
-            var productData = _context.ProductRegulatorCans.ToList();
+            var productData =  from a in _context.ProductMasters
+                                             join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
+                                             join c in _context.Suppliers on a.SupplierId equals c.SupplierId
+                                             where b.ActiveFlag == true
+                                             select new ProductLiq
+                                             {
+
+                                                 ProductId = a.ProductId,
+                                                 Description = b.Description,
+                                                 SupplierId = a.SupplierId,
+                                                 LobCode = a.LobCode,
+                                                 Sku = b.Sku,
+                                                 Description2 = b.Description2,
+                                                 SingleWeight = b.SingleWeight,
+                                                 ContainerWeight = b.ContainerWeight,
+                                                 CaseWeight = b.CaseWeight,
+                                                 PackSize = b.PackSize,
+                                                 HlSingle = b.HlSingle,
+                                                 HlContainer = b.HlContainer,
+                                                 HlCase = b.HlCase
+                                             };
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
@@ -251,7 +272,7 @@ namespace WETT.Controllers
                     switch (rule.field)
                     {
                         case "name":
-                            productData = productData.Where(w => w.Description.Contains(rule.data)).ToList();
+                            productData = (IQueryable<ProductLiq>)productData.Where(w => w.Description.Contains(rule.data));
                             break;
                     }
                 }
@@ -263,13 +284,13 @@ namespace WETT.Controllers
             //Kept default sorting to Supplier Name, implement sorting for other fields using switchcase
             if (request.sord.ToUpper() == "DESC")
             {
-                productData = productData.OrderByDescending(t => t.Description).ToList();
-                productData = productData.Skip(currentPageIndex * request.rows).Take(request.rows).ToList();
+                productData = (IQueryable<ProductLiq>)productData.OrderByDescending(t => t.Description);
+                productData = (IQueryable<ProductLiq>)productData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
             else
             {
-                productData = productData.OrderBy(t => t.Description).ToList();
-                productData = productData.Skip(currentPageIndex * request.rows).Take(request.rows).ToList();
+                productData = (IQueryable<ProductLiq>)productData.OrderBy(t => t.Description);
+                productData = (IQueryable<ProductLiq>)productData.Skip(currentPageIndex * request.rows).Take(request.rows);
             }
 
             var jsonData = new
@@ -282,11 +303,12 @@ namespace WETT.Controllers
 
             return Json(jsonData);
         }
-        public JsonResult Update(Product p)
+        public JsonResult Update(ProductLiq p)
         {
 
             ProductRegulatorLiq r = _context.ProductRegulatorLiqs.Single(e => e.ProductId == p.ProductId);
-            //r.SupplierId = p.SupplierId;
+            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            s.SupplierId = p.SupplierId;
             r.Sku = p.Sku;
             r.Description = p.Description;
             r.SingleWeight = p.SingleWeight;
@@ -296,8 +318,8 @@ namespace WETT.Controllers
             r.HlSingle = p.HlSingle;
             r.HlContainer = p.HlContainer;
             r.HlCase = p.HlCase;
-            //r.UpdateUserId = User.Identity.Name;
-            //r.UpdateTimestamp = DateTime.Now;
+            s.UpdateUserId = User.Identity.Name;
+            s.UpdateTimestamp = DateTime.Now;
 
 
             _context.SaveChanges();
@@ -308,22 +330,52 @@ namespace WETT.Controllers
 
         public JsonResult Delete(int id)
         {
-            ProductMaster r = _context.ProductMasters.Single(e => e.ProductId == id);
-            _context.ProductMasters.Remove(r);
+            ProductRegulatorLiq r = _context.ProductRegulatorLiqs.Single(e => e.ProductId == id);
+            ProductMaster s = _context.ProductMasters.Single(e => e.ProductId == id);
+            r.ActiveFlag = false;
+            s.ActiveFlag = false;
             _context.SaveChanges();
-
 
             return Json(true);
         }
 
-        public JsonResult Add(ProductMaster p)
+        public JsonResult Add(ProductLiq p)
         {
+            ProductMaster s = new ProductMaster
+            {
+                SupplierId = p.SupplierId,
+                LobCode = "LIQ",
+                ActiveFlag = true,
+                InsertUserId = User.Identity.Name,
+                InsertTimestamp = DateTime.Now,
+                UpdateTimestamp = DateTime.Now,
+                UpdateUserId = User.Identity.Name,
+        };
+            _context.ProductMasters.Add(s);
+            _context.SaveChanges();
 
-            p.InsertTimestamp = DateTime.Now;
-            p.InsertUserId = User.Identity.Name;
-            p.UpdateTimestamp = DateTime.Now;
-            p.UpdateUserId = User.Identity.Name;
-            _context.ProductMasters.Add(p);
+            ProductRegulatorLiq r = new ProductRegulatorLiq
+            {
+                ProductId = s.ProductId,
+                ContainerWeight= p.ContainerWeight,
+                PackSize=p.PackSize,
+                HlCase=p.HlCase,    
+                HlContainer=p.HlContainer,
+                HlSingle=p.HlSingle,
+                CaseWeight= p.CaseWeight,
+                RegulatorCode = "MBLL",
+                ProvinceCode = "MB",
+                Sku = p.Sku,
+                SingleWeight= p.SingleWeight,
+                Description = p.Description,
+                Description2 = p.Description2,
+                ActiveFlag = true,
+                InsertUserId = User.Identity.Name,
+
+
+            };
+
+            _context.ProductRegulatorLiqs.Add(r);
             _context.SaveChanges();
 
             return Json(true);
@@ -331,8 +383,8 @@ namespace WETT.Controllers
         [HttpGet]
         public IActionResult CreateList()
         {
-            var suppliers = (_context.Suppliers.Where(a => a.ActiveFlag == "Y")).ToList();
-            var li = from s in suppliers
+            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     where s.LobCode == "LIQ"
                      select new
                      {
                          text = s.Name,

@@ -245,13 +245,12 @@
         //$("#customer").autocomplete({
         //    source: getCustomer()
         //});
-        $('#CannabisOrderEntry').change(function(){
-        });
         $(document).ready(function () {
             $('#dateOrdered').val(date());
             $("#receivedDate").prop("readonly", true);
             $("#shippedDate").prop("readonly", true);
             var test = getCustomer();
+
         });
         $("#newPage").on('click', function () {
             window.location.replace("CannabisOrderEntry");
@@ -418,6 +417,7 @@
             date = today.toString();
             return date;
         }
+
         function IsProduct(value, colname) {
             //////////////////////////////////////////////////////////////////////////pass supplier list lower product list size//////////////////////////////////////////////////////////////////////////////
             var containsProduct = false;

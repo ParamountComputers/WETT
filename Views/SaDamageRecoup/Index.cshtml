@@ -10,20 +10,24 @@
     <h4 class="display-5">Damage Recoup</h4>
 </div>
 <body>
-  <div class="searchDate">
-      <label for="date" class="Label" >Trans Date:</label>
-      <input type="date"id='date' class="Date" name="date" />
-  </div>
-  <div class="Gap3"></div>
-  <div class="Notes"> 
-      <label for="comments" class="Label" >Notes:</label>
-      <input type="text" class="NotesInput"id="comments" name="comments"/>
-  </div>
-    <div class="Gap6"></div>
-  <div class="SaCode">
-      <label for="saCode"  class="Label">SA Code:</label>
-      <input type="text" class="SaCodeInput" id="saCode" readonly/>
-  </div>
+    <div class="searchDate">
+        <label for="date" class="Label">Trans Date:</label>
+        <input type="date" id='date' class="Date" name="date" />
+    </div>
+    <div class="searchDropdown">
+        <label for="supplierDropdown" class="Label">Supplier:</label>
+        <select class="form-control dropDownInput" id="supplierDropdown" name="supplierDropdown"></select>
+    </div>
+    <div class="Notes">
+        <label for="comments" class="Label">Notes:</label>
+        <input type="text" class="NotesInput" id="comments" name="comments" />
+    </div>
+    <div class="Gap2"></div>
+    <div class="Gap1"></div>
+    <div class="SaCode">
+        <label for="saCode" class="Label">SA Code:</label>
+        <input type="text" class="SaCodeInput" id="saCode" readonly />
+    </div>
 </body>
 <table id="saDamageRecoup"></table>
 <div id="jqGridPager"></div>
@@ -81,6 +85,7 @@
                     editoptions: {
                     dataInit: function(elem) {
                     curRowId = $('#saDamageRecoup').getGridParam('selrow');
+                    name = $('#supplierDropdown').val();
                     $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                     $('#saDamageRecoup').jqGrid('setCell',curRowId,'supplierName', getSupplierNames(ui.item.value));
@@ -88,7 +93,7 @@
                     $('#saDamageRecoup').jqGrid('setCell',curRowId,'productSku', getProductSku(ui.item.value));
                     $('input#productSku').val(getProductSku(ui.item.value));
                     } });   
-                                  }
+                    }
                    }},
                    { label: 'Supplier',name: 'supplierName',fixed:true,width:120,editable:true, editoptions: {readonly: 'readonly'}},
                    { label: 'Product SKU',name: 'productSku',fixed:true,width:85,editable:true , editoptions: {readonly: 'readonly'}},
@@ -153,6 +158,20 @@
        $(document).ready(function () {  
            $('#date').val(date());
        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "SaDamageRecoup/CreateSupplierList",
+                data: "{}",
+                success: function (data) {
+                    var s = '';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                    }
+                    $("#supplierDropdown").html(s);
+                }
+            });
+        });
        $(document).ready(function () {  
            $.ajax({  
                type: "GET",  
@@ -264,24 +283,23 @@
             return ProductSku.toString(); 
        }
 
-              function getProductName() 
-       {
-               var ProductNameList= [];
-            $.ajaxSetup( { "async": false } );
-            $.getJSON('SaDamageRecoup/CreateProductName', function(data) 
-            {
-                if (data != null) 
-                {
-                    for (var i = 0; i < data.length; i++) 
-                    {
-                        ProductNameList[i]=data[i].text;
+        function getProductName() {
+            var ProductNameList = [];
+            $.ajaxSetup({ "async": false });
+            var count = 0;
+            $.getJSON('SaDamageRecoup/CreateProductName', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (name == data[i].value) {
+                            ProductNameList[count] = data[i].text;
+                            count++;
+                        }
                     }
                 }//if
             });
-            $.ajaxSetup( { "async": true } );
-            console.log(ProductNameList);
-            return ProductNameList; 
-       }
+            $.ajaxSetup({ "async": true });
+            return ProductNameList;
+        }
 
        function getLocation() 
        {

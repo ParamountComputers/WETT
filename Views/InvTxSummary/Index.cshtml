@@ -72,7 +72,8 @@
                             //delOptions: { url: 'InvTxSummary/Delete' }
                         }
                     },
-                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Inventory Tx Id',name: 'inventoryTxId', editable: true,hidden:true,editoptions: { readonly: 'readonly'},key: true},
+                   { label: 'Inventory Tx Detail Id',name: 'inventoryTxDetailId', editable: true,hidden:true,editoptions: { readonly: 'readonly'}},
                    { label: 'Transaction Type',name: 'inventoryTxTypeId',width:150,fixed:true,formatter:"select",editoptions: {readonly: 'readonly',value: getInvTxType()}},
                    { label: 'SA Code',name: 'saCode',width:100,fixed:true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,width:150, edittype:"text",editoptions: { readonly: 'readonly'}},
@@ -87,18 +88,19 @@
                editurl: 'InvTxSummary/Update', 
                ondblClickRow: function(rowid) {
                 var cellVal = $('#invTxSummary').jqGrid ('getCell', rowid, 'saCode');
+                var id = $('#invTxSummary').jqGrid('getCell', rowid, 'inventoryTxId');
                 var invTxType = $('#invTxSummary').jqGrid ('getCell', rowid, 'inventoryTxTypeId');
                 if(invTxType==1)
                 {
-                    window.open("InvAdj?SaCode="+cellVal);
+                    window.open("InvAdj?InventoryTxId="+id);
                 }
                 else if(invTxType==2)
                 {
-                    window.open("SaDamageRecoup?SaCode="+cellVal);
+                    window.open("SaDamageRecoup?InventoryTxId="+id);
                 }
                 else if(invTxType==3)
                 {
-                    window.open("saOutbound?SaCode="+cellVal);
+                    window.open("saOutbound?InventoryTxId="+cellVal);
                 }
                 else if(invTxType==4)
                 {

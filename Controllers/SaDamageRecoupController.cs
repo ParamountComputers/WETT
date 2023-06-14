@@ -24,10 +24,16 @@ namespace WETT.Controllers
             _context = context;
         }
         //references to database 
-        public async Task<IActionResult> Index(string SaCode)
+        public async Task<IActionResult> Index(string InventoryTxId)
         {
-            CurrentSaCode = SaCode;
-            InventoryTxCurrentId = -1;
+            if (InventoryTxId != null)
+            {
+                InventoryTxCurrentId = (long)Convert.ToDouble(InventoryTxId);
+            }
+            else
+            {
+                InventoryTxCurrentId = -1;
+            }
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -89,12 +95,6 @@ namespace WETT.Controllers
                                     };
             var saDamagerecoup = AllSaDamageRecoup;
             //checks if sent a specific code from invTxSummary if not show everything else
-            if (CurrentSaCode != null)
-            {
-                saDamagerecoup = saDamagerecoup.Where(w => w.SaCode == CurrentSaCode);
-                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-                InventoryTxCurrentId = r.InventoryTxId;
-            }
 
 
             int totalRecords = saDamagerecoup.Count();
@@ -126,10 +126,10 @@ namespace WETT.Controllers
         {
             //updates the Inventory details to new entries 
             //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            ProductRegulatorLiq c = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = _context.InventoryTxDetails.Single(a => a.InventoryTxDetailId == p.InventoryTxDetailId);
             r.ToInventoryLocationId = p.InventoryLocationId;
-            r.ProductId = s.ProductId;
+            r.ProductId = c.ProductId;
             r.Amount = p.Amount;
             r.Comments = p.Comments;
             r.UpdateUserid = User.Identity.Name;
@@ -139,18 +139,18 @@ namespace WETT.Controllers
         }
         public JsonResult Add(SaDamageRecoupViewModel p)
         {
-            if (CurrentSaCode == null)
+            if (InventoryTxCurrentId == -1)
             {
                 InventoryTx s = new InventoryTx
                 {
                     Date = CurrentDate,
                     Comments = CurrentNotes,
-                    InventoryTxTypeId = 1,
+                    InventoryTxTypeId = 2,
                     InsertUserId = User.Identity.Name,
                     InsertTimestamp = DateTime.Now,
                     UpdateTimestamp = DateTime.Now,
                     UpdateUserId = User.Identity.Name,
-                    StockAdjCode = "IA"
+                    StockAdjCode = "DR"
                 };
                 _context.InventoryTxes.Add(s);
                 _context.SaveChanges();
@@ -171,7 +171,7 @@ namespace WETT.Controllers
                 _context.SaveChanges();
             }
             //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            ProductRegulatorLiq c = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
@@ -202,15 +202,15 @@ namespace WETT.Controllers
         }
         public JsonResult SaCode()
         {
-            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-            var headerInfo = new
+            if (InventoryTxCurrentId != -1)
             {
-                comments = r.Comments,
-                sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString()
-            };
-            if (CurrentSaCode != null)
-            {
+                InventoryTx r = _context.InventoryTxes.Single(e => e.InventoryTxId == InventoryTxCurrentId);
+                var headerInfo = new
+                {
+                    comments = r.Comments,
+                    sacode = CurrentSaCode,
+                    date = r.Date.ToShortDateString()
+                };
                 return Json(headerInfo);
             }
             return Json(null);
@@ -235,11 +235,24 @@ namespace WETT.Controllers
             var li = from a in _context.ProductMasters
                      join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                      join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
-                     where b.ActiveFlag == "Y"
+                     where b.ActiveFlag == "Y" && b.LobCode == "LIQ"
                      select new
                      {
                          text = b.Name,
                          value = c.Description
+
+                     };
+            return Json(li);
+        }
+        public IActionResult CreateSupplierList()
+        {
+
+            var li = from s in _context.Suppliers.Where(a => a.ActiveFlag == "Y")
+                     where s.LobCode == "LIQ"
+                     select new
+                     {
+                         text = s.Name,
+                         value = s.SupplierId
 
                      };
             return Json(li);

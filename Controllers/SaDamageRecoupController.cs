@@ -271,6 +271,7 @@ namespace WETT.Controllers
         {
             var saDamagerecoup = from a in _context.ProductMasters
                                  join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
+                                 where a.LobCode == "LIQ" && a.ActiveFlag == true
                                  select new
                              {
                                  value = a.SupplierId,

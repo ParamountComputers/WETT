@@ -256,7 +256,8 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductSkuList()
         {
-            var invAdjData = from a in _context.ProductRegulatorLiqs 
+            var invAdjData = from a in _context.ProductRegulatorLiqs
+                             where a.ActiveFlag == true
                              select new
                              {
                                  text = a.Sku,
@@ -268,6 +269,7 @@ namespace WETT.Controllers
         {
             var invAdjData = from a in _context.ProductMasters
                              join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
+                             where a.LobCode == "LIQ" && a.ActiveFlag == true
                              select new
                              {
                                  value = a.SupplierId,

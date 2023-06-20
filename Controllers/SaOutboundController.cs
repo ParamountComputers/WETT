@@ -243,7 +243,7 @@ namespace WETT.Controllers
             var li = from a in _context.ProductMasters
                      join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                      join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
-                     where b.ActiveFlag == "Y"
+                     where b.ActiveFlag == "Y" && b.LobCode == "LIQ"
                      select new
                      {
                          text = b.Name,
@@ -255,6 +255,7 @@ namespace WETT.Controllers
         public IActionResult CreateProductSkuList()
         {
             var saOutboundData = from a in _context.ProductRegulatorLiqs
+                                 where a.ActiveFlag == true
                                  select new
                                  {
                                      text = a.Sku,
@@ -267,6 +268,7 @@ namespace WETT.Controllers
         {
             var saOutboundData = from a in _context.ProductMasters
                                  join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
+                                 where a.ActiveFlag == true && a.LobCode == "LIQ"
                                  select new
                              {
                                  value = a.SupplierId,

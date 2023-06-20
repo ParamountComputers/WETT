@@ -27,10 +27,16 @@ namespace WETT.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string SaCode)
+        public async Task<IActionResult> Index(string InventoryTxId)
         {
-            CurrentSaCode = SaCode;
-            InventoryTxCurrentId = -1;
+            if (InventoryTxId != null)
+            {
+                InventoryTxCurrentId = (long)Convert.ToDouble(InventoryTxId);
+            }
+            else
+            {
+                InventoryTxCurrentId = -1;
+            }
             var result = from b in _context.InventoryTxDetails
                          join a in _context.InventoryTxes on b.InventoryTxId equals a.InventoryTxId
                          join c in _context.InventoryTxTypes on a.InventoryTxTypeId equals c.InventoryTxTypeId
@@ -80,12 +86,6 @@ namespace WETT.Controllers
                                        SaCode = a.StockAdjCode
                                    };
             var SaReleaseData = AllSaReleaseData;
-            if (CurrentSaCode != null)
-            {
-                SaReleaseData = SaReleaseData.Where(w => w.SaCode == CurrentSaCode);
-                InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-                InventoryTxCurrentId = r.InventoryTxId;
-            }
 
 
             int totalRecords = SaReleaseData.Count();
@@ -129,7 +129,7 @@ namespace WETT.Controllers
         }
         public JsonResult Add(SaExciseDutyViewModel p)
         {
-            if (CurrentSaCode == null)
+            if (InventoryTxCurrentId == -1)
             {
                 InventoryTx s = new InventoryTx
                 {
@@ -175,7 +175,7 @@ namespace WETT.Controllers
                 _context.SaveChanges();
             }
             //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductName);
-            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductId);
+            ProductRegulatorLiq c = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductName);
             InventoryTxDetail r = new InventoryTxDetail
             {
                 Comments = p.Comments,
@@ -221,24 +221,24 @@ namespace WETT.Controllers
        
         public JsonResult SaCode()
         {
-            if (CurrentSaCode == null)
+            if (InventoryTxCurrentId != -1)
             {
-                return Json(null);
-            }
-            InventoryTx r = _context.InventoryTxes.Single(e => e.StockAdjCode == CurrentSaCode);
-            var headerInfo = new
-            {
-                comments = r.Comments,
-                sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString(),
-                transNumber = r.TransactionNo,
-                prevTransNo = r.PreviousTransactionNo,
-                locations = r.ToInventoryLocationId,
-                probill = r.Probill,
-                portEntry = r.PortOfEntry,
-                purchaseOrder = r.PurchaseOrder
-            };
+                InventoryTx r = _context.InventoryTxes.Single(e => e.InventoryTxId == InventoryTxCurrentId);
+                var headerInfo = new
+                {
+                    comments = r.Comments,
+                    sacode = CurrentSaCode,
+                    date = r.Date.ToShortDateString(),
+                    transNumber = r.TransactionNo,
+                    prevTransNo = r.PreviousTransactionNo,
+                    locations = r.ToInventoryLocationId,
+                    probill = r.Probill,
+                    portEntry = r.PortOfEntry,
+                    purchaseOrder = r.PurchaseOrder
+                };
                 return Json(headerInfo);
+                }
+            return Json(null);
         }
         public IActionResult DisplaySACode()
         {
@@ -252,7 +252,7 @@ namespace WETT.Controllers
             var li = from a in _context.ProductMasters
                      join b in _context.Suppliers on a.SupplierId equals b.SupplierId
                      join c in _context.ProductRegulatorLiqs on a.ProductId equals c.ProductId
-                     where b.ActiveFlag == "Y"
+                     where b.ActiveFlag == "Y" && b.LobCode == "LIQ"
                      select new
                      {
                          text = b.Name,

@@ -39,7 +39,7 @@ namespace WETT.Controllers
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
                          join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
-                         where a.InventoryTxId == InventoryTxCurrentId
+                         where a.InventoryTxId == InventoryTxCurrentId && b.Deleted == false
                          select new SaStockReceivedViewModel
                          {
                              InventoryTxDetailId = b.InventoryTxDetailId,
@@ -70,7 +70,7 @@ namespace WETT.Controllers
                                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                          join g in _context.TruckingCompanies on a.TruckingCompanyId equals g.TruckingCompanyId
                                          join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
-                                         where a.InventoryTxId == InventoryTxCurrentId
+                                         where a.InventoryTxId == InventoryTxCurrentId && b.Deleted == false
                                          select new SaStockReceivedViewModel
                                          {
                                              InventoryTxDetailId = b.InventoryTxDetailId,
@@ -162,6 +162,7 @@ namespace WETT.Controllers
                     InsertUserid = User.Identity.Name,
                     UpdateTimestamp = DateTime.Now,
                     UpdateUserid = User.Identity.Name,
+                    Deleted = false
                 };
                 _context.InventoryTxDetails.Add(r);
                 _context.SaveChanges();
@@ -216,7 +217,7 @@ namespace WETT.Controllers
         public JsonResult Delete(long id)
         {
             InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
+            r.Deleted = true;
             _context.SaveChanges();
 
 

@@ -12,6 +12,7 @@ namespace WETT.Controllers
     public class CustomerOrderController : Controller
     {
         public static long currentCustomer;
+        public static string currentLob;
         public static string currentOrderNumber;
         public static DateTime currentDateOrdered;
         public static long currentCustomerOrderStatus;
@@ -113,8 +114,8 @@ namespace WETT.Controllers
         }
         public JsonResult Update(CustomerOrderViewModel p)
         {
-            //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
-            ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
+           // ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
+            ProductRegulatorLiq s = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductDesc);
             CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
                 r.ProductId = s.ProductId;
                 r.QtyOrdered = p.QtyOrdered;
@@ -158,6 +159,7 @@ namespace WETT.Controllers
             else
             {
                 CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
+                s.LobCode = currentLob;
                 s.CustomerId = currentCustomer;
                 s.OrderNumber = currentOrderNumber;
                 s.DateOrdered = currentDateOrdered;
@@ -172,7 +174,8 @@ namespace WETT.Controllers
                 _context.SaveChanges();
             }
             //ProductMaster c = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
-            ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
+            //ProductMaster c = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
+            ProductRegulatorLiq c = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductDesc);
             CustomerOrderDetail r = new CustomerOrderDetail
             {
                 CustomerOrderId = CurrentCustomerOrderId,
@@ -217,6 +220,7 @@ namespace WETT.Controllers
                     dsSlipNumber = r.DsSlipNumber,
                     deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
                     specialInstructions = r.SpecialInstructions,
+                    lob = r.LobCode
                 };
                 return Json(headerInfo);
             }
@@ -234,6 +238,7 @@ namespace WETT.Controllers
             currentDeliveryReqDate = DateTime.Parse(li[6]);
             currentSpecialInstructions = li[7];
             currentCarrier = (long)Convert.ToDouble(li[8]);
+            currentLob = li[8];
             return Json(true);
         }
 

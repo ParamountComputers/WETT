@@ -41,7 +41,7 @@ namespace WETT.Controllers
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
                          join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
-                         where a.InventoryTxId == InventoryTxCurrentId
+                         where a.InventoryTxId == InventoryTxCurrentId && b.Deleted == false
                          select new invAdjViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -73,7 +73,7 @@ namespace WETT.Controllers
                                 join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                 join g in _context.InventoryTxReasons on b.InventoryTxReasonId equals g.InventoryTxReasonId
                                 join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
-                                where a.InventoryTxId == InventoryTxCurrentId
+                                where a.InventoryTxId == InventoryTxCurrentId && b.Deleted == false
                                 select new invAdjViewModel
                                 {
                                     InventoryTxId = b.InventoryTxId,
@@ -181,7 +181,7 @@ namespace WETT.Controllers
                 InsertUserid = User.Identity.Name,
                 UpdateTimestamp = DateTime.Now,
                 UpdateUserid = User.Identity.Name,
-
+                Deleted = false
             };
 
             _context.InventoryTxDetails.Add(r);
@@ -192,7 +192,8 @@ namespace WETT.Controllers
         public JsonResult Delete(long id)
         {
             InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
+            r.Deleted = true;
+           // _context.InventoryTxDetails.Remove(r);
             _context.SaveChanges();
 
             return Json(true);

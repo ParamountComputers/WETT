@@ -21,10 +21,14 @@
       <label for="customerOrderStatus"  class="Label">Order Status:</label>
       <select class="form-control dropDownInput" id="customerOrderStatus" name="customerOrderStatus"></select> 
   </div>
-  <div class="searchDropdown"> 
-      <label for="customer"  class="Label">Customer:</label>
-      <select class="form-control dropDownInput" id="customer" name="Customer"></select> 
-  </div>
+    <div class="searchInput">
+        <label for="customer" class="Label">Customer:</label>
+        <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
+    </div>
+    <div class="searchDropdown">
+        <label for="Lob" class="Label">Lob:</label>
+        <select class="form-control dropDownInput" id="Lob" name="Lob"></select>
+    </div>
   <div></div>
   <div class="searchDropdown"> 
       <label for="carrier"  class="Label">Carrier:</label>
@@ -108,7 +112,7 @@
                     } });   
                     }
                    }},
-                   { name: 'productId',hidden:true,  editoptions: { readonly: 'readonly' }, key: true },
+                   { name: 'productId',hidden:true,  editoptions: { readonly: 'readonly' }},
                    { label: 'Product ID(SKU)',name: 'productSku',fixed:true,width:125,edittype:'text', editoptions: {readonly: 'readonly'}},
                    { label: 'Stock Qty',name: 'stockQty',fixed:true,width:100, editable: true,edittype:'text',editoptions: {readonly: 'readonly'}},
                    { label: 'Qty Ordered',name: 'qtyOrdered',fixed:true,width:100, editable: true,edittype:'text',editrules: {number:true}},
@@ -158,7 +162,9 @@
                var deliveryReqDate = $("#deliveryReqDate").val();
                var specialInstructions = $("#specialInstructions").val();
                var carrier = $("#carrier").val();
-               $.getJSON('CustomerOrder/CreateHeader?data='+customer+'/'+orderNumber+'/'+dateOrdered+'/'+customerOrderStatus+'/'+driver+'/'+dsSlipNumber+'/'+deliveryReqDate+'/'+specialInstructions+'/'+carrier, function(){});
+               var Lob = $("#Lob").val();
+                        $.ajaxSetup({ "async": false });
+               $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier + '/' + Lob, function () { });
                $.ajaxSetup( { "async": true } );
                },
                closeAfterAdd: true,
@@ -179,20 +185,25 @@
        $("#newPage").on('click', function () {
            window.location.replace("CustomerOrder");
        });
-        $(document).ready(function () {  
-       $.ajax({  
-           type: "GET",  
-           url: "CustomerOrder/CreateCustomerList",  
-           data: "{}",  
-           success: function (data) {  
-               var s = '';  
-               for (var i = 0; i < data.length; i++) {  
-                   s += '<option value="' + data[i].value + '">' + data[i].text + '</option>';  
-               }  
-               $("#customer").html(s);    
-           }  
-       });  
-   });
+        $(document).ready(function () {
+            var s = '';
+            s += '<option value="LIQ"> Liquor </option>';
+            s += '<option value="CAN"> Cannabis </option>';
+            $("#Lob").html(s);
+        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "CannabisOrderEntry/CreateCustomerList",
+                data: "{}",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#customer").append('<option value="' + data[i].value + '">' + data[i].text + '</option>');
+                    }
+                    $("#customer").selectpicker("refresh");
+                }
+            });
+        });
            $(document).ready(function () {  
        $.ajax({  
            type: "GET",  
@@ -239,6 +250,7 @@
                       $('#dsSlipNumber').val(data.dsSlipNumber);
                       $('#deliveryReqDate').val(data.deliveryReqDate);
                       $('#specialInstructions').val(data.specialInstructions);
+                      $('#Lob').val(data.lob);
                    }
                }  
            });  

@@ -41,7 +41,7 @@ namespace WETT.Controllers
                          join e in _context.ProductMasters on b.ProductId equals e.ProductId
                          join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                          join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
-                         where a.InventoryTxId == InventoryTxCurrentId
+                         where a.InventoryTxId == InventoryTxCurrentId && b.Deleted == false
                          select new SaOutboundViewModel
                          {
                              InventoryTxId = b.InventoryTxId,
@@ -69,7 +69,7 @@ namespace WETT.Controllers
                                     join e in _context.ProductMasters on b.ProductId equals e.ProductId
                                     join f in _context.Suppliers on e.SupplierId equals f.SupplierId
                                     join h in _context.ProductRegulatorLiqs on b.ProductId equals h.ProductId
-                                    where a.InventoryTxId == InventoryTxCurrentId
+                                    where a.InventoryTxId == InventoryTxCurrentId && b.Deleted == false
                                     select new SaOutboundViewModel
                                     {
                                         InventoryTxId = b.InventoryTxId,
@@ -181,7 +181,8 @@ namespace WETT.Controllers
                 InsertUserid = User.Identity.Name,
                 UpdateTimestamp = DateTime.Now,
                 UpdateUserid = User.Identity.Name,
-                InventoryTxId = InventoryTxCurrentId
+                InventoryTxId = InventoryTxCurrentId,
+                Deleted = false
             };
 
             _context.InventoryTxDetails.Add(r);
@@ -194,7 +195,7 @@ namespace WETT.Controllers
         public JsonResult Delete(long id)
         {
             InventoryTxDetail r = _context.InventoryTxDetails.Single(e => e.InventoryTxDetailId == id);
-            _context.InventoryTxDetails.Remove(r);
+            r.Deleted = true;
             _context.SaveChanges();
 
 

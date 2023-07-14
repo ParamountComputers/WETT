@@ -81,7 +81,7 @@
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'SA Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
+                   { label: 'Product Name',name: 'productName',width:300,fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: {
                     dataInit: function(elem) {
                     curRowId = $('#saDamageRecoup').getGridParam('selrow');
@@ -95,7 +95,7 @@
                     } });   
                     }
                    }},
-                   { label: 'Supplier',name: 'supplierName',fixed:true,width:120,editable:true, editoptions: {readonly: 'readonly'}},
+                   { label: 'Supplier',name: 'supplierName',fixed:true,width:250,editable:true, editoptions: {readonly: 'readonly'}},
                    { label: 'Product SKU',name: 'productSku',fixed:true,width:85,editable:true , editoptions: {readonly: 'readonly'}},
                    { label: 'Locations',name: 'inventoryLocationId',fixed:true,width:80, editable: true, edittype:"select",formatter:'select',editrules: { required: true }, editoptions:{value:getLocation()}},
                    { label: 'ADJ Amount (+/-)',name: 'amount',fixed:true,width:85,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},

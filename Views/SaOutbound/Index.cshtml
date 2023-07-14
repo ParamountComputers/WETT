@@ -98,8 +98,9 @@
                    { label: 'InventoryTxTypeId',name: 'inventoryTxTypeId',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'SA Code',name: 'saCode',hidden:true, editable: true,editoptions: { readonly: 'readonly'}},
                    { label: 'Date',name: 'date',fixed:true,hidden:true, edittype:"text",editoptions: { readonly: 'readonly'}},
-                   { label: 'Product Name',name: 'productName',fixed:true,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
-                   editoptions: { 
+                    {
+                        label: 'Product Name', name: 'productName', width: 300, fixed: true, editable: true, editrules: { required: true, custom: true, custom_func: IsProduct },
+                        editoptions: { 
                       dataInit: function(elem) {
                       curRowId = $('#saOutbound').getGridParam('selrow');        
                       $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
@@ -109,7 +110,7 @@
                       $('input#productSku').val(getProductSku(ui.item.value));
                       } });   
                       }}},
-                   { label: 'Supplier',name: 'supplierName',fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                    { label: 'Supplier', name: 'supplierName', width: 250, fixed: true, editable: true, edittype: "text", editoptions: { readonly: 'readonly' } },
                    { label: 'Product SKU',name: 'productSku',fixed:true,width:85,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'ADJ Amount (+/-)',name: 'amount',fixed:true,width:85,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
                    { label: 'Notes',name: 'comments',fixed:true,width:450, editable: true, edittype:"text"}

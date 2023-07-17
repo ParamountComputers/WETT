@@ -183,7 +183,8 @@
                success: function (data) {  
                    if(data!=null)
                    {
-                     // alert(data);
+                      console.log(data);
+                      console.log(data.sacode);
                       header= true;
                       $("#saCode").val(data.sacode);
                       $("#date").val(data.date);

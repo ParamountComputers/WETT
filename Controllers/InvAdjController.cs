@@ -206,7 +206,7 @@ namespace WETT.Controllers
                 var headerInfo = new
                 {
                     comments = r.Comments,
-                    sacode = CurrentSaCode,
+                    sacode = r.StockAdjCode,
                     date = r.Date.ToShortDateString()
                 };
                 return Json(headerInfo);

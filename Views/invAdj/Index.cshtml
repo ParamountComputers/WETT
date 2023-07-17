@@ -183,13 +183,10 @@
                success: function (data) {  
                    if(data!=null)
                    {
-                      console.log(data);
-                      console.log(data.sacode);
                       header= true;
                       $("#saCode").val(data.sacode);
                       $("#date").val(data.date);
                       $("#comments").val(data.comments);
-                     // alert(data.sacode);
                    }
                }  
            });  

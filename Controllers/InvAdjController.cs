@@ -203,12 +203,12 @@ namespace WETT.Controllers
             if (InventoryTxCurrentId != -1)
             {
                 InventoryTx r = _context.InventoryTxes.Single(e => e.InventoryTxId == InventoryTxCurrentId);
-                var curDate = r.Date.ToString().Split("T");
+                var curDate = r.Date.ToString().Split(" ");
                 var headerInfo = new
                 {
                     comments = r.Comments,
                     sacode = r.StockAdjCode,
-                    date = curDate[0],
+                    date = curDate[0].ToString(),
                 };
                 return Json(headerInfo);
             }

@@ -132,12 +132,12 @@
                 $.getJSON('SaExciseDuty/DisplaySACode', function(data){
                 $("#saCode").val(data);
                 });
-                $.ajaxSetup( { "async": true } );
                },
                beforeSubmit :function (){
                var currentDate = $("#date").val();
                var notes = $("#comments").val();
                var toLocation = $("#locationsDropdown").val();
+               $.ajaxSetup({ "async": false });
                $.getJSON('SaExciseDuty/CreateHeader?data='+currentDate+'/'+notes+'/'+toLocation, function(){});
                $.ajaxSetup( { "async": true } );
                },

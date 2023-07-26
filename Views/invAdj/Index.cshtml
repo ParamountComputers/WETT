@@ -136,16 +136,16 @@
                //onclickSubmit: function (){
                //},
                afterSubmit:function(){
-                        $.ajaxSetup({ "async": false });
                 $.getJSON('InvAdj/DisplaySACode', function(data){
                 $("#saCode").val(data);
                 });
-                $.ajaxSetup( { "async": true } );
+                        console.log($("#saCode").val());
                },
                beforeSubmit :function (){
                var currentDate = $("#date").val();
                var notes = $("#comments").val();
                $.ajaxSetup( { "async": false } );
+               console.log(currentDate);
                $.getJSON('InvAdj/CreateHeader?data='+currentDate+'/'+notes, function(){});
                $.ajaxSetup( { "async": true } );
                },
@@ -186,6 +186,7 @@
                       header= true;
                       $("#saCode").val(data.sacode);
                       $("#date").val(data.date);
+                        console.log(data.date);
                       $("#comments").val(data.comments);
                    }
                }  

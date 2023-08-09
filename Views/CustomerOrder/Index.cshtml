@@ -25,10 +25,10 @@
         <label for="customer" class="Label">Customer:</label>
         <select class="searchDropdown2 selectpicker" id="customer" data-live-search="true"></select>
     </div>
-    <div class="searchDropdown">
+@*    <div class="searchDropdown">
         <label for="Lob" class="Label">Lob:</label>
         <select class="form-control dropDownInput" id="Lob" name="Lob"></select>
-    </div>
+    </div>*@
   <div></div>
   <div class="searchDropdown"> 
       <label for="carrier"  class="Label">Carrier:</label>
@@ -162,9 +162,9 @@
                var deliveryReqDate = $("#deliveryReqDate").val();
                var specialInstructions = $("#specialInstructions").val();
                var carrier = $("#carrier").val();
-               var Lob = $("#Lob").val();
+               //var Lob = $("#Lob").val();
                         $.ajaxSetup({ "async": false });
-               $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier + '/' + Lob, function () { });
+               $.getJSON('CustomerOrder/CreateHeader?data=' + customer + '/' + orderNumber + '/' + dateOrdered + '/' + customerOrderStatus + '/' + driver + '/' + dsSlipNumber + '/' + deliveryReqDate + '/' + specialInstructions + '/' + carrier , function () { });
                $.ajaxSetup( { "async": true } );
                },
                closeAfterAdd: true,

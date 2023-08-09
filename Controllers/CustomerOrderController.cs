@@ -159,7 +159,6 @@ namespace WETT.Controllers
             else
             {
                 CustomerOrder s = _context.CustomerOrders.Single(a => a.CustomerOrderId == CurrentCustomerOrderId);
-                s.LobCode = currentLob;
                 s.CustomerId = currentCustomer;
                 s.OrderNumber = currentOrderNumber;
                 s.DateOrdered = currentDateOrdered;
@@ -238,7 +237,7 @@ namespace WETT.Controllers
             currentDeliveryReqDate = DateTime.Parse(li[6]);
             currentSpecialInstructions = li[7];
             currentCarrier = (long)Convert.ToDouble(li[8]);
-            currentLob = li[8];
+            //currentLob = li[8];
             return Json(true);
         }
 

@@ -14,10 +14,10 @@
         <input type="text" class="NotesInput" id="supplierName" name="supplierName" />
     </div>
     <div class="Gap2"></div>
-    <div class="searchDropdown2">
+@*    <div class="searchDropdown2">
         <label for="lob" class="Label">Line Of buss:</label>
         <select class="form-control dropDownInput2" id="lob" name="lob"></select>
-    </div>
+    </div>*@
 </body>
 <table id="supplier"></table>
 <div id="jqGridPager"></div>
@@ -97,19 +97,19 @@
        $("#supplierName").on('change keyup paste', function () {
            SearchBySupplierName();
        });
-      $(document).ready(function () {
-                    var s = '';
-                    s += '<option value="0"> Liquor </option>';
-                    s += '<option value="1"> Cannabis </option>';
-            $("#lob").html(s);
-        });
-        $("#lob").on('change', function () {
-            var currentLob = $("#lob").val();
-               $.ajaxSetup( { "async": false } );
-               $.getJSON('Supplier/SelectLob?data=' + currentLob, function () { });
-               $.ajaxSetup( { "async": true } ); 
-               $("#supplier").trigger("reloadGrid");
-        });
+      //$(document).ready(function () {
+      //              var s = '';
+      //              s += '<option value="0"> Liquor </option>';
+      //              s += '<option value="1"> Cannabis </option>';
+      //      $("#lob").html(s);
+      //  });
+        //$("#lob").on('change', function () {
+        //    var currentLob = $("#lob").val();
+        //       $.ajaxSetup( { "async": false } );
+        //       $.getJSON('Supplier/SelectLob?data=' + currentLob, function () { });
+        //       $.ajaxSetup( { "async": true } ); 
+        //       $("#supplier").trigger("reloadGrid");
+        //});
 
     function SearchBySupplierName()
     {

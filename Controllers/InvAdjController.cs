@@ -208,7 +208,7 @@ namespace WETT.Controllers
                 {
                     comments = r.Comments,
                     sacode = r.StockAdjCode,
-                    date = curDate[0].ToString(),
+                    date = r.Date,
                 };
                 return Json(headerInfo);
             }

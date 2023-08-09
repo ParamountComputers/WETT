@@ -46,7 +46,7 @@ namespace WETT.Controllers
             var wETT_DBContext = _context.Suppliers;
             // var supplierData = new SupplierViewModel().SuppliersDatabase;
 
-            var supplierData = (_context.Suppliers.Where(a => a.ActiveFlag == "Y" && a.LobCode.Trim() == currentLob)).ToList();
+            var supplierData = (_context.Suppliers.Where(a => a.ActiveFlag == "Y" && a.LobCode.Trim() == "LIQ")).ToList();
 
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));

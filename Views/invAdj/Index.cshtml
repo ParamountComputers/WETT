@@ -183,11 +183,10 @@
                success: function (data) {
                    if(data!=null)
                    {
-                      console.log(data);
+                      var date = data.date.split("T");
                       header= true;
                       $("#saCode").val(data.sacode);
-                      $("#date").val(data.date);
-                        console.log(data.date);
+                      $("#date").val(date[0]);
                       $("#comments").val(data.comments);
                    }
                }  

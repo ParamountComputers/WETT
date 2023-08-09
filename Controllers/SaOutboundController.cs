@@ -223,7 +223,7 @@ namespace WETT.Controllers
             {
                 comments = r.Comments,
                 sacode = CurrentSaCode,
-                date = r.Date.ToShortDateString(),
+                date = r.Date,
                 fromLocation = r.FromInventoryLocationId,
                 truckingComp = r.TruckingCompanyId,
                 destDropdown = r.ShippingLocationId,

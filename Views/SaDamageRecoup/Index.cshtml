@@ -180,9 +180,10 @@
                success: function (data) {  
                    if(data!=null)
                    {
+                        var date = data.date.split("T");
                       header= true;
                       $("#saCode").val(data.sacode);
-                      $("#date").val(data.date);
+                      $("#date").val(date[0]);
                       $("#comments").val(data.comments);
                    }
                }  

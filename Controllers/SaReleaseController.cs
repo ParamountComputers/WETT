@@ -229,7 +229,7 @@ namespace WETT.Controllers
                 {
                     comments = r.Comments,
                     sacode = CurrentSaCode,
-                    date = r.Date.ToShortDateString(),
+                    date = r.Date,
                     transNumber = r.TransactionNo,
                     prevTransNo = r.PreviousTransactionNo,
                     locations = r.ToInventoryLocationId,

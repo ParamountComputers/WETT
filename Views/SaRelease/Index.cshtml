@@ -210,8 +210,9 @@
                      if(data!=null)
                      {
                       header= true;
+                        var date = data.date.split("T");
                       $("#saCode").val(data.sacode);
-                      $("#date").val(data.date);
+                      $("#date").val(date[0]);
                       $("#comments").val(data.comments);
                       $("#transNumber").val(data.transNumber);
                       $("#prevTransNo").val(data.prevTransNo);

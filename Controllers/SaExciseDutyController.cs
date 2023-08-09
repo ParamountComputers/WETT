@@ -209,7 +209,7 @@ namespace WETT.Controllers
                 {
                     comments = r.Comments,
                     sacode = CurrentSaCode,
-                    date = r.Date.ToShortDateString(),
+                    date = r.Date,
                     toLocation = r.ToInventoryLocationId,
                 };
                 return Json(headerInfo);

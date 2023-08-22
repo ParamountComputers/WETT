@@ -41,7 +41,7 @@ namespace WETT.Controllers
                              where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN"
                              select new CustomerOrderViewModel
                              {
-                                 CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                 CustomerOrderDetailId = b.CustomerOrderDetailId,
                                  CustomerOrderID = a.CustomerOrderId,
                                  ProductID = c.ProductId,
                                  ProductSku = d.Sku,
@@ -64,7 +64,7 @@ namespace WETT.Controllers
                                            where a.LobCode.Trim() == "CAN" && a.OrderNumber == orderNumber //CurrentCustomerOrderId.ToString()
                                            select new CustomerOrderViewModel
                                            {
-                                               CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                               CustomerOrderDetailId = b.CustomerOrderDetailId,
                                                CustomerOrderID = a.CustomerOrderId,
                                                OrderNumber = a.OrderNumber,
                                                ProductID = c.ProductId,
@@ -115,7 +115,7 @@ namespace WETT.Controllers
             public JsonResult Update(CustomerOrderViewModel p)
             {
                 //ProductMaster s = _context.ProductMasters.Single(a => a.Description == p.ProductDesc);
-                CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
+                CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDetailId);
               //  r.ProductId = p.ProductID;
               //  r.QtyOrdered = p.QtyOrdered;
                 r.QtyFulfilled = p.QtyFulfilled;

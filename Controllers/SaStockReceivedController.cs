@@ -235,7 +235,7 @@ namespace WETT.Controllers
                          value = s.SupplierId
 
                      };
-            return Json(li);
+            return Json(li.OrderByDescending(t => t.value));
         }
         public IActionResult CreateProductSkuList()
         {
@@ -251,7 +251,7 @@ namespace WETT.Controllers
         }
         public IActionResult CreateProductName()
         {
-            var invAdjData = from a in _context.ProductMasters
+            var li = from a in _context.ProductMasters
                              join b in _context.ProductRegulatorLiqs on a.ProductId equals b.ProductId
                              where a.ActiveFlag == true
                              select new
@@ -260,7 +260,7 @@ namespace WETT.Controllers
                                  text = b.Description,
 
                              };
-            return Json(invAdjData);
+            return Json(li.OrderByDescending(t => t.value));
         }
         public IActionResult CreateLocationsList()
         {

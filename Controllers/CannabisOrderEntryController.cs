@@ -56,7 +56,7 @@ namespace WETT.Controllers
                          where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN" //&& c.SupplierId == currentSupplierId
                          select new CustomerOrderViewModel
                          {
-                             CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                             CustomerOrderDetailId = b.CustomerOrderDetailId,
                              CustomerOrderID = a.CustomerOrderId,
                              ProductID = c.ProductId,
                              //ProductSku = d.Sku,
@@ -91,7 +91,7 @@ namespace WETT.Controllers
                                        where a.CustomerOrderId == CurrentCustomerOrderId && a.LobCode.Trim() == "CAN"  //&& c.SupplierId == currentSupplierId
                                        select new CustomerOrderViewModel
                                        {
-                                           CustomerOrderDtlsID = b.CustomerOrderDetailId,
+                                           CustomerOrderDetailId = b.CustomerOrderDetailId,
                                            CustomerOrderID = a.CustomerOrderId,
                                            ProductID = c.ProductId,
                                           // ProductSku = d.Sku,
@@ -149,7 +149,7 @@ namespace WETT.Controllers
         {
             var a = p.ProductDesc.Split(" ");
             ProductRegulatorCan c = _context.ProductRegulatorCans.Single(b => b.Sku == a[0]);
-            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
+            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDetailId);
             r.ProductId = c.ProductId;
             r.QtyOrdered = p.QtyOrdered;
             r.QtyFulfilled = p.QtyFulfilled;

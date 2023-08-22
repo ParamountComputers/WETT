@@ -243,7 +243,7 @@ namespace WETT.Controllers
                          value = c.Description
 
                      };
-            return Json(li);
+            return Json(li.OrderByDescending(t => t.value));
         }
         public IActionResult CreateSupplierList()
         {
@@ -256,7 +256,7 @@ namespace WETT.Controllers
                          value = s.SupplierId
 
                      };
-            return Json(li);
+            return Json(li.OrderByDescending(t => t.value));
         }
         public IActionResult CreateProductSkuList()
         {
@@ -278,7 +278,7 @@ namespace WETT.Controllers
                                  value = a.SupplierId,
                                  text = b.Description
                              };
-            return Json(saDamagerecoup);
+            return Json(saDamagerecoup.OrderByDescending(t => t.text));
         }
         public IActionResult CreateLocationList()
         {

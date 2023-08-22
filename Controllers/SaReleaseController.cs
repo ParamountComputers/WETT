@@ -260,7 +260,7 @@ namespace WETT.Controllers
                          value = c.Description
 
                      };
-            return Json(li);
+            return Json(li.OrderByDescending(t => t.value));
         }
         public IActionResult CreateProductSkuList()
         {
@@ -282,7 +282,7 @@ namespace WETT.Controllers
                                      value = a.SupplierId,
                                      text = b.Description
                                  };
-            return Json(SaReleaseData);
+            return Json(SaReleaseData.OrderByDescending(t => t.value));
         }
 
         public IActionResult CreateLocationList()

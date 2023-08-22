@@ -40,21 +40,21 @@ namespace WETT.Controllers
             }
         
 
-            var result = from a in _context.CustomerOrders
-                         join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
-                                          join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                          join d in _context.ProductRegulatorLiqs on b.ProductId equals d.ProductId
+            var result = from a in _context.CustomerOrderDetails
+                         join b in _context.CustomerOrders on a.CustomerOrderId equals b.CustomerOrderId
+                                          join c in _context.ProductMasters on a.ProductId equals c.ProductId
+                                          join d in _context.ProductRegulatorLiqs on a.ProductId equals d.ProductId
                                           where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ"
                          select new CustomerOrderViewModel
                                           {
-                                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
-                                              CustomerOrderID = a.CustomerOrderId,
+                             CustomerOrderDetailId = a.CustomerOrderDetailId,
+                                              CustomerOrderID = b.CustomerOrderId,
                                               ProductID = c.ProductId,
                                               ProductSku = d.Sku,
                                               ProductDesc = d.Description,
                                               StockQty = 0,
-                                              QtyOrdered = b.QtyOrdered,
-                                              Notes = b.Notes
+                                              QtyOrdered = a.QtyOrdered,
+                                              Notes = a.Notes
                                           };
             return View(result);
         }
@@ -62,21 +62,21 @@ namespace WETT.Controllers
 
         public JsonResult GetAll(JqGridViewModel request)
         {
-            var AllCustomerOrderData = from a in _context.CustomerOrders
-                                       join b in _context.CustomerOrderDetails on a.CustomerOrderId equals b.CustomerOrderId
-                                       join c in _context.ProductMasters on b.ProductId equals c.ProductId
-                                       join d in _context.ProductRegulatorLiqs on b.ProductId equals d.ProductId
+            var AllCustomerOrderData = from a in _context.CustomerOrderDetails
+                                       join b in _context.CustomerOrders on a.CustomerOrderId equals b.CustomerOrderId
+                                       join c in _context.ProductMasters on a.ProductId equals c.ProductId
+                                       join d in _context.ProductRegulatorLiqs on a.ProductId equals d.ProductId
                                        where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ"
                                        select new CustomerOrderViewModel
                                           {
-                                              CustomerOrderDtlsID = b.CustomerOrderDetailId,
-                                              CustomerOrderID = a.CustomerOrderId,
+                                           CustomerOrderDetailId = a.CustomerOrderDetailId,
+                                              CustomerOrderID = b.CustomerOrderId,
                                               ProductID = c.ProductId,
                                               ProductSku = d.Sku,
                                               ProductDesc = d.Description,
                                               StockQty = 0,
-                                              QtyOrdered = b.QtyOrdered,
-                                              Notes = b.Notes
+                                              QtyOrdered = a.QtyOrdered,
+                                              Notes = a.Notes
                                           };
             var CustomerOrderData = AllCustomerOrderData;
             if (CurrentCustomerOrderId != -1)
@@ -116,7 +116,7 @@ namespace WETT.Controllers
         {
            // ProductMaster s = _context.ProductMasters.Single(a => a.ProductId == p.ProductID);
             ProductRegulatorLiq s = _context.ProductRegulatorLiqs.Single(a => a.Description == p.ProductDesc);
-            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDtlsID);
+            CustomerOrderDetail r = _context.CustomerOrderDetails.Single(a => a.CustomerOrderDetailId == p.CustomerOrderDetailId);
                 r.ProductId = s.ProductId;
                 r.QtyOrdered = p.QtyOrdered;
                 r.Notes = p.Notes;

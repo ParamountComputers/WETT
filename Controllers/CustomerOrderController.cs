@@ -42,9 +42,10 @@ namespace WETT.Controllers
 
             var result = from a in _context.CustomerOrderDetails
                          join b in _context.CustomerOrders on a.CustomerOrderId equals b.CustomerOrderId
-                                          join c in _context.ProductMasters on a.ProductId equals c.ProductId
-                                          join d in _context.ProductRegulatorLiqs on a.ProductId equals d.ProductId
-                                          where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ"
+                         join c in _context.ProductMasters on a.ProductId equals c.ProductId
+                         join d in _context.ProductRegulatorLiqs on a.ProductId equals d.ProductId
+                         join e in _context.Inventories on c.ProductId equals e.ProductId
+                         where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ" && e.InventoryLocationId == 1
                          select new CustomerOrderViewModel
                                           {
                              CustomerOrderDetailId = a.CustomerOrderDetailId,
@@ -52,7 +53,7 @@ namespace WETT.Controllers
                                               ProductID = c.ProductId,
                                               ProductSku = d.Sku,
                                               ProductDesc = d.Description,
-                                              StockQty = 0,
+                                              StockQty = e.Count,
                                               QtyOrdered = a.QtyOrdered,
                                               Notes = a.Notes
                                           };
@@ -66,7 +67,8 @@ namespace WETT.Controllers
                                        join b in _context.CustomerOrders on a.CustomerOrderId equals b.CustomerOrderId
                                        join c in _context.ProductMasters on a.ProductId equals c.ProductId
                                        join d in _context.ProductRegulatorLiqs on a.ProductId equals d.ProductId
-                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ"
+                                       join e in _context.Inventories on c.ProductId equals e.ProductId
+                                       where a.CustomerOrderId == CurrentCustomerOrderId && c.LobCode.Trim() == "LIQ" && e.InventoryLocationId == 1
                                        select new CustomerOrderViewModel
                                           {
                                            CustomerOrderDetailId = a.CustomerOrderDetailId,
@@ -74,7 +76,7 @@ namespace WETT.Controllers
                                               ProductID = c.ProductId,
                                               ProductSku = d.Sku,
                                               ProductDesc = d.Description,
-                                              StockQty = 0,
+                                              StockQty = e.Count,
                                               QtyOrdered = a.QtyOrdered,
                                               Notes = a.Notes
                                           };

@@ -97,7 +97,7 @@
                             delOptions: { url: 'CustomerOrder/Delete' }
                         }
                     },
-                    { label: 'Customer Order Detail Id', name: 'customerOrderDetailId', editable: true, editoptions: { readonly: 'readonly' }, key: true },
+                    { label: 'Customer Order Detail Id', name: 'customerOrderDetailId', editable: true, hidden: true,editoptions: { readonly: 'readonly' }, key: true },
                     { label: 'Customer Order Id', name: 'customerOrderDetailId', hidden: true, editable: true, editoptions: { readonly: 'readonly' } },
                    { label: 'Product Desc',name: 'productDesc',fixed:true,width:150,editable: true,editrules: { required: true,custom:true, custom_func:IsProduct },                                                             
                     editoptions: { 
@@ -106,8 +106,8 @@
                     $(elem).select();
                     $(elem).autocomplete({source: getProductName(),autoFocus: true,minLength: 0, select:function (event, ui) {
                     $('#customerOrder').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
-                    $('input#productSku').val(getProductSku(ui.item.value));  
-                    $('#customerOrder').jqGrid('setCell',curRowId,'stockQty',getProductSku(ui.item.value));
+                    $('input#productSku').val(getProductSku(ui.item.value));
+                    $('#customerOrder').jqGrid('setCell', curRowId, 'stockQty', getStockQty(ui.item.value));
                     $('input#stockQty').val(getStockQty(ui.item.value)); 
                     } });   
                     }

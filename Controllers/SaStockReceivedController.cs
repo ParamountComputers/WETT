@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,13 @@ namespace WETT.Controllers
 {
     public class SaStockReceivedController : Controller
     {
-
+        public static DateTime CurrentDate;
+        public static string CurrentNotes;
+        public static string CurrentSealNumber;
+        public static long CurrentLTolocationsId;
+        public static long CurrentLSupplierId;
+        public static string CurrentProbill;
+        public static long CurrentTruckingCompany;
         public static string CurrentSaCode;
         public static string CurrentPurchaseOrder;
         public static long InventoryTxCurrentId;
@@ -120,15 +127,20 @@ namespace WETT.Controllers
             {
                 InventoryTx s = new InventoryTx
                 {
-                    Date = DateTime.Now,
+                    Date = CurrentDate,
                     PurchaseOrder = CurrentPurchaseOrder,
-                    //ToInventoryLocationId = CurrentToLocation,
+                    ToInventoryLocationId = CurrentLTolocationsId,
+                    Comments = CurrentNotes,
+                    SupplierId = CurrentLSupplierId,
+                    TruckingCompanyId = CurrentTruckingCompany,
+                    Seal = CurrentSealNumber,
+                    Probill= CurrentProbill,
                     InventoryTxTypeId = 7,
                     InsertTimestamp = DateTime.Now,
                     InsertUserId = User.Identity.Name,
                     UpdateTimestamp = DateTime.Now,
                     UpdateUserId = User.Identity.Name,
-                    StockAdjCode = "CB"
+                    StockAdjCode = "SR"
                 };
                 _context.InventoryTxes.Add(s);
                 _context.SaveChanges();
@@ -142,7 +154,7 @@ namespace WETT.Controllers
                 InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
                 //s.ToInventoryLocationId = CurrentToLocation;
                 s.PurchaseOrder = CurrentPurchaseOrder;
-                s.ToInventoryLocationId = CurrentToLocation;
+                s.ToInventoryLocationId = CurrentLTolocationsId;
                 s.InsertTimestamp = DateTime.Now;
                 s.InsertUserId = User.Identity.Name;
                 s.UpdateTimestamp = DateTime.Now;
@@ -154,7 +166,7 @@ namespace WETT.Controllers
             InventoryTxDetail r = new InventoryTxDetail
                 {
                     Comments = p.Comments,
-                    ToInventoryLocationId = CurrentToLocation,
+                    ToInventoryLocationId = CurrentLTolocationsId,
                     ProductId = c.ProductId,
                     Amount = p.Amount,
                     InventoryTxId = InventoryTxCurrentId,
@@ -173,7 +185,14 @@ namespace WETT.Controllers
         public IActionResult CreateHeader(string data)
         {
             var li = data.Split("/");
+            CurrentDate = DateTime.Parse(li[0]);
+            CurrentNotes = li[1];
+            CurrentTruckingCompany = (long)Convert.ToDouble(li[2]);
             CurrentPurchaseOrder = li[3];
+            CurrentSealNumber = li[4];
+            CurrentProbill = li[5];
+            CurrentLTolocationsId = (long)Convert.ToDouble(li[6]);
+            CurrentLSupplierId = (long)Convert.ToDouble(li[7]);
             return Json(true);
         }
 

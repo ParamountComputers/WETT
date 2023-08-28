@@ -241,16 +241,18 @@
                    if(data!=null)
                    {
                       header= true;
-                      $("#customer").val(data.customer);
-                      $('#orderNumber').val(data.orderNumber);
-                      $('#dateOrdered').val(data.dateOrdered);
-                      $('#customerOrderStatus').val(data.customerOrderStatus);
-                      $('#driver').val(data.driver);
-                      $('#carrier').val(data.carrier);
-                      $('#dsSlipNumber').val(data.dsSlipNumber);
-                      $('#deliveryReqDate').val(data.deliveryReqDate);
-                      $('#specialInstructions').val(data.specialInstructions);
-                      $('#Lob').val($.trim(data.lob));
+                        var dateOrdered = data.dateOrdered.split("T");
+                        var deliveryReqDate = data.deliveryReqDate.split("T");
+                        $("#customer").val(data.customer);
+                        $('#orderNumber').val(data.orderNumber);
+                        $('#dateOrdered').val(dateOrdered[0]);
+                        $('#customerOrderStatus').val(data.customerOrderStatus);
+                        $('#driver').val(data.driver);
+                        $('#carrier').val(data.carrier);
+                        $('#dsSlipNumber').val(data.dsSlipNumber);
+                        $('#deliveryReqDate').val(deliveryReqDate[0]);
+                        $('#specialInstructions').val(data.specialInstructions);
+                        $('#Lob').val($.trim(data.lob));
 
                    }
                }  

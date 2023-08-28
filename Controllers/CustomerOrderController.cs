@@ -214,12 +214,12 @@ namespace WETT.Controllers
                 {
                     customer = r.CustomerId,
                     orderNumber = r.OrderNumber,
-                    dateOrdered = r.DateOrdered.ToShortDateString(),
+                    dateOrdered = r.DateOrdered,
                     customerOrderStatus = r.CustomerOrderStatusId,
                     carrier = r.CarrierId,
                     driver = r.Driver,
                     dsSlipNumber = r.DsSlipNumber,
-                    deliveryReqDate = r.DeliveryReqDate.ToShortDateString(),
+                    deliveryReqDate = r.DeliveryReqDate,
                     specialInstructions = r.SpecialInstructions,
                     lob = r.LobCode
                 };

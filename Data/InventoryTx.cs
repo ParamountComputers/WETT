@@ -15,7 +15,7 @@ public partial class InventoryTx
 
     public long? ToInventoryLocationId { get; set; }
 
-    public long? SupplierId { get; set; }
+    public long SupplierId { get; set; }
 
     public long? CustomerOrderId { get; set; }
 

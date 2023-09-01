@@ -45,6 +45,7 @@ namespace WETT.Controllers
                              InventoryTxDetailId = b.InventoryTxDetailId,
                              ProductSku = g.Sku,
                              SupplierName = f.Name,
+                             SupplierId = f.SupplierId,
                              ProductId = e.ProductId,
                              ProductName = g.Description,
                              InventoryLocationId = d.InventoryLocationId,
@@ -134,6 +135,7 @@ namespace WETT.Controllers
                 {
                     Date = CurrentDate,
                     Comments = Notes,
+                    SupplierId = p.SupplierId,
                     InventoryTxTypeId = 5,
                     InsertTimestamp = DateTime.Now,
                     InsertUserId = User.Identity.Name,
@@ -233,10 +235,11 @@ namespace WETT.Controllers
                      select new
                      {
                          text = b.Name,
-                         value = c.Description
+                         value = c.Description,
+                         input = b.SupplierId
 
                      };
-            return Json(li.OrderByDescending(t => t.value));
+            return Json(li.OrderBy(t => t.value));
         }
         public IActionResult CreateProductSkuList()
         {
@@ -259,7 +262,7 @@ namespace WETT.Controllers
                                  value = a.SupplierId,
                                  text = b.Description
                              };
-            return Json(li.OrderByDescending(t => t.value));
+            return Json(li.OrderBy(t => t.text));
         }
 
         public IActionResult CreateLocationList()
@@ -269,6 +272,16 @@ namespace WETT.Controllers
                                    {
                                        value = a.InventoryLocationId,
                                        text = a.Description
+                                   };
+            return Json(SaExciseDutyData);
+        }
+        public IActionResult CreateSupplierList()
+        {
+            var SaExciseDutyData = from a in _context.Suppliers.Where(A => A.ActiveFlag == "Y")
+                                   select new
+                                   {
+                                       value = a.SupplierId,
+                                       text = a.Name
                                    };
             return Json(SaExciseDutyData);
         }

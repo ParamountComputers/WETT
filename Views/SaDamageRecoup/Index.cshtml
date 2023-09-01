@@ -142,8 +142,9 @@
                beforeSubmit :function (){
                var currentDate = $("#date").val();
                var notes = $("#comments").val();
+                        var supplier = $('#supplierDropdown').val();
                $.ajaxSetup({ "async": false });
-               $.getJSON('SaDamageRecoup/CreateHeader?data='+currentDate+'/'+notes, function(){});
+                        $.getJSON('SaDamageRecoup/CreateHeader?data=' + currentDate + '/' + notes + '/' + supplier, function () { });
                $.ajaxSetup( { "async": true } );
                },
                closeAfterAdd: true,
@@ -185,6 +186,7 @@
                       $("#saCode").val(data.sacode);
                       $("#date").val(date[0]);
                       $("#comments").val(data.comments);
+                        $('#supplierDropdown').val(data.supplier);
                    }
                }  
            });  

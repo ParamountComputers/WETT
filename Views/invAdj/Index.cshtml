@@ -105,6 +105,7 @@
 
                  ],  
                viewrecords: true,
+                multipleSearch: true,
                height: 388.5,
                rowHeight: 20,
                rowNum: 15,
@@ -144,9 +145,9 @@
                beforeSubmit :function (){
                var currentDate = $("#date").val();
                var notes = $("#comments").val();
+               var supplier = $('#supplierDropdown').val();
                $.ajaxSetup( { "async": false } );
-               console.log(currentDate);
-               $.getJSON('InvAdj/CreateHeader?data='+currentDate+'/'+notes, function(){});
+                        $.getJSON('InvAdj/CreateHeader?data=' + currentDate + '/' + notes + '/' + supplier, function () { });
                $.ajaxSetup( { "async": true } );
                },
                closeAfterAdd: true,
@@ -158,6 +159,8 @@
                });
                
        });
+
+
        $(document).ready(function () {  
            $('#date').val(date());
        });
@@ -188,6 +191,7 @@
                       $("#saCode").val(data.sacode);
                       $("#date").val(date[0]);
                       $("#comments").val(data.comments);
+                      $('#supplierDropdown').val(data.supplier);
                    }
                }  
            });  

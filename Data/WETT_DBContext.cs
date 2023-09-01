@@ -242,7 +242,8 @@ public partial class WETT_DBContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("Licence Number");
             entity.Property(e => e.MbllCustomerNo)
-                .HasColumnType("numeric(8, 0)")
+                .HasMaxLength(15)
+                //.HasColumnType("nvarchar(15)")
                 .HasColumnName("MBLL Customer No");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Phone1)

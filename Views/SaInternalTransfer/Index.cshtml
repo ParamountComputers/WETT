@@ -98,11 +98,13 @@
                    $('input#supplierName').val(getSupplierNames(ui.item.value));
                    $('#saInternalTransfer').jqGrid('setCell',curRowId,'productSku',getProductSku(ui.item.value));
                    $('input#productSku').val(ProductSku.toString());
-                    
+                   $('#SaExciseDuty').jqGrid('setCell', curRowId, 'supplierId', getSupplierId(ui.item.value));
+                   $('input#supplierId').val(getSupplierId(ui.item.value));
                    } });   
                    }
                    }},
                    { label: 'Supplier',name: 'supplierName',width:250,fixed:true,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
+                   { label: 'SupplierId', name: 'supplierId', fixed: true, width: 250, editable: true, hidden: true },
                    { label: 'Product SKU',name: 'productSku',fixed:true,width:85,editable: true, edittype:"text", editoptions: {readonly: 'readonly'}},
                    { label: 'ADJ Amount (+/-)',name: 'amount',fixed:true,width:85,align:"right",editable: true, edittype:"text",editrules: { required: true, number: true }},
                    { label: 'Reasons',name: 'inventoryTxReasonsId',fixed:true,width:110, editable: true, edittype:"select",editrules: { required: true },formatter:'select', editoptions:{value:getReasons()}},
@@ -365,6 +367,22 @@
             });
             $.ajaxSetup( { "async": true } );
             return ReasonsList; 
+        }
+        function getSupplierId(value) {
+            var Supplier = "";
+            $.ajaxSetup({ "async": false });
+            $.getJSON('SaExciseDuty/CreateList', function (data) {
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (value === data[i].value) {
+                            Supplier = data[i].input;
+                        }
+                    }
+                }//if
+
+            });
+            $.ajaxSetup({ "async": true });
+            return Supplier;
         }
 </script>
 }

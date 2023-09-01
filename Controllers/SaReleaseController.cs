@@ -136,6 +136,7 @@ namespace WETT.Controllers
                     Date = CurrentDate,
                     InventoryTxTypeId = 4,          //hard coded transaction type id for now
                     StockAdjCode = "RB",
+                    SupplierId = p.SupplierId,
                     //add in extra cols here******************************************
                     PurchaseOrder = CurrentPurchaseOrder,
                     ToInventoryLocationId = CurrentToLocation,
@@ -257,10 +258,11 @@ namespace WETT.Controllers
                      select new
                      {
                          text = b.Name,
-                         value = c.Description
+                         value = c.Description,
+                         input = b.SupplierId
 
                      };
-            return Json(li.OrderByDescending(t => t.value));
+            return Json(li.OrderBy(t => t.text));
         }
         public IActionResult CreateProductSkuList()
         {
@@ -282,7 +284,7 @@ namespace WETT.Controllers
                                      value = a.SupplierId,
                                      text = b.Description
                                  };
-            return Json(SaReleaseData.OrderByDescending(t => t.value));
+            return Json(SaReleaseData.OrderBy(t => t.text));
         }
 
         public IActionResult CreateLocationList()

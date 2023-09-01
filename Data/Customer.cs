@@ -19,7 +19,7 @@ public partial class Customer
 
     public long? CdosId { get; set; }
 
-    public decimal? MbllCustomerNo { get; set; }
+    public string? MbllCustomerNo { get; set; }
 
     public string LicenceNumber { get; set; }
 

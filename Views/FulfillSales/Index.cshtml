@@ -112,6 +112,7 @@
                pager: "#jqGridPager",
                editurl: 'FulfillSales/UpdateHdr',
                multiselect: true,
+                multipleSearch: true,
                onSelectRow: function(rowid) {
                     curRowId=rowid;
                      var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
@@ -137,9 +138,8 @@
               //       $("#FulfillSalesDtls").trigger('reloadGrid');
 
               //}
-           }
-        )
-               
+           })
+
 
 
         $('#FulfillSalesHdr').navGrid('#jqGridPager',
@@ -150,14 +150,16 @@
                   
             },
             {
-                //closeAfterAdd: true,
-                //recreateForm: true,
+                closeAfterAdd: true,
+                recreateForm: true,
                 //errorTextFormat: function (data) {
                 //    return 'Error: ' + data.responseText
                 //},
                 //url: "FulfillSales/AddHdr"
-            }
-        );
+            });
+       });
+
+
         $(document).ready(function () {  
            $.ajax({  
                type: "GET",  
@@ -337,7 +339,7 @@
             return CarrierList; 
         }
 
-
+        $(document).ready(function() {
         $("#FulfillSalesDtls").jqGrid({
             url: 'FulfillSales/GetAllDtls',
             mtype: "GET",
@@ -403,8 +405,7 @@
                 //    return 'Error: ' + data.responseText
                 //},
                 //url: "FulfillSales/AddDtls"
-            }
-        );
+            });
 
     });
 

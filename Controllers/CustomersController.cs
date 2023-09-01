@@ -24,7 +24,7 @@ namespace WETT.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var wETT_DBContext = _context.Customers.Where(w=>w.ActiveFlag== true);
+            var wETT_DBContext = _context.Customers.Where(w=>w.ActiveFlag == true);
             return View(await wETT_DBContext.ToListAsync());
         }
 

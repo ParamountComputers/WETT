@@ -17,6 +17,7 @@ namespace WETT.Controllers
         public static string CurrentNotes;
         public static DateTime CurrentDate;
         public static long InventoryTxCurrentId;
+        public static long CurrentSupplierId;
         private readonly WETT_DBContext _context;
 
         public invAdjController(WETT_DBContext context)
@@ -143,6 +144,7 @@ namespace WETT.Controllers
                     Date = CurrentDate,
                     Comments = CurrentNotes,
                     InventoryTxTypeId = 1,
+                    SupplierId = CurrentSupplierId,
                     InsertUserId = User.Identity.Name,
                     InsertTimestamp = DateTime.Now,
                     UpdateTimestamp = DateTime.Now,
@@ -160,6 +162,7 @@ namespace WETT.Controllers
             {
                 InventoryTx s = _context.InventoryTxes.Single(a => a.InventoryTxId == InventoryTxCurrentId);
                 s.Comments = CurrentNotes;
+                s.SupplierId = CurrentSupplierId;
                 s.Date = CurrentDate;
                 s.InsertTimestamp = DateTime.Now;
                 s.InsertUserId = User.Identity.Name;
@@ -205,6 +208,7 @@ namespace WETT.Controllers
                 InventoryTx r = _context.InventoryTxes.Single(e => e.InventoryTxId == InventoryTxCurrentId);
                 var headerInfo = new
                 {
+                    supplier = r.SupplierId,
                     comments = r.Comments,
                     sacode = r.StockAdjCode,
                     date = r.Date,
@@ -218,6 +222,7 @@ namespace WETT.Controllers
             var li = data.Split("/");
             CurrentDate = DateTime.Parse(li[0]);
             CurrentNotes = li[1];
+            CurrentSupplierId = (long)Convert.ToDouble(li[2]);
 
             return Json(true);
         }
@@ -240,7 +245,7 @@ namespace WETT.Controllers
                          value = c.Description
 
                      };
-            return Json(li.OrderByDescending(t => t.value));
+            return Json(li.OrderBy(t => t.text));
         }
         public IActionResult CreateSupplierList()
         {
@@ -253,7 +258,7 @@ namespace WETT.Controllers
                          value = s.SupplierId
 
                      };
-            return Json(li.OrderByDescending(t => t.text));
+            return Json(li.OrderBy(t => t.text));
         }
         public IActionResult CreateProductSkuList()
         {
@@ -276,7 +281,7 @@ namespace WETT.Controllers
                                  value = a.SupplierId,
                                  text = b.Description
                              };
-            return Json((invAdjData.OrderByDescending(t => t.text)));
+            return Json((invAdjData.OrderBy(t => t.text)));
         }
         public IActionResult CreateLocationList()
         {

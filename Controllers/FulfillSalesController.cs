@@ -109,58 +109,58 @@ namespace WETT.Controllers
                     switch (rule.field)
                     {
                         case "OrderDate":
-                            FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(rule.data)));
+                            FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(rule.data))).ToList();
                             orderSearchDate = rule.data;
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
                             }
                             break;
                         case "DeliveryDate":
-                            FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data)));
+                            FulfillSalesData = FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data))).ToList();
                             deliverySearchDate = rule.data;
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
                             }
                             break;
                         case "Carrier":
                             carrierId = (long)Convert.ToDouble(rule.data);
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
                             }
                             else
                             {
@@ -168,23 +168,23 @@ namespace WETT.Controllers
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
                             }
 
                             break;
@@ -199,15 +199,15 @@ namespace WETT.Controllers
                             }
                             if (fulfilled == false && pending == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains(rule.data)).ToList();
                             }
                             else if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
                             }
                             else
                             {
@@ -215,15 +215,15 @@ namespace WETT.Controllers
                             }
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
                             }
                             break;
                         case "Fulfilled":
@@ -237,15 +237,15 @@ namespace WETT.Controllers
                             }
                             if (pending == false && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains(rule.data));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains(rule.data)).ToList();
                             }
                             else if (pending == true && fulfilled == false)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
                             }
                             else if (pending == true && fulfilled == true)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending"));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
                             }
                             else
                             {
@@ -253,15 +253,15 @@ namespace WETT.Controllers
                             }
                             if (carrierId != -1)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
                             }
                             if (orderSearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
                             }
                             if (deliverySearchDate != null)
                             {
-                                FulfillSalesData = (List<SpGetFulfillSalesHdr>)(IQueryable<SpGetFulfillSalesHdr>)FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate)));
+                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
                             }
                             break;
                             /*    case "locationsDropdown":

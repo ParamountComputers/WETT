@@ -10,6 +10,7 @@
     <h1 class="display-5">Fulfill Sales</h1>
 </div>
 <body>
+    <div id="searchHeader">
     <div class="searchDate">
        <label for="OrderDate" class="Label" >Order Date:</label>
        <input type="date"id='OrderDate' class="Date" name="OrderDate"/> 
@@ -28,16 +29,16 @@
     </div>
     <div class="checkbox">
                 <label  class="Label">Pending:
-                <input id="PendingCheckbox"type="checkbox"  class="checkboxInput" value="PendingCheckbox">
+                <input id="PendingCheckbox"type="checkbox"  class="checkboxInput" value="true">
                 </label> 
         </div>
     <div class="Gap2"></div>
     <div class="checkbox">
                 <label class="Label">Fulfilled:
-                <input id="FulfilledCheckbox"type="checkbox" class="checkboxInput" value="FulfilledCheckbox">
+                <input id="FulfilledCheckbox"type="checkbox" class="checkboxInput" value="true">
                 </label> 
         </div>
-
+    </div>
 </body>
 <table id="FulfillSalesHdr"></table>
 <div id="jqGridPager"></div>
@@ -112,7 +113,8 @@
                pager: "#jqGridPager",
                editurl: 'FulfillSales/UpdateHdr',
                multiselect: true,
-                multipleSearch: true,
+              // multipleSearch: true,
+               loadonce: true,
                onSelectRow: function(rowid) {
                     curRowId=rowid;
                      var id=$("#FulfillSalesHdr").getCell(rowid, "customerOrderID");
@@ -158,7 +160,17 @@
                 //url: "FulfillSales/AddHdr"
             });
        });
-
+        $("#searchHeader").on('change', function () {
+            var OrderDate = $('#OrderDate').val();
+            var DeliveryDate = $('#DeliveryDate').val();
+            var carrierDropdown = $('#carrierDropdown').val();
+            var orderSourceDropdown = $('#orderSourceDropdown').val();
+            var PendingCheckbox = $('#PendingCheckbox').is(":checked");
+            var FulfilledCheckbox = $('#FulfilledCheckbox').is(":checked");
+            $.ajaxSetup( { "async": false } );
+            $.getJSON('FulfillSales/CreateSearch?data=' + OrderDate + '/' + DeliveryDate + '/' + carrierDropdown + '/' + orderSourceDropdown + '/' + PendingCheckbox + '/' + FulfilledCheckbox, function () { });
+               $.ajaxSetup( { "async": true } );
+        });
 
         $(document).ready(function () {  
            $.ajax({  

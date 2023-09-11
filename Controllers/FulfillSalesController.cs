@@ -11,11 +11,12 @@ namespace WETT.Controllers
 {
     public class FulfillSalesController : Controller
     {
-        public static Boolean pending;
-        public static Boolean fulfilled;
+        private static Boolean pending;
+        private static Boolean fulfilled;
         private static string orderSearchDate;
         private static string deliverySearchDate;
         private static long carrierId;
+        private static long orderSourceId;
         private readonly WETT_DBContext _context;
         public static long CurrentHeaderId = -1;
 
@@ -25,50 +26,50 @@ namespace WETT.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            pending = false;
-            fulfilled = false;
-            orderSearchDate = null;
-            deliverySearchDate = null;
-            carrierId = -1;
+        pending = true;
+        fulfilled = true;
+        orderSearchDate = "";
+        deliverySearchDate = "";
+        carrierId= -1;
+        orderSourceId= -1;
+        /*
+         select * 
+            from	[Customer Order] a,
+                    [Customer] b,
+                    [Customer Order Status] c,
+                    [Carrier] d
+            where	a.[Customer Id] = b.[Customer Id]
+              and	a.[Customer Order Status Id] = c.[Customer Order Status Id]
+              and   a.[Carrier Id] = d.[Carrier Id]
 
-            /*
-             select * 
-                from	[Customer Order] a,
-                        [Customer] b,
-                        [Customer Order Status] c,
-                        [Carrier] d
-                where	a.[Customer Id] = b.[Customer Id]
-                  and	a.[Customer Order Status Id] = c.[Customer Order Status Id]
-                  and   a.[Carrier Id] = d.[Carrier Id]
-
-             */
-            //var result = from a in _context.CustomerOrders
-            //             join b in _context.Customers on a.CustomerId equals b.CustomerId
-            //             join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
-            //             join d in _context.Carriers on a.CarrierId equals d.CarrierId
-            //             select new FulfillSalesViewModel
-            //             {
-            //                 CustomerOrderID = a.CustomerOrderId,
-            //                 OrderDate = a.DateOrdered,
-            //                 DelveryDate = a.DeliveryReqDate,
-            //                 OrderNumber = a.OrderNumber,
-            //                 Customer = b.Name,
-            //                 City = b.City,
-            //                 CarrierID = d.CarrierId,
-            //                 CarrierDesc = d.Name,
-            //                 Instructions = a.SpecialInstructions,
-            //                 Status = c.Description
-
-
-            //             };
+         */
+        //var result = from a in _context.CustomerOrders
+        //             join b in _context.Customers on a.CustomerId equals b.CustomerId
+        //             join c in _context.CustomerOrderStatuses on a.CustomerOrderStatusId equals c.CustomerOrderStatusId
+        //             join d in _context.Carriers on a.CarrierId equals d.CarrierId
+        //             select new FulfillSalesViewModel
+        //             {
+        //                 CustomerOrderID = a.CustomerOrderId,
+        //                 OrderDate = a.DateOrdered,
+        //                 DelveryDate = a.DeliveryReqDate,
+        //                 OrderNumber = a.OrderNumber,
+        //                 Customer = b.Name,
+        //                 City = b.City,
+        //                 CarrierID = d.CarrierId,
+        //                 CarrierDesc = d.Name,
+        //                 Instructions = a.SpecialInstructions,
+        //                 Status = c.Description
 
 
+        //             };
 
-            var result = _context.SpGetFulfillSalesHdrs.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesHdr]").ToList();
+
+
+        var result = _context.SpGetFulfillSalesHdrs.FromSqlRaw("EXECUTE [dbo].[sp_getFulfillSalesHdr]").ToList();
 
             return View(result);
 
-
+            
 
 
         }
@@ -100,184 +101,213 @@ namespace WETT.Controllers
 
             var FulfillSalesDataTemp = FulfillSalesData;
 
+            if (pending == false && fulfilled == true)
+            {
+                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
+            }
+            else if (pending == true && fulfilled == false)
+            {
+                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
+            }
+            if (orderSearchDate != "")
+            {
+                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(orderSearchDate)).ToList();
+            }
+            if (deliverySearchDate != "")
+            {
+                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(deliverySearchDate)).ToList();
+            }
+            if (carrierId != -1)
+            {
+                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(carrierId)).ToList();
+            }
+
+            if (orderSourceId != -1)
+            {
+                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(orderSourceId)).ToList();
+            }
+
+
+
+
 
             bool issearch = request._search && request.searchfilters.rules.Any(a => !string.IsNullOrEmpty(a.data));
 
-            if (issearch)
-                foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
-                {
-                    switch (rule.field)
-                    {
-                        case "OrderDate":
-                            FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(rule.data))).ToList();
-                            orderSearchDate = rule.data;
-                            if (carrierId != -1)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
-                            }
-                            if (fulfilled == false && pending == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
-                            }
-                            else if (pending == false && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
-                            }
-                            else if (pending == true && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
-                            }
-                            if (deliverySearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
-                            }
-                            break;
-                        case "DeliveryDate":
-                            FulfillSalesData = FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data))).ToList();
-                            deliverySearchDate = rule.data;
-                            if (carrierId != -1)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
-                            }
-                            if (fulfilled == false && pending == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
-                            }
-                            else if (pending == false && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
-                            }
-                            else if (pending == true && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
-                            }
-                            if (orderSearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
-                            }
-                            break;
-                        case "Carrier":
-                            carrierId = (long)Convert.ToDouble(rule.data);
-                            if (carrierId != -1)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
-                            }
-                            else
-                            {
-                                FulfillSalesData = FulfillSalesDataTemp;
-                            }
-                            if (fulfilled == false && pending == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
-                            }
-                            else if (pending == false && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
-                            }
-                            else if (pending == true && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
-                            }
-                            if (orderSearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
-                            }
-                            if (deliverySearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
-                            }
+            //if (issearch)
+            //    foreach (Rule rule in request.searchfilters.rules.Where(a => !string.IsNullOrEmpty(a.data)))
+            //    {
+            //        switch (rule.field)
+            //        {
+            //            case "OrderDate":
+            //                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(rule.data))).ToList();
+            //                orderSearchDate = rule.data;
+            //                if (carrierId != -1)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
+            //                }
+            //                if (fulfilled == false && pending == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
+            //                }
+            //                else if (pending == false && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
+            //                }
+            //                else if (pending == true && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
+            //                }
+            //                if (deliverySearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
+            //                }
+            //                break;
+            //            case "DeliveryDate":
+            //                FulfillSalesData = FulfillSalesData.Where(w => w.DelveryDate.Equals(DateTime.Parse(rule.data))).ToList();
+            //                deliverySearchDate = rule.data;
+            //                if (carrierId != -1)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
+            //                }
+            //                if (fulfilled == false && pending == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
+            //                }
+            //                else if (pending == false && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
+            //                }
+            //                else if (pending == true && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
+            //                }
+            //                if (orderSearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
+            //                }
+            //                break;
+            //            case "Carrier":
+            //                carrierId = (long)Convert.ToDouble(rule.data);
+            //                if (carrierId != -1)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
+            //                }
+            //                else
+            //                {
+            //                    FulfillSalesData = FulfillSalesDataTemp;
+            //                }
+            //                if (fulfilled == false && pending == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
+            //                }
+            //                else if (pending == false && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
+            //                }
+            //                else if (pending == true && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
+            //                }
+            //                if (orderSearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
+            //                }
+            //                if (deliverySearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
+            //                }
 
-                            break;
-                        case "Pending":
-                            if (pending == false)
-                            {
-                                pending = true;
-                            }
-                            else
-                            {
-                                pending = false;
-                            }
-                            if (fulfilled == false && pending == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains(rule.data)).ToList();
-                            }
-                            else if (pending == false && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
-                            }
-                            else if (pending == true && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
-                            }
-                            else
-                            {
-                                FulfillSalesData = FulfillSalesDataTemp;
-                            }
-                            if (carrierId != -1)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
-                            }
-                            if (orderSearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
-                            }
-                            if (deliverySearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
-                            }
-                            break;
-                        case "Fulfilled":
-                            if (fulfilled == false)
-                            {
-                                fulfilled = true;
-                            }
-                            else
-                            {
-                                fulfilled = false;
-                            }
-                            if (pending == false && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains(rule.data)).ToList();
-                            }
-                            else if (pending == true && fulfilled == false)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
-                            }
-                            else if (pending == true && fulfilled == true)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
-                            }
-                            else
-                            {
-                                FulfillSalesData = FulfillSalesDataTemp;
-                            }
-                            if (carrierId != -1)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
-                            }
-                            if (orderSearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
-                            }
-                            if (deliverySearchDate != null)
-                            {
-                                FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
-                            }
-                            break;
-                            /*    case "locationsDropdown":
-                                    if (rule.data.Contains("-1"))
-                                    {
-                                        break; 
-                                    }
-                                    else
-                                    {
-                                        FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
-                                        break;
-                                    }
-                            */
+            //                break;
+            //            case "Pending":
+            //                if (pending == false)
+            //                {
+            //                    pending = true;
+            //                }
+            //                else
+            //                {
+            //                    pending = false;
+            //                }
+            //                if (fulfilled == false && pending == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains(rule.data)).ToList();
+            //                }
+            //                else if (pending == false && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled")).ToList();
+            //                }
+            //                else if (pending == true && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
+            //                }
+            //                else
+            //                {
+            //                    FulfillSalesData = FulfillSalesDataTemp;
+            //                }
+            //                if (carrierId != -1)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
+            //                }
+            //                if (orderSearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
+            //                }
+            //                if (deliverySearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
+            //                }
+            //                break;
+            //            case "Fulfilled":
+            //                if (fulfilled == false)
+            //                {
+            //                    fulfilled = true;
+            //                }
+            //                else
+            //                {
+            //                    fulfilled = false;
+            //                }
+            //                if (pending == false && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains(rule.data)).ToList();
+            //                }
+            //                else if (pending == true && fulfilled == false)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Pending")).ToList();
+            //                }
+            //                else if (pending == true && fulfilled == true)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.Status.Contains("Fulfilled") || w.Status.Contains("Pending")).ToList();
+            //                }
+            //                else
+            //                {
+            //                    FulfillSalesData = FulfillSalesDataTemp;
+            //                }
+            //                if (carrierId != -1)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.CarrierID.Equals(carrierId)).ToList();
+            //                }
+            //                if (orderSearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(orderSearchDate))).ToList();
+            //                }
+            //                if (deliverySearchDate != null)
+            //                {
+            //                    FulfillSalesData = FulfillSalesData.Where(w => w.OrderDate.Equals(DateTime.Parse(deliverySearchDate))).ToList();
+            //                }
+            //                break;
+            //                /*    case "locationsDropdown":
+            //                        if (rule.data.Contains("-1"))
+            //                        {
+            //                            break; 
+            //                        }
+            //                        else
+            //                        {
+            //                            FulfillSalesData = (IQueryable<FulfillSalesViewModel>)FulfillSalesData.Where(w => w.InventoryLocationId.ToString().Contains(rule.data));
+            //                            break;
+            //                        }
+            //                */
 
-                    }
-                }
+            //        }
+                //}
 
             int totalRecords = FulfillSalesData.Count();
             var totalPages = (int)Math.Ceiling((float)totalRecords / (float)request.rows);
@@ -303,6 +333,20 @@ namespace WETT.Controllers
             };
             CurrentHeaderId = -1;
             return Json(jsonData);
+        }
+        public IActionResult CreateSearch(string data)
+        {
+            var li = data.Split("/");
+
+
+            orderSearchDate = li[0];
+            deliverySearchDate = li[1];
+            carrierId = (long)Convert.ToDouble(li[2]);
+            orderSourceId = (long)Convert.ToDouble(li[3]);
+            //pending = li[4];
+            //fulfilled = li[5];
+
+            return Json(true);
         }
 
         public JsonResult GetAllDtls(JqGridViewModel request)

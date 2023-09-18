@@ -18,9 +18,10 @@
         <label for="lob" class="Label">Line Of buss:</label>
         <select class="form-control dropDownInput2" id="lob" name="lob"></select>
     </div>*@
+	<table id="supplier"></table>
+	<a asp-controller="Supplier" asp-action="SupplierReport" target="_blank" , asp-route-supplierid="@Model[1].SupplierId"> Supplier Id: @Model[1].SupplierId</a>
+	<div id="jqGridPager"></div>
 </body>
-<table id="supplier"></table>
-<div id="jqGridPager"></div>
 
 @section scripts {
 <script type="text/javascript">

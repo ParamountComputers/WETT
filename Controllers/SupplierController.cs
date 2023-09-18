@@ -32,6 +32,12 @@ namespace WETT.Controllers
             return View(await wETT_DBContext.ToListAsync());
         }
 
+		//[Route("Report/{SupplierId:int}")]
+		public IActionResult SupplierReport(int SupplierId)
+		{
+			return View();
+		}
+
         //end ty add
 
 

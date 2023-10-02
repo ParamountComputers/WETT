@@ -1,8 +1,5 @@
 ﻿@{
-	Layout = "~/Views/Shared/_ReportLayout.cshtml";
-}
-
-@{
+	Layout="~/Views/Shared/_ReportLayout.cshtml";
 	ViewData["Title"] = "Supplier Report";
 }
 
@@ -27,7 +24,9 @@
 					reportSource: {
 						// The report can be set to a report file name (trdx report definition)
 						// or CLR type name (report class definition).
-						report: "Barcodes Report.trdp"
+						report: "SupplierReportSingle.trdp",
+						parameters: { "SupplierIdParm": @Model }
+
 					},
 
 					// Specifies whether the viewer is in interactive or print preview mode.
@@ -68,4 +67,5 @@
 			font-family: Verdana, Arial;">
 	loading...
 </div>
+<div id="supplierid">Supplier Id: @Model</div>
 

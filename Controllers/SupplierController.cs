@@ -35,7 +35,7 @@ namespace WETT.Controllers
 		//[Route("Report/{SupplierId:int}")]
 		public IActionResult SupplierReport(int SupplierId)
 		{
-			return View();
+			return View(SupplierId);
 		}
 
         //end ty add

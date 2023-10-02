@@ -343,8 +343,21 @@ namespace WETT.Controllers
             deliverySearchDate = li[1];
             carrierId = (long)Convert.ToDouble(li[2]);
             orderSourceId = (long)Convert.ToDouble(li[3]);
-            //pending = li[4];
-            //fulfilled = li[5];
+            if (li[4].Equals("true"))
+            {
+                pending = true;
+            } else
+            {
+                pending = false;
+            }
+            if (li[5].Equals("true"))
+            {
+                fulfilled = true;
+            }
+            else
+            {
+                fulfilled = false;
+            }
 
             return Json(true);
         }

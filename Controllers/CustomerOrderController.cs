@@ -16,8 +16,8 @@ namespace WETT.Controllers
         public static string currentOrderNumber;
         public static DateTime currentDateOrdered;
         public static long currentCustomerOrderStatus;
-        public static string currentDriver;
-        public static string currentDsSlipNumber;
+        //public static string currentDriver;
+        //public static string currentDsSlipNumber;
         public static DateTime currentDeliveryReqDate;
         public static string currentSpecialInstructions;
         public static long currentCarrier;
@@ -140,8 +140,8 @@ namespace WETT.Controllers
                     DateOrdered = currentDateOrdered,
                     CustomerOrderStatusId = currentCustomerOrderStatus,
                     CarrierId = currentCarrier,
-                    Driver = currentDriver,
-                    DsSlipNumber = currentDsSlipNumber,
+                    //Driver = currentDriver,
+                    //DsSlipNumber = currentDsSlipNumber,
                     DeliveryReqDate = currentDeliveryReqDate,
                     SpecialInstructions = currentSpecialInstructions,
                     //hard coded for now
@@ -166,8 +166,8 @@ namespace WETT.Controllers
                 s.DateOrdered = currentDateOrdered;
                 s.CarrierId = currentCarrier;
                 s.CustomerOrderStatusId = currentCustomerOrderStatus;
-                s.Driver = currentDriver;
-                s.DsSlipNumber = currentDsSlipNumber;
+                //s.Driver = currentDriver;
+                //s.DsSlipNumber = currentDsSlipNumber;
                 s.DeliveryReqDate = currentDeliveryReqDate;
                 s.SpecialInstructions = currentSpecialInstructions;
                 s.UpdateTimestamp = DateTime.Now;
@@ -234,11 +234,11 @@ namespace WETT.Controllers
             currentOrderNumber = li[1];
             currentDateOrdered = DateTime.Parse(li[2]);
             currentCustomerOrderStatus = (long)Convert.ToDouble(li[3]);
-            currentDriver = li[4];
-            currentDsSlipNumber = li[5];
-            currentDeliveryReqDate = DateTime.Parse(li[6]);
-            currentSpecialInstructions = li[7];
-            currentCarrier = (long)Convert.ToDouble(li[8]);
+            //currentDriver = li[4];
+            //currentDsSlipNumber = li[5];
+            currentDeliveryReqDate = DateTime.Parse(li[4]);
+            currentSpecialInstructions = li[5];
+            currentCarrier = (long)Convert.ToDouble(li[6]);
             //currentLob = li[8];
             return Json(true);
         }
